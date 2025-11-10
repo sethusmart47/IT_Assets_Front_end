@@ -20,6 +20,7 @@ export class ViewEmployeeComponent {
   empMail: '',
   accessories: []  // ✅ make it an array
 };
+accessories1: any[] =[];
   newAccessory: any = {};
 
   constructor(private api: ApiService) {}
@@ -35,7 +36,9 @@ export class ViewEmployeeComponent {
       next: (res) => {
         console.log('Employee fetched:', res); // ✅ Check in console
         this.employee = res;
-         console.log('this.employee', this.employee.accessories); // ✅ Check accessories
+        this.accessories1 = res.accessories; 
+         console.log('this.employee', this.employee.accessories);
+         console.log('accesseries',this.accessories1) // ✅ Check accessories
       },
       error: (err) => {
         console.error(err);
@@ -46,7 +49,7 @@ export class ViewEmployeeComponent {
     });
   }
 
-  addAccessory() {
+  addAccessory1() {
     this.api.addAccessory(this.empCode, this.newAccessory).subscribe({
       next: () => {
         alert('Accessory added!');
@@ -57,27 +60,80 @@ export class ViewEmployeeComponent {
     });
   }
 
-  deleteAccessory(id: number) {
-    this.api.deleteAccessory(this.empCode, id).subscribe({
+ deleteAccessory(id: number) {
+  console.log('Deleting accessory with id:', id);
+  if (!id) {
+    alert('Invalid accessory ID');
+    return;
+  }
+  this.api.deleteAccessory(this.empCode, id).subscribe({
+    next: () => {
+      alert('Accessory deleted');
+      this.fetchEmployee();
+    },
+    error: (err) => console.error('Delete error:', err)
+  });
+}
+
+
+  // editAccessory(item: any) {
+  //   const updatedName = prompt('Enter new name', item.accessoryName);
+  //   if (updatedName) {
+  //     const updated = { ...item, accessoryName: updatedName };
+  //     this.api.updateAccessory(this.empCode, item.id, updated).subscribe({
+  //       next: () => {
+  //         alert('Accessory updated');
+  //         this.fetchEmployee();
+  //       },
+  //       error: (err) => console.error(err)
+  //     });
+  //   }
+  // }
+  editingAccessoryId: number | null = null;
+editAccessory(item: any) {
+  // Step 1: Load data into form so user can edit
+  this.newAccessory = {
+      accessoryType: item.accessoryType,
+      accessoryName: item.accessoryName,
+      serialNo: item.serialNo,
+      issueDate: item.issueDate
+    };
+  this.editingAccessoryId = item.id;
+}
+
+addAccessory() {
+  // Step 2: Check if editing or adding
+  if (this.editingAccessoryId) {
+    const updated = { ...this.newAccessory, id: this.editingAccessoryId };
+    this.api.updateAccessory(this.empCode, this.editingAccessoryId, updated).subscribe({
       next: () => {
-        alert('Accessory deleted');
+        alert('Accessory updated');
         this.fetchEmployee();
+        this.resetForm();
+      },
+      error: (err) => console.error(err)
+    });
+  } else {
+    // Add new accessory
+    this.api.addAccessory(this.empCode, this.newAccessory).subscribe({
+      next: () => {
+        alert('Accessory added');
+        this.fetchEmployee();
+        this.resetForm();
       },
       error: (err) => console.error(err)
     });
   }
+}
 
-  editAccessory(item: any) {
-    const updatedName = prompt('Enter new name', item.accessoryName);
-    if (updatedName) {
-      const updated = { ...item, accessoryName: updatedName };
-      this.api.updateAccessory(this.empCode, item.id, updated).subscribe({
-        next: () => {
-          alert('Accessory updated');
-          this.fetchEmployee();
-        },
-        error: (err) => console.error(err)
-      });
-    }
-  }
+resetForm() {
+  this.newAccessory = {
+    accessoryType: '',
+    accessoryName: '',
+    serialNo: '',
+    issueDate: ''
+  };
+  this.editingAccessoryId = null;
+}
+
 }

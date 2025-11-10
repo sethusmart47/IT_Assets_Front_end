@@ -1,0 +1,42 @@
+.container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.search input {
+  padding: 8px;
+  width: 250px;
+}
+
+.search button {
+  margin-left: 10px;
+  padding: 8px 16px;
+}
+
+.accessory-form input {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.accessory-form button {
+  padding: 5px 12px;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th, td {
+  padding: 8px;
+  text-align: center;
+}
+
+button {
+  cursor: pointer;
+  margin: 2px;
+}
