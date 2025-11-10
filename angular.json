@@ -25,7 +25,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+    "node_modules/@cds/core/global.min.css",
+    "node_modules/@cds/core/styles/theme.dark.min.css",
+    "node_modules/@clr/ui/clr-ui.min.css"
             ],
             "scripts": []
           },
@@ -91,5 +94,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "2fb3a9e9-bf1c-4c2b-9fca-907691edf4f5"
   }
 }

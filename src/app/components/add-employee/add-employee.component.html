@@ -1,0 +1,45 @@
+<div class="p-5">
+  <h2>Add Employee</h2>
+
+  <form clrForm #employeeForm="ngForm" (ngSubmit)="saveEmployee()">
+    <clr-input-container>
+      <label>Employee Code</label>
+      <input clrInput name="empCode" [(ngModel)]="employee.empCode" required />
+    </clr-input-container>
+
+    <clr-input-container>
+      <label>Employee Name</label>
+      <input clrInput name="empName" [(ngModel)]="employee.empName" required />
+    </clr-input-container>
+
+    <clr-input-container>
+      <label>Email</label>
+      <input clrInput name="empMail" [(ngModel)]="employee.empMail" required />
+    </clr-input-container>
+
+    <div class="mt-4">
+      <h4>Add Accessory</h4>
+      <clr-input-container>
+        <label>Accessory Type</label>
+        <input clrInput name="accessoryType" [(ngModel)]="accessory.accessoryType" />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>Accessory Name</label>
+        <input clrInput name="accessoryName" [(ngModel)]="accessory.accessoryName" />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>Serial No</label>
+        <input clrInput name="serialNo" [(ngModel)]="accessory.serialNo" />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>Issue Date</label>
+        <input clrInput type="date" name="issueDate" [(ngModel)]="accessory.issueDate" />
+      </clr-input-container>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Save Employee</button>
+  </form>
+</div>
