@@ -1,45 +1,83 @@
-<div class="p-5">
-  <h2>Add Employee</h2>
+<h2 class="text-center mb-4">Add Employee</h2>
 
-  <form clrForm #employeeForm="ngForm" (ngSubmit)="saveEmployee()">
-    <clr-input-container>
-      <label>Employee Code</label>
-      <input clrInput name="empCode" [(ngModel)]="employee.empCode" required />
-    </clr-input-container>
+<div class="p-5 cards-row">
+  <!-- Employee Details Card -->
+  <div class="clr-col-lg-6 clr-col-md-12">
+    <div class="card shadow-lg">
+      <div class="card-header">
+        Employee Details
+      </div>
 
-    <clr-input-container>
-      <label>Employee Name</label>
-      <input clrInput name="empName" [(ngModel)]="employee.empName" required />
-    </clr-input-container>
+      <div class="card-block">
+        <div class="card-text">
+          <form clrForm #employeeForm="ngForm" >
 
-    <clr-input-container>
-      <label>Email</label>
-      <input clrInput name="empMail" [(ngModel)]="employee.empMail" required />
-    </clr-input-container>
+            <div class="clr-row">
+              <div class="clr-col-6">
+                <label>Employee Code</label>
+                <input clrInput name="empCode" [(ngModel)]="employee.empCode" required  />
+              </div>
 
-    <div class="mt-4">
-      <h4>Add Accessory</h4>
-      <clr-input-container>
-        <label>Accessory Type</label>
-        <input clrInput name="accessoryType" [(ngModel)]="accessory.accessoryType" />
-      </clr-input-container>
+              <div class="clr-col-6">
+                <label>Employee Name</label>
+                <input clrInput name="empName" [(ngModel)]="employee.empName" required  />
+              </div>
+            </div>
 
-      <clr-input-container>
-        <label>Accessory Name</label>
-        <input clrInput name="accessoryName" [(ngModel)]="accessory.accessoryName" />
-      </clr-input-container>
+            <div class="clr-row mt-3">
+              <div class="clr-col-6">
+                <label>Email</label>
+                <input clrInput name="empMail" [(ngModel)]="employee.empMail" required  />
+              </div>
+            </div>
 
-      <clr-input-container>
-        <label>Serial No</label>
-        <input clrInput name="serialNo" [(ngModel)]="accessory.serialNo" />
-      </clr-input-container>
-
-      <clr-input-container>
-        <label>Issue Date</label>
-        <input clrInput type="date" name="issueDate" [(ngModel)]="accessory.issueDate" />
-      </clr-input-container>
+            <div class="card-footer mt-4 text-center">
+             
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <button type="submit" class="btn btn-primary mt-3">Save Employee</button>
-  </form>
+  <!-- Accessory Card -->
+  <div class="clr-col-lg-6 clr-col-md-12">
+    <div class="card shadow-lg">
+      <div class="card-header">
+        Add Accessory
+      </div>
+
+      <div class="card-block">
+        <div class="card-text">
+          <div class="clr-row">
+            <div class="clr-col-6">
+              <label>Accessory Type</label>
+              <input clrInput name="accessoryType" [(ngModel)]="accessory.accessoryType" class="clr-input w-100" />
+            </div>
+
+            <div class="clr-col-6">
+              <label>Accessory Name</label>
+              <input clrInput name="accessoryName" [(ngModel)]="accessory.accessoryName" class="clr-input w-100" />
+            </div>
+          </div>
+
+          <div class="clr-row mt-3">
+            <div class="clr-col-6">
+              <label>Serial No</label>
+              <input clrInput name="serialNo" [(ngModel)]="accessory.serialNo" class="clr-input w-100" />
+            </div>
+
+            <div class="clr-col-6">
+              <label>Issue Date</label>
+              <input clrInput type="date" name="issueDate" [(ngModel)]="accessory.issueDate" class="clr-input w-100" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer text-center">
+        <button (click)="saveEmployee()" class="btn btn-success btn-sm">Add Employee</button>
+      </div>
+    </div>
+  </div>
 </div>

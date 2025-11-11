@@ -4,11 +4,14 @@ import { ClarityModule } from '@clr/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { id } from '@cds/core/internal';
+import { NgIf, NgFor } from '@angular/common';
+import { ClrDatagridModule } from '@clr/angular';
+
 
 @Component({
   selector: 'app-view-employee',
   standalone: true,
-  imports: [ClarityModule, FormsModule, CommonModule],
+  imports: [ClarityModule, FormsModule, CommonModule,NgIf, NgFor, ClrDatagridModule],
   templateUrl: './view-employee.component.html',
   styleUrls: ['./view-employee.component.css']
 })
@@ -20,7 +23,7 @@ export class ViewEmployeeComponent {
   empMail: '',
   accessories: []  // ✅ make it an array
 };
-accessories1: any ={};
+accessories1: any[] =[];
   newAccessory: any = {};
 
   constructor(private api: ApiService) {}
