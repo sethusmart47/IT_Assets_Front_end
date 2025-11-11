@@ -1,11 +1,14 @@
+ <div class="search">
+    <input type="text" [(ngModel)]="empCode" placeholder="Enter Employee Code" />
+    <button (click)="fetchEmployee()">Search</button>
+  </div>
 
-
-  <div *ngIf="employee">
-    <!-- <h3>{{ employee.empName }} ({{ employee.empCode }})</h3>
+  <div >
+     <h3>{{ employee.empName }} ({{ employee.empCode }})</h3>
     <p><strong>Email:</strong> {{ employee.empMail }}</p>
 
     <h4 class="mt-4">Add Accessory</h4>
-    <form class="clr-form clr-form-horizontal mb-4" (ngSubmit)="addAccessory()">
+    <!-- <form class="clr-form clr-form-horizontal mb-4" (ngSubmit)="addAccessory()">
       <clr-input-container>
         <label>Accessory Type</label>
         <input clrInput type="text" [(ngModel)]="newAccessory.accessoryType" name="accessoryType" required />
@@ -27,24 +30,24 @@
       </clr-input-container>
 
       <button type="submit" class="btn btn-success mt-2">Add Accessory</button>
-    </form>
+    </form> -->
 
-    <h4>Accessories</h4> -->
+    <h4>Accessories</h4> 
 
- <!-- <clr-datagrid>
+ <clr-datagrid>
   <clr-dg-column>Accessory Type</clr-dg-column>
   <clr-dg-column>Accessory Name</clr-dg-column>
   <clr-dg-column>Serial No</clr-dg-column>
   <clr-dg-column>Issue Date</clr-dg-column>
 
-  <clr-dg-row *clrDgItems="let item of accessories1">
+  <clr-dg-row *ngFor="let item of accessories1">
     <clr-dg-cell>{{ item.accessoryType }}</clr-dg-cell>
     <clr-dg-cell>{{ item.accessoryName }}</clr-dg-cell>
     <clr-dg-cell>{{ item.serialNo }}</clr-dg-cell>
-    <clr-dg-cell>{{ item.issueDate | date: 'yyyy-MM-dd' }}</clr-dg-cell>
+    
   </clr-dg-row>
 
-  <clr-dg-footer>
+  <!-- <clr-dg-footer>
     <clr-dg-pagination #pagination [clrDgPageSize]="1">
       <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20]">
         Accessories per page
@@ -52,9 +55,35 @@
       {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
       {{ pagination.totalItems }} accessories
     </clr-dg-pagination>
-  </clr-dg-footer>
-</clr-datagrid> -->
-<div class="container">
+  </clr-dg-footer> -->
+</clr-datagrid> 
+
+<table border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Serial No</th>
+          <th>Issue Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of employee.accessories">
+          <td>{{item.id}}</td>
+          <td>{{ item.accessoryType }}</td>
+          <td>{{ item.accessoryName }}</td>
+          <td>{{ item.serialNo }}</td>
+          <td>{{ item.issueDate | date }}</td>
+          <td>
+            <button (click)="editAccessory(item)">Edit</button>
+            <button (click)="deleteAccessory(item.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+<!-- <div class="container">
   <h2>View Employee Accessories</h2>
 
   <div class="search">
@@ -109,7 +138,7 @@
       </tbody>
     </table>
   </div>
-</div>
+</div> -->
 
     <ng-template #noData>
       <p class="text-muted mt-3">No accessories found for this employee.</p>

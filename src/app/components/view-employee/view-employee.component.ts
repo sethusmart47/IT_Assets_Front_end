@@ -20,7 +20,7 @@ export class ViewEmployeeComponent {
   empMail: '',
   accessories: []  // ✅ make it an array
 };
-accessories1: any[] =[];
+accessories1: any ={};
   newAccessory: any = {};
 
   constructor(private api: ApiService) {}
@@ -48,6 +48,7 @@ accessories1: any[] =[];
      
     });
   }
+  
 
   addAccessory1() {
     this.api.addAccessory(this.empCode, this.newAccessory).subscribe({
