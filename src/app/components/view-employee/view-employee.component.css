@@ -1,109 +1,80 @@
 .page-title {
   color: #003366;
-  font-weight: 700;
+  font-weight: 500;
   text-align: center;
-  margin-bottom: 25px;
-}
 
+}
+*{
+  font-family: Arial, sans-serif;
+  padding: 0;
+  margin: 0;
+}
 .search-bar {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 30px;
+  
+  
 }
 
-.employee-accessory-section {
+.Empdetails{
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 30px;
-  margin-bottom: 40px;
+ justify-content: space-around;
+  
 }
-.clr-row{
+.addtitle{
+ 
+  text-align: center;
+  margin-top: 2px;
+
+  border: 2px solid #003366;
+}
+
+.accessory-form {
+  display: flex;
+
+  gap: 1rem;
+
+
+  background: #fff;
   padding: 20px;
-}
-.employee-card,
-.accessory-form-card {
-  flex: 1;
-  padding: 10px;
   border-radius: 10px;
-  background-color: #ffffff;
-  border: 1px solid #e5e5e5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.shadow {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+.form-row clr-input-container,
+.form-row clr-date-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.employee-card h3 {
-  color: #003366;
-  margin-bottom: 10px;
-}
-
-.emp-code {
-  color: #0078d7;
+clr-input-container label,
+clr-date-container label {
   font-weight: 600;
+  color: #333;
+  font-size: 15px;
+  white-space: nowrap; /* keep full label in one line */
+
+  text-overflow: ellipsis;
+  margin-bottom: 5px;
 }
 
-.section-title {
-  font-weight: 600;
-  color: #003366;
-  border-left: 4px solid #0078d7;
-  padding-left: 10px;
-  margin-bottom: 15px;
+clr-input-container input,
+clr-date-container input {
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+  border-radius: 4px;
 }
 
-.accessory-form clr-input-container {
-  display: block;
-  margin: 16px;
-  padding: 30px;
-}
-
-.form-actions {
-  text-align: right;
+.button-row {
+  display: flex;
+  justify-content: flex-end;
   margin-top: 15px;
 }
 
-.btn-success {
-  background-color: #0078d7;
-  border: none;
-}
-
-.btn-success:hover {
-  background-color: #005fa3;
-}
-
-.clr-table {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 10px;
-}
-
-.accessory-table-section {
-  margin-top: 40px;
-}
-
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.table th, .table td {
-  padding: 10px 12px;
-  text-align: left;
-}
-
-.table th {
-  background-color: #003366;
-  color: white;
-}
-
-.table-striped tbody tr:nth-child(odd) {
-  background-color: #f8f9fa;
-}
-
-.table-bordered th, .table-bordered td {
-  border: 1px solid #dee2e6;
+button[clrButton] {
+  min-width: 110px;
+  height: 40px;
+  font-weight: 600;
 }

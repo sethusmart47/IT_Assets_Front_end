@@ -17,6 +17,8 @@ import { routes } from './app/app.routes';         // ✅ import your routes arr
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(),
-    provideRouter(routes)   // ✅ register routes here
+    provideRouter(routes) ,
+    
+      // ✅ register routes here
   ]
 }).catch(err => console.error(err));
