@@ -13,12 +13,6 @@ import { ViewEmployeeComponent } from './components/view-employee/view-employee.
 })
 export class AppComponent {
   title = 'IT_Assert';
-constructor(private router:Router){}
 
-  add() {
-    this.router.navigate(['add']);
+
   }
-
-  view() {
-    this.router.navigate(['/view1']); // matches lowercase route
-  }}

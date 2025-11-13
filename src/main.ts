@@ -13,12 +13,12 @@ import { routes } from './app/app.routes';         // ✅ import your routes arr
 // import { cogIcon } from '@cds/core/icon/shapes/cog.js';
 // ClarityIcons.addIcons(cogIcon);
 
-
+import { provideAnimations } from '@angular/platform-browser/animations'; 
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(),
     provideRouter(routes) ,
-    
+      provideAnimations(),   
       // ✅ register routes here
   ]
 }).catch(err => console.error(err));

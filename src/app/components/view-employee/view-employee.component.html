@@ -15,56 +15,62 @@
 <div >
   <!-- Employee Details -->
   <div class="Empdetails">
-    <h3>{{ employee.empName }}</h3>
+    <p><strong>Employee Name:</strong>{{ employee.empName }}<p>
     <p><strong>Employee Code:</strong> {{ employee.empCode }}</p>
     <p><strong>Email:</strong> {{ employee.empMail }}</p>
   </div>
 
   <!-- Add / Update Accessory -->
-  <section>
-    <div class="addtitle">
- <h5>Add / Update Accessory</h5>
-    </div>
-   
+ <!-- Add / Update Accessory Button -->
+<button clrButton (click)="openAccessoryModal()" class="btn btn-primary " id="add_btn">Add / Update Accessory</button>
 
-<form clrForm class="accessory-form">
-  <div class="form-row">
-    <clr-input-container>
-      <label>Accessory Type</label>
-      <input clrInput type="text" [(ngModel)]="newAccessory.accessoryType" name="accessoryType" />
-    </clr-input-container>
+<!-- Clarity Modal -->
+<clr-modal [(clrModalOpen)]="accessoryModalOpen" clrModalSize="md">
+  <h3 class="modal-title text-center">
+    {{ editingAccessoryId ? 'Update Accessory' : 'Add Accessory' }}
+  </h3>
+
+  <div class="modal-body">
+    <form clrForm >
+  <!-- Accessory Type -->
+<form clrForm clrLayout="horizontal">
+  <!-- Accessory Type -->
+  <clr-input-container>
+    <label>Accessory Type</label>
+    <input clrInput type="text" [(ngModel)]="newAccessory.accessoryType" name="accessoryType" />
+  </clr-input-container>
+
+  <!-- Accessory Name -->
+  <clr-input-container>
+    <label>Accessory Name</label>
+    <input clrInput type="text" [(ngModel)]="newAccessory.accessoryName" name="accessoryName" />
+  </clr-input-container>
+
+  <!-- Serial Number -->
+  <clr-input-container>
+    <label>Serial Number</label>
+    <input clrInput type="text" [(ngModel)]="newAccessory.serialNo" name="serialNo" />
+  </clr-input-container>
+
+  <!-- Issue Date -->
+  <clr-date-container>
+    <label>Issue Date</label>
+    <input clrDate type="date" [(ngModel)]="newAccessory.issueDate" name="issueDate" />
+  </clr-date-container>
+</form>
+
+</form>
+
   </div>
 
-  <div class="form-row">
-    <clr-input-container>
-      <label>Accessory Name</label>
-      <input clrInput type="text" [(ngModel)]="newAccessory.accessoryName" name="accessoryName" />
-    </clr-input-container>
-  </div>
-
-  <div class="form-row">
-    <clr-input-container>
-      <label>Serial Number</label>
-      <input clrInput type="text" [(ngModel)]="newAccessory.serialNo" name="serialNo" />
-    </clr-input-container>
-  </div>
-
-  <div class="form-row">
-    <clr-date-container>
-      <label>Issue Date</label>
-      <input clrDate type="date" [(ngModel)]="newAccessory.issueDate" name="issueDate" />
-    </clr-date-container>
-  </div>
-
-  <div class="button-row">
-    <button type="button" clrButton (click)="addAccessory()" class="btn btn-primary">
+  <div class="modal-footer">
+    <button clrButton>Cancel</button>
+    <button clrButton type="button" class="btn btn-primary" (click)="addAccessory()">
       {{ editingAccessoryId ? 'Update' : 'Add' }}
     </button>
   </div>
-</form>
+</clr-modal>
 
-
-  </section>
 
   <!-- Accessories List (Clarity Datagrid) -->
   <section>
@@ -101,6 +107,6 @@
       </clr-dg-footer>
     </clr-datagrid>
 
-    <p *ngIf="accessories1.length === 0">No accessories found for this employee.</p>
+    <!-- <p *ngIf="accessories1.length === 0">No accessories found for this employee.</p> -->
   </section>
 </div>

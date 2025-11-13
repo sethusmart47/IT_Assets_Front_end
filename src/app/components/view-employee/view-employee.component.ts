@@ -25,9 +25,13 @@ export class ViewEmployeeComponent {
 };
 accessories1: any[] =[];
   newAccessory: any = {};
-
+accessoryModalOpen:boolean=false;
   constructor(private api: ApiService) {}
-
+openAccessoryModal() {
+  this.editingAccessoryId = null;
+  this.newAccessory = { accessoryType: '', accessoryName: '', serialNo: '', issueDate: '' };
+  this.accessoryModalOpen = true;
+}
   fetchEmployee() {
     debugger
     if (!this.empCode.trim()) {
