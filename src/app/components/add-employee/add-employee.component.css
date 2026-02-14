@@ -10,6 +10,10 @@
   background-color: #fff;
   transition: transform 0.2s ease-in-out;
 }
+label{
+ 
+  font-weight: 600;
+}
 
 .card:hover {
   transform: scale(1.01);

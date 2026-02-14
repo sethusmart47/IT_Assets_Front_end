@@ -4,16 +4,12 @@
   text-align: center;
 margin-top: 10px;
 }
-*{
-  font-family: Arial, sans-serif;
-  padding: 0;
-  margin: 0;
-}
+
 .search-bar {
   display: flex;
   justify-content: center;
   
-  margin-top: 5px;
+  margin-top: 9px;
 }
 #add_btn{
   margin: 10px;
@@ -23,7 +19,7 @@ margin-top: 10px;
 .Empdetails{
   display: flex;
 justify-content: space-evenly;
-border-bottom: #003366 solid 2px;
+
   
 }
 .addtitle{
@@ -31,7 +27,6 @@ border-bottom: #003366 solid 2px;
   text-align: center;
   margin-top: 2px;
 
-  border: 2px solid #003366;
 }
 clr-datagrid{
   margin: 5px;
@@ -39,60 +34,11 @@ clr-datagrid{
   overflow-y: auto;
 }
 
-.accessory-form {
-  display: flex;
-
-  gap: 1rem;
-
-
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
 
 
 
-clr-input-container label,
-clr-date-container label {
-  font-weight: 600;
-  color: #333;
-  font-size: 15px;
-  white-space: nowrap; /* keep full label in one line */
 
-  text-overflow: ellipsis;
-  margin-bottom: 5px;
-}
 
-/* Add this in your component CSS or global styles.css */
-.accessory-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-row {
-  display: flex;
-  align-items: center; /* ✅ Align label and input evenly */
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.form-row label {
-  flex: 1;
-  font-weight: 600;
-  color: #444;
-  text-align: right;
-  padding-right: 1rem;
-}
-
-.form-row input[clrInput],
-.form-row input[clrDate] {
-  flex: 2;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
 
 
 .modal-footer{
@@ -104,8 +50,9 @@ clr-date-container label {
   margin-top: 15px;
 }
 
-button[clrButton] {
-  min-width: 110px;
-  height: 40px;
-  font-weight: 600;
+
+
+clr-datagrid button {
+  margin-right: 5px;
+  
 }

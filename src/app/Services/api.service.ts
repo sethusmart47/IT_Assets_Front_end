@@ -34,4 +34,7 @@ export class ApiService {
   deleteAccessory(empCode: string, id: number): Observable<any> {
     return this.http.delete(`${this.accessoryUrl}/${empCode}/${id}`);
   }
+  getAllEmployees():Observable<any>{
+    return this.http.get(`${this.baseUrl}`);
+  }
 }

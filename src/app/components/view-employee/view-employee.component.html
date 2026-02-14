@@ -13,6 +13,8 @@
   </div>
 </div>
 <div >
+
+  <button clrButton (click)="openAccessoryModal()" class="btn btn-primary " id="add_btn">Add / Update Accessory</button>
   <!-- Employee Details -->
   <div class="Empdetails">
     <p><strong>Employee Name:</strong>{{ employee.empName }}<p>
@@ -22,91 +24,80 @@
 
   <!-- Add / Update Accessory -->
  <!-- Add / Update Accessory Button -->
-<button clrButton (click)="openAccessoryModal()" class="btn btn-primary " id="add_btn">Add / Update Accessory</button>
+  <!-- Accessories Datagrid -->
+  <clr-datagrid  class="shadow-lg rounded">
 
-<!-- Clarity Modal -->
+    <clr-dg-column>Accessory Type</clr-dg-column>
+    <clr-dg-column>Accessory Name</clr-dg-column>
+    <clr-dg-column>Serial No</clr-dg-column>
+    <clr-dg-column>Issue Date</clr-dg-column>
+    <clr-dg-column>Actions</clr-dg-column>
+
+    <clr-dg-row *ngFor="let item of accessories1">
+      <clr-dg-cell>{{ item.accessoryType }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.accessoryName }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.serialNo }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.issueDate | date }}</clr-dg-cell>
+
+      <clr-dg-cell>
+        <button class="btn btn-sm btn-primary me-2" (click)="editAccessory(item)">
+          Edit
+        </button>
+        <button class="btn btn-sm btn-danger" (click)="deleteAccessory(item.id)">
+          Delete
+        </button>
+      </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="5">
+        <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20]">
+          Accessories per page
+        </clr-dg-page-size>
+        {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
+        {{ pagination.totalItems }} accessories
+      </clr-dg-pagination>
+    </clr-dg-footer>
+
+  </clr-datagrid>
+
+
+<!-- Modal -->
 <clr-modal [(clrModalOpen)]="accessoryModalOpen" clrModalSize="md">
   <h3 class="modal-title text-center">
-    {{ editingAccessoryId ? 'Update Accessory' : 'Add Accessory' }}
+    {{ editingAccessoryId ? "Update Accessory" : "Add Accessory" }}
   </h3>
 
   <div class="modal-body">
-    <form clrForm >
-  <!-- Accessory Type -->
-<form clrForm clrLayout="horizontal">
-  <!-- Accessory Type -->
-  <clr-input-container>
-    <label>Accessory Type</label>
-    <input clrInput type="text" [(ngModel)]="newAccessory.accessoryType" name="accessoryType" />
-  </clr-input-container>
+    <form clrForm clrLayout="horizontal">
 
-  <!-- Accessory Name -->
-  <clr-input-container>
-    <label>Accessory Name</label>
-    <input clrInput type="text" [(ngModel)]="newAccessory.accessoryName" name="accessoryName" />
-  </clr-input-container>
+      <clr-input-container>
+        <label>Accessory Type</label>
+        <input clrInput [(ngModel)]="newAccessory.accessoryType" name="atype" />
+      </clr-input-container>
 
-  <!-- Serial Number -->
-  <clr-input-container>
-    <label>Serial Number</label>
-    <input clrInput type="text" [(ngModel)]="newAccessory.serialNo" name="serialNo" />
-  </clr-input-container>
+      <clr-input-container>
+        <label>Accessory Name</label>
+        <input clrInput [(ngModel)]="newAccessory.accessoryName" name="aname" />
+      </clr-input-container>
 
-  <!-- Issue Date -->
-  <clr-date-container>
-    <label>Issue Date</label>
-    <input clrDate type="date" [(ngModel)]="newAccessory.issueDate" name="issueDate" />
-  </clr-date-container>
-</form>
+      <clr-input-container>
+        <label>Serial No</label>
+        <input clrInput [(ngModel)]="newAccessory.serialNo" name="sno" />
+      </clr-input-container>
 
-</form>
+      <clr-date-container>
+        <label>Issue Date</label>
+        <input clrDate type="date" [(ngModel)]="newAccessory.issueDate" name="idate" />
+      </clr-date-container>
 
+    </form>
   </div>
 
   <div class="modal-footer">
-    <button clrButton>Cancel</button>
-    <button clrButton type="button" class="btn btn-primary" (click)="addAccessory()">
+    <button class="btn btn-outline-dark" clrButton>Cancel</button>
+    <button class="btn btn-primary" clrButton (click)="addAccessory()">
       {{ editingAccessoryId ? 'Update' : 'Add' }}
     </button>
   </div>
 </clr-modal>
-
-
-  <!-- Accessories List (Clarity Datagrid) -->
-  <section>
-  
-
-    <clr-datagrid >
-      <clr-dg-column>Accessory Type</clr-dg-column>
-      <clr-dg-column>Accessory Name</clr-dg-column>
-      <clr-dg-column>Serial No</clr-dg-column>
-      <clr-dg-column>Issue Date</clr-dg-column>
-      <clr-dg-column>Actions</clr-dg-column>
-
-      <clr-dg-row *ngFor="let item of accessories1">
-        <clr-dg-cell>{{ item.accessoryType }}</clr-dg-cell>
-        <clr-dg-cell>{{ item.accessoryName }}</clr-dg-cell>
-        <clr-dg-cell>{{ item.serialNo }}</clr-dg-cell>
-        <clr-dg-cell>{{ item.issueDate | date }}</clr-dg-cell>
-        <clr-dg-cell>
-          <button clrButton (click)="editAccessory(item)">Edit</button>
-          <button clrButton type="button" (click)="deleteAccessory(item.id)" class="btn btn-danger">
-            Delete
-          </button>
-        </clr-dg-cell>
-      </clr-dg-row>
-
-      <clr-dg-footer>
-        <clr-dg-pagination #pagination [clrDgPageSize]="5">
-          <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20]">
-            Accessories per page
-          </clr-dg-page-size>
-          {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
-          {{ pagination.totalItems }} accessories
-        </clr-dg-pagination>
-      </clr-dg-footer>
-    </clr-datagrid>
-
-    <!-- <p *ngIf="accessories1.length === 0">No accessories found for this employee.</p> -->
-  </section>
-</div>

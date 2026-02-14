@@ -7,5 +7,6 @@ import { HomeComponent } from './components/home/home.component';
 export const routes: Routes = [
  {path: '', component:HomeComponent },
   {path: 'add', component: AddEmployeeComponent },
-  { path: 'view1', component: ViewEmployeeComponent }  // 👈 lowercase is standard
+  { path: 'view1', component: ViewEmployeeComponent } ,
+   { path: 'view1/:empCode', component: ViewEmployeeComponent }  // 👈 lowercase is standard
 ];

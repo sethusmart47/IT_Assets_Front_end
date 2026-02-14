@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../Services/api.service';
 import { ClarityModule } from '@clr/angular';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { id } from '@cds/core/internal';
 import { NgIf, NgFor } from '@angular/common';
 import { ClrDatagridModule } from '@clr/angular';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { ClrDatagridModule } from '@clr/angular';
   templateUrl: './view-employee.component.html',
   styleUrls: ['./view-employee.component.css']
 })
-export class ViewEmployeeComponent {
+export class ViewEmployeeComponent implements OnInit {
   empCode = '';
  employee: any = {
   empCode: '',
@@ -26,7 +27,13 @@ export class ViewEmployeeComponent {
 accessories1: any[] =[];
   newAccessory: any = {};
 accessoryModalOpen:boolean=false;
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private route:ActivatedRoute) {}
+
+ngOnInit(): void {
+  this.empCode = this.route.snapshot.paramMap.get('empCode')!
+this.fetchEmployee();
+}
+
 openAccessoryModal() {
   this.editingAccessoryId = null;
   this.newAccessory = { accessoryType: '', accessoryName: '', serialNo: '', issueDate: '' };
@@ -58,6 +65,7 @@ openAccessoryModal() {
   
 
   addAccessory1() {
+    debugger
     this.api.addAccessory(this.empCode, this.newAccessory).subscribe({
       next: () => {
         alert('Accessory added!');
@@ -81,6 +89,7 @@ openAccessoryModal() {
     },
     error: (err) => console.error('Delete error:', err)
   });
+  this.fetchEmployee();
 }
 
 
@@ -107,6 +116,7 @@ editAccessory(item: any) {
       issueDate: item.issueDate
     };
   this.editingAccessoryId = item.id;
+  this.accessoryModalOpen = true;
 }
 
 addAccessory() {
@@ -122,8 +132,14 @@ addAccessory() {
       error: (err) => console.error(err)
     });
   } else {
+    const body = {
+    accessoryType: this.newAccessory.accessoryType,
+    accessoryName: this.newAccessory.accessoryName,
+    serialNo: this.newAccessory.serialNo,
+    issueDate: new Date(this.newAccessory.issueDate).toISOString()
+  };
     // Add new accessory
-    this.api.addAccessory(this.empCode, this.newAccessory).subscribe({
+    this.api.addAccessory(this.empCode, body).subscribe({
       next: () => {
         alert('Accessory added');
         this.fetchEmployee();
@@ -132,6 +148,7 @@ addAccessory() {
       error: (err) => console.error(err)
     });
   }
+  this.accessoryModalOpen = false;
 }
 
 resetForm() {
