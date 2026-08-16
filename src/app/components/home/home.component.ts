@@ -58,4 +58,9 @@ loadEmployees() {
       alert("Employee not found");
     }
   });
+
+
+  }
+  goTo(route: string){
+    this.router.navigate([`/${route}`]);
   }}

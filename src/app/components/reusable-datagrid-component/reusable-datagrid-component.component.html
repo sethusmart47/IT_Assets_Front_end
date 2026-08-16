@@ -1,0 +1,63 @@
+<clr-datagrid [clrDgLoading]="loading">
+
+  <!-- Serial Number Column -->
+  <clr-dg-column *ngIf="showSerialNo" [clrDgField]="'serial'" [style.width.px]="60">
+    <ng-container clrDgColumnTitle>#</ng-container>
+  </clr-dg-column>
+
+  <!-- Dynamic Columns -->
+  <clr-dg-column *ngFor="let col of columns" [clrDgField]="col.field">
+    <ng-container clrDgColumnTitle>{{ col.header }}</ng-container>
+  </clr-dg-column>
+
+  <!-- Actions Column -->
+  <clr-dg-column *ngIf="showActions" [style.width.px]="120">
+    <ng-container clrDgColumnTitle>Actions</ng-container>
+  </clr-dg-column>
+
+  <!-- Rows -->
+  <clr-dg-row *ngFor="let item of paginatedData; let i = index" [clrDgItem]="item">
+
+    <!-- Serial Number -->
+    <clr-dg-cell *ngIf="showSerialNo">{{ getSerialNo(i) }}</clr-dg-cell>
+
+    <!-- Dynamic Cells -->
+    <clr-dg-cell *ngFor="let col of columns">
+      <ng-container [ngSwitch]="col.type">
+
+        <!-- Text -->
+        <span *ngSwitchCase="'text'">{{ item[col.field] }}</span>
+
+        <!-- Status Badge -->
+        <ng-container *ngSwitchCase="'badge'">
+          <span class="badge" [ngClass]="item[col.field] ? 'badge-success' : 'badge-danger'">
+            {{ item[col.field] ? (col.badgeActiveText || 'Active') : (col.badgeInactiveText || 'Inactive') }}
+          </span>
+        </ng-container>
+
+      </ng-container>
+    </clr-dg-cell>
+
+    <!-- Action Buttons -->
+    <clr-dg-cell *ngIf="showActions">
+      <button class="btn btn-sm btn-icon btn-primary" title="Edit" (click)="editItem(item)">
+        <cds-icon shape="pencil"></cds-icon>
+      </button>
+      <button class="btn btn-sm btn-icon btn-danger-outline" title="Delete" (click)="deleteItem(item)">
+        <cds-icon shape="trash"></cds-icon>
+      </button>
+    </clr-dg-cell>
+
+  </clr-dg-row>
+
+  <!-- Footer with Pagination -->
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination
+      [clrDgPageSize]="pageSize"
+      [clrDgTotalItems]="totalItems"
+      [(clrDgPage)]="currentPage">
+      {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ totalItems }} items
+    </clr-dg-pagination>
+  </clr-dg-footer>
+
+</clr-datagrid>

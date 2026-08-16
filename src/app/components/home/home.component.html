@@ -1,6 +1,37 @@
 <div class="home-container">
 
-  
+  <clr-vertical-nav [clrVerticalNavCollapsible]="true">
+      
+
+          Category
+          <clr-vertical-nav-group-children *clrIfExpanded="true">
+            <a clrVerticalNavLink routerLinkActive="active" (click)="goTo('category')">New
+              Expense</a>
+           
+          </clr-vertical-nav-group-children>
+        
+        <clr-vertical-nav-group routerLinkActive="active">
+          <a routerLink="#" hidden aria-hidden="true"></a>
+
+          International
+          <clr-vertical-nav-group-children *clrIfExpanded>
+            <a clrVerticalNavLink (click)="goTo('brand')">New International</a>
+          
+          </clr-vertical-nav-group-children>
+        </clr-vertical-nav-group>
+        <clr-vertical-nav-group routerLinkActive="active">
+          <a routerLink="#" hidden aria-hidden="true"></a>
+
+          Domestic
+          <clr-vertical-nav-group-children *clrIfExpanded>
+            <a clrVerticalNavLink (click)="goTo('model')">New Domestic</a>
+            
+          </clr-vertical-nav-group-children>
+        </clr-vertical-nav-group>
+        
+
+      
+      </clr-vertical-nav> 
 
   <!-- Title -->
   <h1 class="title">IT Management System</h1>
