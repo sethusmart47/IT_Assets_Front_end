@@ -63,11 +63,13 @@ brands: AssetBrand[] = [];
   }
 
   loadData(): void {
+    debugger
     this.loading = true;
     this.brandService.getAll().subscribe({
       next: (data) => {
         this.brands = data;
         this.loading = false;
+        console.log('Brands loaded:', this.brands);
       },
       error: (err) => {
         this.notification.error(err.error || 'Failed to load brands.');

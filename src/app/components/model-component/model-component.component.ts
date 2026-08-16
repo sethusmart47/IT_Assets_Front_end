@@ -8,7 +8,7 @@ import { NotificationService } from '../../Services/notification-service.service
 import { ConfirmDialogComponentComponent } from '../confirm-dialog-component/confirm-dialog-component.component';
 import { ReusableDatagridComponentComponent } from '../reusable-datagrid-component/reusable-datagrid-component.component';
 import { CommonModule } from '@angular/common';
-import { ClarityModule } from '@clr/angular/clr-angular.module';
+import { ClarityModule } from '@clr/angular';
 
 @Component({
   selector: 'app-model-component',
