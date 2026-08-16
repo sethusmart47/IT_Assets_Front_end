@@ -77,3 +77,32 @@ export interface DatagridColumn {
   badgeActiveText?: string;
   badgeInactiveText?: string;
 }
+export interface Vendor {
+  id: string;
+  vendorName: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  gstNumber: string | null;
+  address: string | null;
+  isActive: boolean;
+}
+
+export interface CreateVendor {
+  vendorName: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  gstNumber?: string | null;
+  address?: string | null;
+}
+
+export interface UpdateVendor {
+  vendorName: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  gstNumber?: string | null;
+  address?: string | null;
+  isActive: boolean;
+}

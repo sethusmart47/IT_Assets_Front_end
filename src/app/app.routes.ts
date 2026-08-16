@@ -6,6 +6,7 @@ import { HomeComponent } from './components/home/home.component';
 import { CategoryComponent } from './components/category-component/category-component.component';
 import { BrandComponentComponent } from './components/brand-component/brand-component.component';
 import { ModelComponentComponent } from './components/model-component/model-component.component';
+import { VendorComponent } from './components/vendor/vendor.component';
 
 export const routes: Routes = [
  {path: '', component:HomeComponent },
@@ -14,5 +15,6 @@ export const routes: Routes = [
    { path: 'view1/:empCode', component: ViewEmployeeComponent }  ,
    {path:'category', component: CategoryComponent},
    {path:'brand',component:BrandComponentComponent},
+     { path: 'vendor', component: VendorComponent },
    {path:'model',component:ModelComponentComponent}
 ];
