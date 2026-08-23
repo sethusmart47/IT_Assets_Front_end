@@ -7,6 +7,8 @@ import { CategoryComponent } from './components/category-component/category-comp
 import { BrandComponentComponent } from './components/brand-component/brand-component.component';
 import { ModelComponentComponent } from './components/model-component/model-component.component';
 import { VendorComponent } from './components/vendor/vendor.component';
+import { PurchaseListComponent } from './components/purchase/purchase-list/purchase-list.component';
+import { PurchaseCreateComponent } from './components/purchase/purchase-create/purchase-create.component';
 
 export const routes: Routes = [
  {path: '', component:HomeComponent },
@@ -16,5 +18,8 @@ export const routes: Routes = [
    {path:'category', component: CategoryComponent},
    {path:'brand',component:BrandComponentComponent},
      { path: 'vendor', component: VendorComponent },
-   {path:'model',component:ModelComponentComponent}
+   {path:'model',component:ModelComponentComponent},
+   {path:'purchase',component:PurchaseListComponent},
+   {path:'purchases/create',component:PurchaseCreateComponent},
+   {path:'purchases/:id/edit',component:PurchaseCreateComponent}
 ];

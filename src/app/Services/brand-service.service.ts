@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { AssetBrand, CreateAssetBrand, UpdateAssetBrand } from '../model';
+import { AssetBrand, CreateAssetBrand, UpdateAssetBrand } from '../models/model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
 

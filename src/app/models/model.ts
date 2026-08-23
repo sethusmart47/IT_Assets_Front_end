@@ -6,7 +6,13 @@ export interface AssetCategory {
   categoryName: string;
   isActive: boolean;
 }
-
+export interface AssetCategoryApi {
+   id: string;
+  categoryName: string;
+  isActive: boolean;
+  assetBrandDtos: AssetBrand[];
+  assetModelDtos: AssetModel[];
+}
 export interface CreateAssetCategory {
   categoryName: string;
 }

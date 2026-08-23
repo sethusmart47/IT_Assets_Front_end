@@ -1,0 +1,100 @@
+<div class="purchase-list-container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <h2>
+        <clr-icon shape="shopping-cart" size="28"></clr-icon>
+        Purchase Orders
+      </h2>
+      <span class="badge badge-info">{{ totalRecords }} Records</span>
+    </div>
+    <div class="header-right">
+      <div class="clr-select-wrapper status-filter">
+        <select class="clr-select" [(ngModel)]="selectedStatus" (change)="onStatusFilterChange()">
+          <option [ngValue]="null">All Status</option>
+          <option *ngFor="let s of statuses" [ngValue]="s.value">{{ s.label }}</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" (click)="navigateToCreate()">
+        <clr-icon shape="plus"></clr-icon>
+        Create Purchase
+      </button>
+    </div>
+  </div>
+
+  <!-- Clarity Datagrid -->
+  <clr-datagrid [clrDgLoading]="loading">
+
+    <clr-dg-column [clrDgField]="'purchaseNumber'">
+      <ng-container >PO Number</ng-container>
+    </clr-dg-column>
+
+    <clr-dg-column [clrDgField]="'vendorName'">
+      <ng-container>Vendor</ng-container>
+    </clr-dg-column>
+
+    <clr-dg-column [clrDgField]="'purchaseDate'" [clrDgSortBy]="'purchaseDate'">
+      PO Date
+    </clr-dg-column>
+
+    <clr-dg-column [clrDgField]="'invoiceNumber'">
+      <ng-container >Invoice No.</ng-container>
+    </clr-dg-column>
+
+    <clr-dg-column [clrDgField]="'ownershipTypeName'">
+      Ownership
+    </clr-dg-column>
+
+    <clr-dg-column>Items / Units</clr-dg-column>
+
+    <clr-dg-column [clrDgSortBy]="'totalAmount'">Total Amount</clr-dg-column>
+
+    <clr-dg-column [clrDgField]="'statusName'">Status</clr-dg-column>
+
+    <clr-dg-column>Actions</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let purchase of purchases" [clrDgItem]="purchase">
+      <clr-dg-cell>
+        <span class="po-number">{{ purchase.purchaseNumber }}</span>
+      </clr-dg-cell>
+      <clr-dg-cell>{{ purchase.vendorName }}</clr-dg-cell>
+      <clr-dg-cell>{{ purchase.purchaseDate }}</clr-dg-cell>
+      <clr-dg-cell>{{ purchase.invoiceNumber }}</clr-dg-cell>
+      <clr-dg-cell>{{ purchase.ownershipTypeName }}</clr-dg-cell>
+      <clr-dg-cell>
+        <span class="badge badge-purple">{{ purchase.itemCount }} types</span>
+        <span class="badge badge-blue">{{ purchase.totalUnits }} units</span>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <strong>₹{{ purchase.totalAmount | number:'1.0-0' }}</strong>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <span class="label" [ngClass]="getStatusClass(purchase.status)">
+          {{ purchase.statusName }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell class="action-cell">
+        
+          <button (click)="navigateToEdit(purchase)">
+              <clr-icon shape="pencil"></clr-icon>
+            </button>
+    
+      </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="10">
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50]">Items per page</clr-dg-page-size>
+        {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }} purchases
+      </clr-dg-pagination>
+    </clr-dg-footer>
+
+  </clr-datagrid>
+
+ 
+
+ 
+
+
+</div>

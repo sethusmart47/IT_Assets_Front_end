@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DatagridColumn } from '../../model';
+import { DatagridColumn } from '../../models/model';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
 

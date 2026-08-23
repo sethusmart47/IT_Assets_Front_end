@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { AssetCategory, CreateAssetCategory, UpdateAssetCategory } from '../model';
+import { AssetCategory, AssetCategoryApi, CreateAssetCategory, UpdateAssetCategory } from '../models/model';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../environment';
@@ -14,8 +14,8 @@ export class CategoryService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<AssetCategory[]> {
-    return this.http.get<AssetCategory[]>(this.apiUrl);
+  getAll(): Observable<AssetCategoryApi[]> {
+    return this.http.get<AssetCategoryApi[]>(this.apiUrl);
   }
 
   getById(id: string): Observable<AssetCategory> {

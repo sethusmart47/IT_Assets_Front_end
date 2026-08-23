@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AssetBrand, AssetCategory, AssetModel, DatagridColumn } from '../../model';
+import { AssetBrand, AssetCategory, AssetModel, DatagridColumn } from '../../models/model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModelService } from '../../Services/model-service.service';
 import { BrandService } from '../../Services/brand-service.service';

@@ -1,0 +1,439 @@
+<div class="purchase-form-container">
+
+  <div class="form-page-header">
+    <div class="header-breadcrumb">
+      <a (click)="goBack()" class="breadcrumb-link">Purchase Orders</a>
+      <clr-icon shape="angle" dir="right"></clr-icon>
+      <span>{{ isEditMode ? 'Edit' : 'Create' }} Purchase Order</span>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-outline" (click)="goBack()">
+        Cancel
+      </button>
+
+      <button
+        class="btn btn-success"
+        (click)="completePurchase()"
+        *ngIf="isEditMode && items.length > 0"
+        [disabled]="saving">
+
+        <clr-icon shape="check-circle"></clr-icon>
+        Save & Receive Assets
+      </button>
+    </div>
+  </div>
+
+  <div class="purchase-content">
+
+    <div class="section-title">
+      <span>1. PURCHASE INFORMATION</span>
+    </div>
+
+    <div class="info-banner">
+      Asset tags are not entered here. Individual assets and system-generated
+      asset tags are created after receiving unique serial numbers.
+    </div>
+
+    <form [formGroup]="purchaseForm">
+
+      <div class="purchase-grid">
+
+        <div class="field">
+          <label>PO Number <span>*</span></label>
+          <input
+            type="text"
+            class="input"
+            [value]="purchaseNumber"
+            readonly>
+        </div>
+
+        <div class="field">
+          <label>Vendor <span>*</span></label>
+
+          <select
+            class="input"
+            formControlName="vendorId">
+
+            <option [ngValue]="null" disabled>
+              Select Vendor
+            </option>
+
+            <option
+              *ngFor="let v of vendors"
+              [ngValue]="v.id">
+
+              {{ v.vendorName }}
+
+            </option>
+
+          </select>
+        </div>
+
+        <div class="field">
+          <label>PO Date <span>*</span></label>
+
+          <input
+            type="date"
+            class="input"
+            formControlName="purchaseDate">
+        </div>
+
+        <div class="field">
+          <label>Invoice Number <span>*</span></label>
+
+          <input
+            type="text"
+            class="input"
+            formControlName="invoiceNumber"
+            placeholder="Enter invoice number">
+        </div>
+
+        <div class="field">
+          <label>Invoice Date <span>*</span></label>
+
+          <input
+            type="date"
+            class="input"
+            formControlName="invoiceDate">
+        </div>
+
+        <div class="field">
+          <label>Expected Delivery Date <span>*</span></label>
+
+          <input
+            type="date"
+            class="input"
+            formControlName="expectedDeliveryDate">
+        </div>
+
+      </div>
+
+      <div class="field remarks">
+        <label>Remarks</label>
+
+        <textarea
+          class="textarea"
+          formControlName="remarks"
+          placeholder="Enter remarks or internal reference details...">
+        </textarea>
+      </div>
+
+    </form>
+          <div class="section-actions">
+        <button class="btn btn-primary" (click)="savePurchase()" [clrLoading]="saving">
+          <clr-icon shape="floppy"></clr-icon>
+          {{ isEditMode ? 'Update Purchase' : 'Save Purchase' }}
+        </button>
+      </div>
+
+
+    <div class="asset-section">
+
+      <div class="asset-header">
+
+        <div class="section-title">
+          2. ASSET PROCUREMENT DETAILS
+        </div>
+
+        <span>
+          {{ items.length }} asset types / {{ totalUnits }} units
+        </span>
+
+      </div>
+
+
+      <clr-datagrid class="asset-datagrid">
+
+  <clr-dg-column>Category</clr-dg-column>
+  <clr-dg-column>Brand</clr-dg-column>
+  <clr-dg-column>Model</clr-dg-column>
+  <clr-dg-column>Configuration</clr-dg-column>
+  <clr-dg-column>Qty</clr-dg-column>
+  <clr-dg-column>Unit Price</clr-dg-column>
+  <clr-dg-column>Warranty</clr-dg-column>
+  <clr-dg-column>Subtotal</clr-dg-column>
+  <clr-dg-column>action </clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let item of items">
+
+    <clr-dg-cell>
+      <span class="category-badge">
+        {{ item.category }}
+      </span>
+    </clr-dg-cell>
+
+    <clr-dg-cell>
+      {{ item.brand }}
+    </clr-dg-cell>
+
+    <clr-dg-cell>
+      {{ item.model }}
+    </clr-dg-cell>
+
+    <clr-dg-cell>
+      {{ item.configuration }}
+    </clr-dg-cell>
+
+    <clr-dg-cell>
+      {{ item.quantity }}
+    </clr-dg-cell>
+
+    <clr-dg-cell>
+      ₹{{ item.unitPrice | number:'1.0-0' }}
+    </clr-dg-cell>
+
+    <clr-dg-cell>
+      {{ item.warrantyPeriod }}
+    </clr-dg-cell>
+
+    <clr-dg-cell>
+      <strong>
+        ₹{{ item.subTotal | number:'1.0-0' }}
+      </strong>
+    </clr-dg-cell>
+
+    <clr-dg-cell class="action-cell">
+
+      <button
+        type="button"
+        class="action-button"
+        title="Edit"
+        (click)="openEditItemModal(item)">
+
+        <clr-icon shape="pencil">e</clr-icon>
+
+      </button>
+
+      <button
+        type="button"
+        class="action-button delete"
+        title="Delete"
+        (click)="deleteItem(item)">
+
+        <clr-icon shape="trash">d</clr-icon>
+
+      </button>
+
+    </clr-dg-cell>
+
+  </clr-dg-row>
+
+  <clr-dg-placeholder>
+    No asset items added yet.
+  </clr-dg-placeholder>
+
+</clr-datagrid>
+
+
+      <button
+        type="button"
+        class="add-item-button"
+        (click)="openAddItemModal()"
+        *ngIf="isEditMode">
+
+        <clr-icon shape="plus"></clr-icon>
+        Add Asset Item
+
+      </button>
+
+
+      <div class="total-row">
+
+        <span>Total Purchase Amount</span>
+
+        <strong>
+          ₹{{ totalAmount | number:'1.0-0' }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="invoice-section">
+
+  <div class="section-title">
+    4. INVOICE ATTACHMENT
+  </div>
+
+  <div class="upload-buttons">
+
+    <button
+      type="button"
+      class="upload-button"
+      (click)="pdfInput.click()">
+
+      <clr-icon shape="file"></clr-icon>
+      Upload Invoice PDF
+
+    </button>
+
+    <button
+      type="button"
+      class="upload-button"
+      (click)="imageInput.click()">
+
+      <clr-icon shape="image"></clr-icon>
+      Upload Invoice Image
+
+    </button>
+
+    <input
+      #pdfInput
+      type="file"
+      hidden
+      accept=".pdf"
+      multiple
+      (change)="onFileSelected($event)">
+
+    <input
+      #imageInput
+      type="file"
+      hidden
+      accept=".png,.jpg,.jpeg"
+      multiple
+      (change)="onFileSelected($event)">
+
+  </div>
+
+  <div
+    class="upload-zone"
+    [class.drag-over]="isDragOver"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)">
+
+    <div *ngIf="!uploading">
+
+      <div class="upload-text">
+        Drop invoice files here or
+        <span (click)="imageInput.click()">browse files</span>
+      </div>
+
+      <div class="upload-hint">
+        Accepted: PDF, PNG, JPG, JPEG — maximum 25 MB
+      </div>
+
+    </div>
+
+    <div *ngIf="uploading">
+
+      <span class="spinner spinner-sm"></span>
+
+      <div>
+        Uploading files...
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="uploaded-files"
+    *ngIf="attachments.length > 0">
+
+    <div
+      class="uploaded-file"
+      *ngFor="let attachment of attachments">
+
+      <div class="attachment-preview">
+
+        <img
+          *ngIf="attachment.contentType?.startsWith('image/')"
+          [src]="attachmentService.getDownloadUrl(purchaseId!, attachment.id)"
+          [alt]="attachment.fileName">
+
+        <clr-icon
+          *ngIf="!attachment.contentType?.startsWith('image/')"
+          shape="file"
+          size="32">
+        </clr-icon>
+
+      </div>
+
+      <div class="attachment-info">
+
+        <div class="attachment-name">
+          {{ attachment.fileName }}
+        </div>
+
+        <div class="attachment-type">
+          {{ attachment.contentType }}
+        </div>
+
+      </div>
+
+      <div class="attachment-actions">
+
+        <button
+          type="button"
+          class="btn btn-sm btn-link"
+          (click)="viewAttachment(attachment)">
+
+          <clr-icon shape="eye"></clr-icon>
+          View
+
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-link delete-link"
+          (click)="deleteAttachment(attachment)">
+
+          <clr-icon shape="trash"></clr-icon>
+          Remove
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+    <div
+      class="before-save-message"
+      *ngIf="!isEditMode">
+
+      <clr-icon shape="info-circle"></clr-icon>
+
+      <span>
+        Save the purchase information first. After saving, you can add
+        asset items and upload invoice attachments.
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- <app-purchased-item-modal
+  [isOpen]="isItemModalOpen"
+  [purchaseId]="purchaseId"
+  [editItem]="selectedItem"
+  (closed)="closeItemModal()"
+  (saved)="itemSaved($event)">
+</app-purchased-item-modal> -->
+<!-- Item Modal -->
+<app-purchased-item-modal
+  *ngIf="itemModalOpen"
+  [isOpen]="itemModalOpen"
+  [purchaseId]="purchaseId!"
+  [editItem]="editingItem"
+  (closed)="itemModalOpen = false"
+  (saved)="onItemSaved($event)">
+</app-purchased-item-modal>
+<app-confirm-dialog
+  [isOpen]="isDeleteOpen"
+  [loading]="deleting"
+  [message]="'Are you sure you want to delete model: ' + deleteItemRef+ '?'"
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()">
+</app-confirm-dialog>

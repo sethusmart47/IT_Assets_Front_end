@@ -1,0 +1,367 @@
+<clr-modal
+  [(clrModalOpen)]="isOpen"
+  [clrModalClosable]="!saving"
+  [clrModalSize]="'lg'"
+  class="purchase-item-modal">
+
+  <div class="purchase-modal-header">
+    <h3>
+      {{ isEditMode ? 'Edit Asset Item' : 'Add Asset Item' }}
+    </h3>
+
+    <button
+      type="button"
+      class="modal-close"
+      (click)="close()"
+      [disabled]="saving">
+
+      ×
+
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <form
+      [formGroup]="form"
+      class="asset-form">
+
+      <div class="info-box">
+
+        <div class="info-icon">
+          i
+        </div>
+
+        <div>
+          Enter the asset details to include in this purchase order.
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label>
+            Category
+            <span>*</span>
+          </label>
+
+          <select
+            formControlName="categoryId"
+            class="custom-select">
+
+            <option value="">
+              Select Category
+            </option>
+
+            <option
+              *ngFor="let category of categories"
+              [value]="category.id">
+
+              {{ category.categoryName }}
+
+            </option>
+
+          </select>
+
+          <div
+            class="field-error"
+            *ngIf="
+              form.get('categoryId')?.touched &&
+              form.get('categoryId')?.hasError('required')
+            ">
+
+            Category is required.
+
+          </div>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Brand
+            <span>*</span>
+          </label>
+
+          <select
+            formControlName="brandId"
+            class="custom-select">
+
+            <option value="">
+              Select Brand
+            </option>
+
+            <option
+              *ngFor="let brand of filteredBrands"
+              [value]="brand.id">
+
+              {{ brand.brandName }}
+
+            </option>
+
+          </select>
+
+          <div
+            class="field-error"
+            *ngIf="
+              form.get('brandId')?.touched &&
+              form.get('brandId')?.hasError('required')
+            ">
+
+            Brand is required.
+
+          </div>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Model
+            <span>*</span>
+          </label>
+
+          <select
+            formControlName="modelId"
+            class="custom-select">
+
+            <option value="">
+              Select Model
+            </option>
+
+            <option
+              *ngFor="let model of filteredModels"
+              [value]="model.id">
+
+              {{ model.modelName }}
+
+            </option>
+
+          </select>
+
+          <div
+            class="field-error"
+            *ngIf="
+              form.get('modelId')?.touched &&
+              form.get('modelId')?.hasError('required')
+            ">
+
+            Model is required.
+
+          </div>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Configuration
+          </label>
+
+          <input
+            type="text"
+            formControlName="configuration"
+            class="custom-input"
+            placeholder="Enter configuration" />
+
+          <div
+            class="field-error"
+            *ngIf="
+              form.get('configuration')?.touched &&
+              form.get('configuration')?.hasError('maxlength')
+            ">
+
+            Maximum 300 characters allowed.
+
+          </div>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Quantity (Units)
+            <span>*</span>
+          </label>
+
+          <input
+            type="number"
+            formControlName="quantity"
+            class="custom-input"
+            min="1"
+            placeholder="Enter quantity" />
+
+          <div
+            class="field-error"
+            *ngIf="
+              form.get('quantity')?.touched &&
+              form.get('quantity')?.hasError('required')
+            ">
+
+            Quantity is required.
+
+          </div>
+
+          <div
+            class="field-error"
+            *ngIf="
+              form.get('quantity')?.touched &&
+              form.get('quantity')?.hasError('min')
+            ">
+
+            Quantity must be at least 1.
+
+          </div>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Unit Price (₹)
+            <span>*</span>
+          </label>
+
+          <input
+            type="number"
+            formControlName="unitPrice"
+            class="custom-input"
+            min="0.01"
+            step="0.01"
+            placeholder="Enter unit price" />
+
+          <div
+            class="field-error"
+            *ngIf="
+              form.get('unitPrice')?.touched &&
+              form.get('unitPrice')?.hasError('required')
+            ">
+
+            Unit price is required.
+
+          </div>
+
+          <div
+            class="field-error"
+            *ngIf="
+              form.get('unitPrice')?.touched &&
+              form.get('unitPrice')?.hasError('min')
+            ">
+
+            Unit price must be greater than 0.
+
+          </div>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Warranty (Months)
+          </label>
+
+          <select
+            formControlName="warrantyPeriod"
+            class="custom-select">
+
+            <option value="">
+              Select warranty
+            </option>
+
+            <option
+              *ngFor="let warranty of warrantyPeriods"
+              [value]="warranty">
+
+              {{ warranty }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label>
+            Line Total (₹)
+          </label>
+
+          <input
+            type="text"
+            class="custom-input line-total"
+            [value]="subTotal | number:'1.2-2'"
+            readonly />
+
+        </div>
+
+      </div>
+
+
+      <div class="note-box">
+
+        <div class="info-icon">
+          i
+        </div>
+
+        <div>
+
+          <strong>Note</strong>
+
+          <p>
+            Line total (subtotal) will be calculated automatically
+            based on quantity and unit price.
+          </p>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+
+  <div class="modal-footer custom-footer">
+
+    <button
+      type="button"
+      class="cancel-button"
+      (click)="close()"
+      [disabled]="saving">
+
+      Cancel
+
+    </button>
+
+    <button
+      type="button"
+      class="add-button"
+      (click)="save()"
+      [disabled]="saving || form.invalid">
+
+      <span
+        *ngIf="saving"
+        class="spinner spinner-inline spinner-sm">
+      </span>
+
+      <span *ngIf="!saving">
+        +
+      </span>
+
+      {{ isEditMode ? 'Update Item' : 'Add Item' }}
+
+    </button>
+
+  </div>
+
+</clr-modal>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Vendor } from '../../model';
+import { Vendor } from '../../models/model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VendorService } from '../../Services/vendor.service';
 import { NotificationService } from '../../Services/notification-service.service';

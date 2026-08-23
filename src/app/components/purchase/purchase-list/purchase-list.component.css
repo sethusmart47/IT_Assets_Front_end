@@ -1,0 +1,78 @@
+.purchase-list-container {
+  padding: 1rem 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-left h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.status-filter select {
+  min-width: 150px;
+}
+
+.po-number {
+  font-weight: 600;
+  color: #0072a3;
+}
+
+.badge-purple {
+  background-color: #7c4dff;
+  color: #fff;
+}
+
+.badge-blue {
+  background-color: #0072a3;
+  color: #fff;
+}
+
+.action-cell {
+  overflow: visible !important;
+}
+
+.text-danger {
+  color: #c92100 !important;
+}
+
+.text-warning {
+  color: #e68a00;
+  font-size: 0.85rem;
+}
+
+.label-warning {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+}
+
+.label-success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #28a745;
+}

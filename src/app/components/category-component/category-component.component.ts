@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AssetCategory, DatagridColumn } from '../../model';
+import { AssetCategory, DatagridColumn } from '../../models/model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CategoryService } from '../../Services/category-service.service';
 import { NotificationService } from '../../Services/notification-service.service';
