@@ -1,0 +1,283 @@
+═══════════════════════════════════════════════════════════════════════ -->
+
+<div class="register-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <button class="btn btn-link" (click)="goBack()">
+        <cds-icon shape="arrow" direction="left"></cds-icon> Back to Inventory
+      </button>
+      <h2>Register Assets</h2>
+    </div>
+  </div>
+
+  <!-- Step 1: Select Purchase Order -->
+  <div class="step-section">
+    <div class="step-header">
+      <span class="step-number">1</span>
+      <h4>Select Purchase Order</h4>
+    </div>
+
+    <div class="step-content">
+      <clr-select-container>
+        <label>Purchase Order *</label>
+        <select clrSelect (change)="onPurchaseSelect($any($event.target).value)">
+          <option value="">-- Select Purchase Order --</option>
+          <option *ngFor="let po of availablePurchases" [value]="po.id">
+            {{ po.purchaseNumber }} — {{ po.vendorName }} ({{ po.remainingQty }} units remaining)
+          </option>
+        </select>
+      </clr-select-container>
+
+      <!-- Purchase Info Card -->
+      <div class="info-card" *ngIf="selectedPurchase">
+        <div class="info-row">
+          <div class="info-item">
+            <span class="info-label">PO Number</span>
+            <span class="info-value">{{ selectedPurchase.purchaseNumber }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Vendor</span>
+            <span class="info-value">{{ selectedPurchase.vendorName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">PO Date</span>
+            <span class="info-value">{{ selectedPurchase.purchaseDate | date:'dd-MMM-yyyy' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Total Qty</span>
+            <span class="info-value">{{ selectedPurchase.totalQty }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Registered</span>
+            <span class="info-value">{{ selectedPurchase.registeredQty }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Remaining</span>
+            <span class="info-value highlight">{{ selectedPurchase.remainingQty }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Available Items Table -->
+      <div class="items-table" *ngIf="availableItems.length > 0">
+        <h5>Available Items — Select one to register</h5>
+        <table class="table table-compact">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Brand</th>
+              <th>Model</th>
+              <th>Configuration</th>
+              <th>Purchased</th>
+              <th>Registered</th>
+              <th>Remaining</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of availableItems"
+                [class.selected-row]="selectedItem?.purchaseItemId === item.purchaseItemId">
+              <td>{{ item.category }}</td>
+              <td>{{ item.brand }}</td>
+              <td>{{ item.model }}</td>
+              <td>{{ item.configuration || '—' }}</td>
+              <td>{{ item.purchasedQty }}</td>
+              <td>{{ item.registeredQty }}</td>
+              <td><strong>{{ item.remainingQty }}</strong></td>
+              <td>
+                <button class="btn btn-sm btn-primary-outline" (click)="onItemSelect(item)">
+                  Select
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Common Asset Information -->
+  <div class="step-section" *ngIf="selectedItem">
+    <div class="step-header">
+      <span class="step-number">2</span>
+      <h4>Common Asset Information</h4>
+      <span class="step-subtitle">Same for all {{ selectedItem.remainingQty }} units</span>
+    </div>
+
+    <div class="step-content">
+      <!-- Read-only info from selected item -->
+      <div class="readonly-info">
+        <div class="clr-row">
+          <div class="clr-col-md-3">
+            <label>Category</label>
+            <p class="readonly-value">{{ selectedItem.category }}</p>
+          </div>
+          <div class="clr-col-md-3">
+            <label>Brand</label>
+            <p class="readonly-value">{{ selectedItem.brand }}</p>
+          </div>
+          <div class="clr-col-md-3">
+            <label>Model</label>
+            <p class="readonly-value">{{ selectedItem.model }}</p>
+          </div>
+          <div class="clr-col-md-3">
+            <label>Configuration</label>
+            <p class="readonly-value">{{ selectedItem.configuration || '—' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editable Form -->
+      <form [formGroup]="commonForm" class="common-form">
+        <div class="clr-row">
+          <div class="clr-col-md-3">
+            <clr-select-container>
+              <label>Condition *</label>
+              <select clrSelect formControlName="condition">
+                <option *ngFor="let c of conditionOptions" [value]="c.value">{{ c.label }}</option>
+              </select>
+            </clr-select-container>
+          </div>
+          <div class="clr-col-md-3">
+            <clr-select-container>
+              <label>Ownership Type *</label>
+              <select clrSelect formControlName="ownershipType">
+                <option *ngFor="let o of ownershipOptions" [value]="o.value">{{ o.label }}</option>
+              </select>
+            </clr-select-container>
+          </div>
+          <div class="clr-col-md-2">
+            <clr-input-container>
+              <label>Warranty Start *</label>
+              <input clrInput type="date" formControlName="warrantyStartDate" />
+            </clr-input-container>
+          </div>
+          <div class="clr-col-md-2">
+            <clr-input-container>
+              <label>Warranty End *</label>
+              <input clrInput type="date" formControlName="warrantyEndDate" />
+            </clr-input-container>
+          </div>
+          <div class="clr-col-md-2">
+            <clr-input-container>
+              <label>Warranty Months</label>
+              <input clrInput type="number" formControlName="warrantyMonths" />
+            </clr-input-container>
+          </div>
+        </div>
+        <div class="clr-row">
+          <div class="clr-col-md-12">
+            <clr-textarea-container>
+              <label>Remarks</label>
+              <textarea clrTextarea formControlName="remarks" placeholder="Optional notes..."></textarea>
+            </clr-textarea-container>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Step 3: Serial Numbers -->
+  <div class="step-section" *ngIf="selectedItem">
+    <div class="step-header">
+      <span class="step-number">3</span>
+      <h4>Serial Numbers</h4>
+      <span class="step-subtitle">{{ enteredCount }} / {{ selectedItem.remainingQty }} entered</span>
+    </div>
+
+    <div class="step-content">
+      <!-- Paste from Excel -->
+      <div class="paste-section">
+        <button class="btn btn-sm btn-success-outline" (click)="togglePasteArea()">
+          <cds-icon shape="paste"></cds-icon> Paste from Excel
+        </button>
+        <span class="helper-text">Copy serial numbers from Excel column and paste here</span>
+
+        <div class="paste-area" *ngIf="pasteAreaVisible">
+          <textarea
+            class="paste-textarea"
+            [(ngModel)]="pasteText"
+            [ngModelOptions]="{standalone: true}"
+            (paste)="onPasteSerials($event)"
+            placeholder="Paste serial numbers here (one per line)...
+DL5450-2026-001
+DL5450-2026-002
+DL5450-2026-003
+..."
+            rows="6">
+          </textarea>
+          <button class="btn btn-sm btn-primary" (click)="onPasteSerials()">Apply</button>
+          <button class="btn btn-sm btn-link" (click)="togglePasteArea()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Serial Number List -->
+      <div class="serial-list">
+        <div class="serial-header">
+          <span class="col-index">#</span>
+          <span class="col-serial">Serial Number</span>
+          <span class="col-status">Status</span>
+        </div>
+
+        <div class="serial-row" *ngFor="let entry of serialEntries; let i = index"
+             [ngClass]="'status-' + entry.status">
+          <span class="col-index">{{ entry.index }}</span>
+          <div class="col-serial">
+            <input
+              type="text"
+              class="clr-input serial-input"
+              [value]="entry.serialNumber"
+              (input)="onSerialInput(i, $any($event.target).value)"
+              placeholder="Enter serial number" />
+          </div>
+          <span class="col-status">
+            <span *ngIf="entry.status === 'valid'" class="status-badge valid">
+              <cds-icon shape="check-circle" solid></cds-icon> Valid
+            </span>
+            <span *ngIf="entry.status === 'error'" class="status-badge error">
+              <cds-icon shape="times-circle" solid></cds-icon> {{ entry.errorMessage }}
+            </span>
+            <span *ngIf="entry.status === 'duplicate'" class="status-badge error">
+              <cds-icon shape="times-circle" solid></cds-icon> Duplicate
+            </span>
+            <span *ngIf="entry.status === 'pending' && entry.serialNumber" class="status-badge pending">
+              <cds-icon shape="clock"></cds-icon> Pending validation
+            </span>
+            <span *ngIf="entry.status === 'empty' || !entry.serialNumber" class="status-badge empty">
+              —
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-section">
+        <div class="progress">
+          <progress [value]="enteredCount" [max]="selectedItem.remainingQty"></progress>
+        </div>
+        <div class="progress-stats">
+          <span>Entered: <strong>{{ enteredCount }}</strong> / {{ selectedItem.remainingQty }}</span>
+          <span *ngIf="isValidated">Valid: <strong class="text-success">{{ validCount }}</strong></span>
+          <span *ngIf="errorCount > 0">Errors: <strong class="text-danger">{{ errorCount }}</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-bar" *ngIf="selectedItem">
+    <button class="btn btn-outline" (click)="goBack()">Cancel</button>
+    <button class="btn btn-warning-outline" (click)="validateAll()" [disabled]="enteredCount === 0 || validating">
+      <clr-spinner *ngIf="validating" clrInline clrSmall></clr-spinner>
+      Validate All
+    </button>
+    <button class="btn btn-primary" (click)="saveAssets()" [disabled]="!canSave || saving">
+      <clr-spinner *ngIf="saving" clrInline clrSmall></clr-spinner>
+      Save Assets ({{ enteredCount }})
+    </button>
+  </div>
+
+</div>
+

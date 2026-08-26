@@ -1,0 +1,133 @@
+
+<div class="asset-list-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h2>Asset Inventory</h2>
+    <button class="btn btn-primary" (click)="navigateToRegister()">
+      <cds-icon shape="plus"></cds-icon> Register Assets
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value">{{ totalCount }}</div>
+      <div class="stat-label">Total Assets</div>
+    </div>
+    <div class="stat-card available">
+      <div class="stat-value">{{ availableCount }}</div>
+      <div class="stat-label">Available</div>
+    </div>
+    <div class="stat-card assigned">
+      <div class="stat-value">{{ assignedCount }}</div>
+      <div class="stat-label">Assigned</div>
+    </div>
+    <div class="stat-card in-service">
+      <div class="stat-value">{{ inServiceCount }}</div>
+      <div class="stat-label">In Service</div>
+    </div>
+    <div class="stat-card retired">
+      <div class="stat-value">{{ retiredCount }}</div>
+      <div class="stat-label">Retired</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-bar" [formGroup]="filterForm">
+    <div class="clr-row">
+      <div class="clr-col-md-3">
+        <clr-select-container>
+          <label>Status</label>
+          <select clrSelect formControlName="status" (change)="onFilterChange()">
+            <option value="">All Status</option>
+            <option *ngFor="let s of statusOptions" [value]="s.label">{{ s.label }}</option>
+          </select>
+        </clr-select-container>
+      </div>
+      <div class="clr-col-md-3">
+        <clr-select-container>
+          <label>Category</label>
+          <select clrSelect formControlName="category" (change)="onFilterChange()">
+            <option value="">All Categories</option>
+            <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+          </select>
+        </clr-select-container>
+      </div>
+      <div class="clr-col-md-3">
+        <clr-select-container>
+          <label>Brand</label>
+          <select clrSelect formControlName="brand" (change)="onFilterChange()">
+            <option value="">All Brands</option>
+            <option *ngFor="let b of brands" [value]="b">{{ b }}</option>
+          </select>
+        </clr-select-container>
+      </div>
+      <div class="clr-col-md-3">
+        <clr-input-container>
+          <label>Search</label>
+          <input clrInput formControlName="search" placeholder="Search asset tag, serial, model..."
+                 (keyup.enter)="onSearch()" />
+        </clr-input-container>
+      </div>
+    </div>
+    <button class="btn btn-link btn-sm" (click)="clearFilters()">Clear Filters</button>
+  </div>
+
+  <!-- Datagrid -->
+  <clr-datagrid [clrDgLoading]="loading">
+    <clr-dg-column [clrDgField]="'assetTag'">Asset Tag</clr-dg-column>
+    <clr-dg-column [clrDgField]="'serialNumber'">Serial Number</clr-dg-column>
+    <clr-dg-column [clrDgField]="'category'">Category</clr-dg-column>
+    <clr-dg-column [clrDgField]="'brand'">Brand</clr-dg-column>
+    <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
+    <clr-dg-column>Status</clr-dg-column>
+    <clr-dg-column>Condition</clr-dg-column>
+    <clr-dg-column>Warranty</clr-dg-column>
+    <clr-dg-column>Actions</clr-dg-column>
+
+    <clr-dg-row *ngFor="let asset of assets">
+      <clr-dg-cell>{{ asset.assetTag }}</clr-dg-cell>
+      <clr-dg-cell>{{ asset.serialNumber }}</clr-dg-cell>
+      <clr-dg-cell>{{ asset.category }}</clr-dg-cell>
+      <clr-dg-cell>{{ asset.brand }}</clr-dg-cell>
+      <clr-dg-cell>{{ asset.model }}</clr-dg-cell>
+      <clr-dg-cell>
+        <span class="badge" [ngClass]="getStatusBadgeClass(asset.status)">
+          {{ asset.statusName }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>{{ asset.conditionName }}</clr-dg-cell>
+      <clr-dg-cell>
+        <span class="label" [ngClass]="(asset.warrantyEndDate | warrantyStatus).class">
+          {{ (asset.warrantyEndDate | warrantyStatus).label }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell class="action-cell">
+        <button class="btn btn-sm btn-icon btn-link" title="View" (click)="viewAsset(asset)">
+          <cds-icon shape="eye"></cds-icon>
+        </button>
+        <button class="btn btn-sm btn-icon btn-link" title="Edit" (click)="openEditModal(asset)">
+          <cds-icon shape="pencil"></cds-icon>
+        </button>
+      </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="10">
+        {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }} assets
+      </clr-dg-pagination>
+    </clr-dg-footer>
+  </clr-datagrid>
+
+  <!-- Edit Modal -->
+  <app-asset-edit-modal
+    *ngIf="editModalOpen"
+    [isOpen]="editModalOpen"
+    [asset]="selectedAsset"
+    (saved)="onEditSaved()"
+    (cancelled)="onEditCancelled()">
+  </app-asset-edit-modal>
+
+</div>
+

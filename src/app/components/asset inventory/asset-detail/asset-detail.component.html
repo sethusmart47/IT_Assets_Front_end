@@ -1,0 +1,229 @@
+
+
+<div class="detail-container" *ngIf="!loading && asset">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <button class="btn btn-link" (click)="goBack()">
+        <cds-icon shape="arrow" direction="left"></cds-icon> Back to Inventory
+      </button>
+      <h2>{{ asset.assetTag }}</h2>
+      <span class="badge" [ngClass]="getStatusBadgeClass(asset.status)">
+        {{ asset.statusName }}
+      </span>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline" (click)="openEditModal()">
+        <cds-icon shape="pencil"></cds-icon> Edit
+      </button>
+      <button class="btn btn-danger-outline" (click)="confirmDelete()">
+        <cds-icon shape="trash"></cds-icon> Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Asset Information Section -->
+  <div class="detail-section">
+    <h4 class="section-title">Asset Information</h4>
+
+    <div class="info-grid">
+      <!-- Identity Card -->
+      <div class="info-card">
+        <h5 class="card-title">Identity</h5>
+        <div class="card-body">
+          <div class="field-row">
+            <span class="field-label">Asset Tag</span>
+            <span class="field-value mono">{{ asset.assetTag }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Serial Number</span>
+            <span class="field-value mono">{{ asset.serialNumber }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Status</span>
+            <span class="field-value">
+              <span class="badge" [ngClass]="getStatusBadgeClass(asset.status)">
+                {{ asset.statusName }}
+              </span>
+            </span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Condition</span>
+            <span class="field-value">{{ asset.conditionName }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Classification Card -->
+      <div class="info-card">
+        <h5 class="card-title">Classification</h5>
+        <div class="card-body">
+          <div class="field-row">
+            <span class="field-label">Category</span>
+            <span class="field-value">{{ asset.category }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Brand</span>
+            <span class="field-value">{{ asset.brand }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Model</span>
+            <span class="field-value">{{ asset.model }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Configuration</span>
+            <span class="field-value">{{ asset.configuration || '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchase Info Card -->
+      <div class="info-card">
+        <h5 class="card-title">Purchase Information</h5>
+        <div class="card-body">
+          <div class="field-row">
+            <span class="field-label">PO Number</span>
+            <span class="field-value mono">{{ asset.purchaseNumber }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Vendor</span>
+            <span class="field-value">{{ asset.vendorName }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Purchase Date</span>
+            <span class="field-value">{{ asset.purchaseDate | date:'dd-MMM-yyyy' }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Ownership</span>
+            <span class="field-value">{{ asset.ownershipTypeName }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warranty Card -->
+      <div class="info-card">
+        <h5 class="card-title">Warranty</h5>
+        <div class="card-body">
+          <div class="field-row">
+            <span class="field-label">Start Date</span>
+            <span class="field-value">{{ asset.warrantyStartDate | date:'dd-MMM-yyyy' }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">End Date</span>
+            <span class="field-value">{{ asset.warrantyEndDate | date:'dd-MMM-yyyy' }}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Duration</span>
+            <span class="field-value">{{ asset.warrantyMonths }} months</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Status</span>
+            <span class="field-value">
+              <span *ngIf="asset.isWarrantyActive" class="label label-success">
+                Active ({{ asset.warrantyDaysRemaining }} days left)
+              </span>
+              <span *ngIf="!asset.isWarrantyActive" class="label label-danger">
+                Expired
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assignment Info -->
+    <div class="info-card full-width">
+      <h5 class="card-title">Assignment</h5>
+      <div class="card-body">
+        <div class="field-row" *ngIf="!asset.currentEmployeeId">
+          <span class="field-label">Employee</span>
+          <span class="field-value muted">Not Assigned</span>
+        </div>
+        <div class="field-row" *ngIf="asset.currentEmployeeId">
+          <span class="field-label">Employee ID</span>
+          <span class="field-value">{{ asset.currentEmployeeId }}</span>
+        </div>
+        <div class="field-row" *ngIf="asset.assignedDate">
+          <span class="field-label">Assigned Date</span>
+          <span class="field-value">{{ asset.assignedDate | date:'dd-MMM-yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Remarks -->
+    <div class="info-card full-width" *ngIf="asset.remarks">
+      <h5 class="card-title">Remarks</h5>
+      <div class="card-body">
+        <p class="remarks-text">{{ asset.remarks }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lifecycle Timeline Section -->
+  <div class="detail-section">
+    <h4 class="section-title">Lifecycle Timeline</h4>
+
+    <div class="timeline" *ngIf="asset.lifecycleHistories && asset.lifecycleHistories.length > 0">
+      <div class="timeline-item" *ngFor="let history of asset.lifecycleHistories"
+           [ngClass]="getTimelineColor(history.action)">
+        <div class="timeline-marker">
+          <cds-icon [attr.shape]="getTimelineIcon(history.action)" solid></cds-icon>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-header">
+            <span class="timeline-action">{{ history.action }}</span>
+            <span class="timeline-date">{{ history.performedDate | date:'dd-MMM-yyyy hh:mm a' }}</span>
+          </div>
+          <div class="timeline-body">
+            <div class="timeline-status" *ngIf="history.oldStatusName">
+              <span class="old-status">{{ history.oldStatusName }}</span>
+              <cds-icon shape="arrow" direction="right"></cds-icon>
+              <span class="new-status">{{ history.newStatusName }}</span>
+            </div>
+            <div class="timeline-status" *ngIf="!history.oldStatusName">
+              <span class="new-status">{{ history.newStatusName }}</span>
+            </div>
+            <p class="timeline-remark" *ngIf="history.remarks">{{ history.remarks }}</p>
+            <span class="timeline-performer">By: {{ history.performedBy }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-timeline" *ngIf="!asset.lifecycleHistories || asset.lifecycleHistories.length === 0">
+      <cds-icon shape="history" size="48"></cds-icon>
+      <p>No lifecycle events recorded yet.</p>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <app-asset-edit-modal
+    *ngIf="editModalOpen"
+    [isOpen]="editModalOpen"
+    [asset]="asset"
+    (saved)="onEditSaved()"
+    (cancelled)="onEditCancelled()">
+  </app-asset-edit-modal>
+
+  <!-- Delete Confirmation Modal -->
+  <clr-modal [(clrModalOpen)]="deleteConfirmOpen" [clrModalClosable]="true" clrModalSize="sm">
+    <h3 class="modal-title">Confirm Delete</h3>
+    <div class="modal-body">
+      <p>Are you sure you want to delete asset <strong>{{ asset.assetTag }}</strong>?</p>
+      <p class="text-danger">This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" (click)="onDeleteCancelled()">Cancel</button>
+      <button class="btn btn-danger" (click)="onDeleteConfirmed()">Delete</button>
+    </div>
+  </clr-modal>
+
+</div>
+
+<!-- Loading State -->
+<div class="loading-state" *ngIf="loading">
+  <clr-spinner clrMedium></clr-spinner>
+  <p>Loading asset details...</p>
+</div>
+

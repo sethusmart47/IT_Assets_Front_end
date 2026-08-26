@@ -1,68 +1,93 @@
+
+// components/purchase/purchase-create/purchase-create.component.ts
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
-import { PurchaseAttachmentDto, PurchaseDetailDto, PurchasedItemDto, PurchaseListDto, VendorDto } from '../../../models/purchase';
-import { OWNERSHIP_TYPES } from '../../../enums/enum';
-import { PurchaseAttachmentService } from '../../../Services/purchase-attachment.service';
-import { PurchasedItemService } from '../../../Services/purchased-item.service';
-import { PurchaseService } from '../../../Services/purchase.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { VendorService } from '../../../Services/vendor.service';
+
+import { PurchaseAttachmentDto, PurchaseDetailDto, PurchasedItemDto } from '../../../models/purchase';
 import { Vendor } from '../../../models/model';
+import { OWNERSHIP_TYPES } from '../../../enums/enum';
+
+import { PurchaseService } from '../../../Services/purchase.service';
+import { PurchasedItemService } from '../../../Services/purchased-item.service';
+import { PurchaseAttachmentService } from '../../../Services/purchase-attachment.service';
+import { VendorService } from '../../../Services/vendor.service';
+import { ToastService } from '../../../Services/toast.service';
+
 import { PurchasedItemModalComponent } from '../purchased-item-modal/purchased-item-modal.component';
 import { ConfirmDialogComponentComponent } from '../../confirm-dialog-component/confirm-dialog-component.component';
+
+
+import { ToastContainerComponent } from '../../toast-container/toast-containe.component';
+import { ImagePreviewModalComponent } from '../../image-preview-modal/image-preview-modal.component';
 
 @Component({
   selector: 'app-purchase-create',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule,PurchasedItemModalComponent,
-    FormsModule,ClarityModule,ConfirmDialogComponentComponent],  
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ClarityModule,
+    PurchasedItemModalComponent,
+    ConfirmDialogComponentComponent,
+    ToastContainerComponent,
+   
+    ImagePreviewModalComponent
+  ],
   templateUrl: './purchase-create.component.html',
   styleUrl: './purchase-create.component.css'
 })
-export class PurchaseCreateComponent {
+export class PurchaseCreateComponent implements OnInit {
 
-purchaseForm!: FormGroup;
+  purchaseForm!: FormGroup;
   isEditMode = false;
   purchaseId: string | null = null;
   purchaseNumber = '';
   purchaseDetail: PurchaseDetailDto | null = null;
   isLoading = false;
+
   // Dropdowns
   vendors: Vendor[] = [];
   ownershipTypes = OWNERSHIP_TYPES;
 
-  isDeleteOpen: boolean = false;
-     deleteItemRef: PurchasedItemDto | null = null;
-  deleting: boolean = false;
+  // Delete confirmation
+  isDeleteOpen = false;
+  deleteItemRef: PurchasedItemDto | null = null;
+  deleting = false;
+
   // Items
   items: PurchasedItemDto[] = [];
   itemModalOpen = false;
   editingItem: PurchasedItemDto | null = null;
-uploadedImage: File | null = null;
-uploadedImageUrl: string | null = null;
+
   // Attachments
   attachments: PurchaseAttachmentDto[] = [];
   isDragOver = false;
   uploading = false;
+
+  // Image preview
+  previewImageUrl: string | null = null;
+  isPreviewOpen = false;
 
   // State
   saving = false;
   totalAmount = 0;
   totalUnits = 0;
 
-    constructor(
+  constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private purchaseService: PurchaseService,
     private itemService: PurchasedItemService,
-    public  attachmentService: PurchaseAttachmentService,
-    private vendorService: VendorService
-  ) {}   
-  
-   ngOnInit(): void {
+    public attachmentService: PurchaseAttachmentService,
+    private vendorService: VendorService,
+    private toast: ToastService
+  ) {}
+
+  ngOnInit(): void {
     this.initForm();
     this.loadVendors();
 
@@ -95,48 +120,67 @@ uploadedImageUrl: string | null = null;
         this.vendors = data;
         this.isLoading = false;
       },
-      error: (err) => {
-        console.error('Failed to load vendors:', err);
+      error: () => {
+        this.toast.error('Failed to load vendors.');
         this.isLoading = false;
       }
     });
   }
-   private loadNextPurchaseNumber(): void {
+
+  private loadNextPurchaseNumber(): void {
     this.purchaseService.getNextNumber().subscribe({
-      next: (res) => this.purchaseNumber = res.purchaseNumber
+      next: (res) => this.purchaseNumber = res.purchaseNumber,
+      error: () => this.toast.error('Failed to generate PO number.')
     });
   }
-   private loadPurchaseDetail(id: string): void {
+
+  private loadPurchaseDetail(id: string): void {
+    this.isLoading = true;
     this.purchaseService.getById(id).subscribe({
       next: (data) => {
         this.purchaseDetail = data;
         this.purchaseNumber = data.purchaseNumber;
-        this.items = data.items;
-        this.attachments = data.attachments;
+        this.items = data.items || [];
+        this.attachments = data.attachments || [];
         this.calculateTotals();
-
-        // Patch form
-        this.purchaseForm.patchValue({
-          vendorId: data.vendorId,
-          purchaseDate: data.purchaseDate,
-          invoiceNumber: data.invoiceNumber,
-          invoiceDate: data.invoiceDate,
-          expectedDeliveryDate: data.expectedDeliveryDate,
-          ownershipType: data.ownershipType,
-          remarks: data.remarks || ''
-        });
+        this.patchForm(data);
+        this.isLoading = false;
+      },
+      error: () => {
+        this.toast.error('Failed to load purchase details.');
+        this.isLoading = false;
       }
     });
   }
-  
-  private calculateTotals(): void {
-    this.totalAmount = this.items.reduce((sum, i) => sum + i.subTotal, 0);
-    this.totalUnits = this.items.reduce((sum, i) => sum + i.quantity, 0);
+
+  private patchForm(data: PurchaseDetailDto): void {
+    this.purchaseForm.patchValue({
+      vendorId: data.vendorId,
+      purchaseDate: this.formatDateForInput(data.purchaseDate),
+      invoiceNumber: data.invoiceNumber,
+      invoiceDate: this.formatDateForInput(data.invoiceDate),
+      expectedDeliveryDate: this.formatDateForInput(data.expectedDeliveryDate),
+      ownershipType: data.ownershipType,
+      remarks: data.remarks || ''
+    });
   }
 
-savePurchase(): void {
+  private formatDateForInput(dateStr: string): string {
+    if (!dateStr) return '';
+    return dateStr.substring(0, 10);
+  }
+
+  private calculateTotals(): void {
+    this.totalAmount = this.items.reduce((sum, i) => sum + (i.subTotal || 0), 0);
+    this.totalUnits = this.items.reduce((sum, i) => sum + (i.quantity || 0), 0);
+  }
+
+  // ─── SAVE / UPDATE ───
+
+  savePurchase(): void {
     if (this.purchaseForm.invalid) {
       this.purchaseForm.markAllAsTouched();
+      this.toast.warning('Please fill all required fields.');
       return;
     }
 
@@ -148,11 +192,11 @@ savePurchase(): void {
         next: (res) => {
           this.saving = false;
           this.purchaseDetail = res;
-          alert('Purchase updated successfully!');
+          this.toast.success('Purchase updated successfully!');
         },
         error: (err) => {
           this.saving = false;
-          alert(err.error || 'Failed to update purchase.');
+          this.toast.error(err.error?.message || err.error || 'Failed to update purchase.');
         }
       });
     } else {
@@ -163,60 +207,72 @@ savePurchase(): void {
           this.purchaseId = res.id;
           this.purchaseNumber = res.purchaseNumber;
           this.purchaseDetail = res;
-          // Navigate to edit mode URL
           this.router.navigate(['/purchases', res.id, 'edit'], { replaceUrl: true });
-          alert('Purchase created successfully! Now add items below.');
+          this.toast.success('Purchase created! Now add items and attachments below.');
         },
         error: (err) => {
           this.saving = false;
-          alert(err.error || 'Failed to create purchase.');
+          this.toast.error(err.error?.message || err.error || 'Failed to create purchase.');
         }
       });
     }
   }
- openAddItemModal(): void {
+
+  // ─── ITEM CRUD ───
+
+  openAddItemModal(): void {
     this.editingItem = null;
     this.itemModalOpen = true;
   }
 
   openEditItemModal(item: PurchasedItemDto): void {
-    this.editingItem = item;
+    this.editingItem = { ...item };
     this.itemModalOpen = true;
   }
 
   onItemSaved(item: PurchasedItemDto): void {
     this.itemModalOpen = false;
+    this.editingItem = null;
     this.loadItems();
   }
 
-  // deleteItem(item: PurchasedItemDto): void {
-  //   if (!confirm(`Delete item "${item.category} - ${item.brand} ${item.model}"?`)) return;
+  onItemModalClosed(): void {
+    this.itemModalOpen = false;
+    this.editingItem = null;
+  }
 
-  //   this.itemService.delete(this.purchaseId!, item.id).subscribe({
-  //     next: () => this.loadItems()
-  //   });
-  // }
-   deleteItem(item: PurchasedItemDto): void {
-      this.deleteItemRef = item;
-      this.isDeleteOpen = true;
-    }
-    confirmDelete(): void {
+  deleteItem(item: PurchasedItemDto): void {
+    this.deleteItemRef = item;
+    this.isDeleteOpen = true;
+  }
+
+  get deleteConfirmMessage(): string {
+    if (!this.deleteItemRef) return '';
+    return `Are you sure you want to delete "${this.deleteItemRef.category} - ${this.deleteItemRef.brand} ${this.deleteItemRef.model}"?`;
+  }
+
+  confirmDelete(): void {
     if (!this.deleteItemRef) return;
     this.deleting = true;
- this.itemService.delete(this.purchaseId!,this.deleteItemRef.id).subscribe({
-  //     next: () => this.loadItems()
+
+    this.itemService.delete(this.purchaseId!, this.deleteItemRef.id).subscribe({
       next: () => {
-       // this.notification.success('Model deleted successfully.');
+        this.toast.success('Item deleted successfully.');
         this.isDeleteOpen = false;
         this.deleting = false;
         this.deleteItemRef = null;
         this.loadItems();
       },
       error: (err) => {
-       // this.notification.error(err.error || 'Failed to delete model.');
+        this.toast.error(err.error?.message || 'Failed to delete item.');
         this.deleting = false;
       }
     });
+  }
+
+  cancelDelete(): void {
+    this.isDeleteOpen = false;
+    this.deleteItemRef = null;
   }
 
   private loadItems(): void {
@@ -225,11 +281,12 @@ savePurchase(): void {
       next: (data) => {
         this.items = data;
         this.calculateTotals();
-      }
+      },
+      error: () => this.toast.error('Failed to reload items.')
     });
   }
 
-// ─── ATTACHMENTS ───
+  // ─── ATTACHMENTS ───
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -247,7 +304,6 @@ savePurchase(): void {
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver = false;
-
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       this.uploadFiles(Array.from(files));
@@ -263,9 +319,15 @@ savePurchase(): void {
   }
 
   private uploadFiles(files: File[]): void {
-    debugger
     if (!this.purchaseId) {
-      alert('Please save the purchase first before uploading attachments.');
+      this.toast.warning('Please save the purchase first.');
+      return;
+    }
+
+    const maxSize = 25 * 1024 * 1024;
+    const oversized = files.filter(f => f.size > maxSize);
+    if (oversized.length > 0) {
+      this.toast.error(`Files exceed 25MB: ${oversized.map(f => f.name).join(', ')}`);
       return;
     }
 
@@ -274,63 +336,84 @@ savePurchase(): void {
       next: (uploaded) => {
         this.attachments = [...this.attachments, ...uploaded];
         this.uploading = false;
+        this.toast.success(`${uploaded.length} file(s) uploaded.`);
       },
       error: (err) => {
         this.uploading = false;
-        alert(err.error || 'Failed to upload files.');
+        this.toast.error(err.error?.message || 'Upload failed.');
       }
     });
   }
 
-  viewAttachment(attachment: PurchaseAttachmentDto): void {
-    const url = this.attachmentService.getDownloadUrl(this.purchaseId!, attachment.id);
-    window.open(url, '_blank');
+  isImageAttachment(att: PurchaseAttachmentDto): boolean {
+    return att.contentType?.startsWith('image/') || false;
   }
 
-  deleteAttachment(attachment: PurchaseAttachmentDto): void {
-    if (!confirm(`Delete file "${attachment.fileName}"?`)) return;
+  getThumbnailUrl(att: PurchaseAttachmentDto): string {
+    return this.attachmentService.getDownloadUrl(this.purchaseId!, att.id);
+  }
 
-    this.attachmentService.delete(this.purchaseId!, attachment.id).subscribe({
+  viewAttachment(att: PurchaseAttachmentDto): void {
+    const url = this.attachmentService.getDownloadUrl(this.purchaseId!, att.id);
+    if (this.isImageAttachment(att)) {
+      this.previewImageUrl = url;
+      this.isPreviewOpen = true;
+    } else {
+      window.open(url, '_blank');
+    }
+  }
+
+  closePreview(): void {
+    this.isPreviewOpen = false;
+    this.previewImageUrl = null;
+  }
+
+  deleteAttachment(att: PurchaseAttachmentDto): void {
+    this.attachmentService.delete(this.purchaseId!, att.id).subscribe({
       next: () => {
-        this.attachments = this.attachments.filter(a => a.id !== attachment.id);
-      }
+        this.attachments = this.attachments.filter(a => a.id !== att.id);
+        this.toast.success('Attachment removed.');
+      },
+      error: () => this.toast.error('Failed to remove attachment.')
     });
   }
 
   getFileIcon(contentType: string): string {
+    if (!contentType) return 'document';
     if (contentType.includes('pdf')) return 'file';
     if (contentType.includes('image')) return 'image';
     return 'document';
   }
 
-  getFileIconClass(contentType: string): string {
-    if (contentType.includes('pdf')) return 'file-icon-pdf';
-    if (contentType.includes('image')) return 'file-icon-image';
-    return 'file-icon-default';
+  formatFileSize(bytes: number): string {
+    if (!bytes) return '';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
   }
 
   // ─── COMPLETE ───
 
   completePurchase(): void {
     if (!this.purchaseId) return;
-    if (!confirm('Mark this purchase as completed? This confirms all items are received.')) return;
+    if (this.items.length === 0) {
+      this.toast.warning('Add at least one item before completing.');
+      return;
+    }
 
     this.purchaseService.complete(this.purchaseId).subscribe({
       next: () => {
-        alert('Purchase completed successfully!');
-        //this.router.navigate(['/purchases']);
+        this.toast.success('Purchase completed & assets received!');
+        this.router.navigate(['/purchases', this.purchaseId, 'view']);
       },
       error: (err) => {
-        alert(err.error || 'Failed to complete purchase.');
+        this.toast.error(err.error?.message || 'Failed to complete purchase.');
       }
     });
   }
- 
-  cancelDelete(): void {
-    this.isDeleteOpen = false;
-    this.deleteItemRef = null;
-  }
+
   goBack(): void {
     this.router.navigate(['/purchases']);
   }
 }
+

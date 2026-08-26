@@ -1,0 +1,19 @@
+ <div class="image-preview-backdrop" *ngIf="isOpen" (click)="close()">
+      <div class="image-preview-container" (click)="$event.stopPropagation()">
+        <div class="preview-header">
+          <span>Image Preview</span>
+          <button class="preview-close" (click)="close()">&times;</button>
+        </div>
+        <div class="preview-body">
+          <img [src]="imageUrl" alt="Preview" class="preview-image" (error)="onImageError($event)">
+        </div>
+        <div class="preview-footer">
+          <a [href]="imageUrl" target="_blank" class="btn btn-sm btn-outline">
+            <clr-icon shape="pop-out"></clr-icon> Open in New Tab
+          </a>
+          <a [href]="imageUrl" download class="btn btn-sm btn-primary">
+            <clr-icon shape="download"></clr-icon> Download
+          </a>
+        </div>
+      </div>
+    </div>

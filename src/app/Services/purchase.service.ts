@@ -30,11 +30,12 @@ export class PurchaseService {
   }
 
   create(dto: CreatePurchaseDto): Observable<PurchaseDetailDto> {
-    debugger
+    
     return this.http.post<PurchaseDetailDto>(this.baseUrl, dto);
   }
 
   update(id: string, dto: UpdatePurchaseDto): Observable<PurchaseDetailDto> {
+    debugger
     return this.http.put<PurchaseDetailDto>(`${this.baseUrl}/${id}`, dto);
   }
 

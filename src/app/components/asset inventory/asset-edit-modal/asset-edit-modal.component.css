@@ -1,0 +1,45 @@
+
+═════════════════════════════════════════════════════════════════════════════
+
+.readonly-section {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+
+  .readonly-row {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 0.75rem;
+
+    &:last-child { margin-bottom: 0; }
+  }
+
+  .readonly-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    .label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: #6d7884;
+    }
+
+    .value {
+      font-weight: 600;
+      color: #313131;
+
+      &.mono { font-family: monospace; }
+    }
+  }
+}
+
+.edit-form {
+  clr-select-container,
+  clr-textarea-container {
+    margin-bottom: 1rem;
+  }
+}
+

@@ -9,6 +9,10 @@ import { ModelComponentComponent } from './components/model-component/model-comp
 import { VendorComponent } from './components/vendor/vendor.component';
 import { PurchaseListComponent } from './components/purchase/purchase-list/purchase-list.component';
 import { PurchaseCreateComponent } from './components/purchase/purchase-create/purchase-create.component';
+import { AssetRegisterComponent } from './components/asset inventory/asset-register/asset-register.component';
+import { AssetListComponent } from './components/asset inventory/asset-list/asset-list.component';
+import { AssetDetailComponent } from './components/asset inventory/asset-detail/asset-detail.component';
+import { AssetEditModalComponent } from './components/asset inventory/asset-edit-modal/asset-edit-modal.component';
 
 export const routes: Routes = [
  {path: '', component:HomeComponent },
@@ -21,5 +25,9 @@ export const routes: Routes = [
    {path:'model',component:ModelComponentComponent},
    {path:'purchase',component:PurchaseListComponent},
    {path:'purchases/create',component:PurchaseCreateComponent},
-   {path:'purchases/:id/edit',component:PurchaseCreateComponent}
+   {path:'purchases/:id/edit',component:PurchaseCreateComponent},
+   {path:'asset/register',component:AssetRegisterComponent},
+   {path:'asset/list',component:AssetListComponent},
+   {path:'asset/detail/:id',component:AssetDetailComponent},
+   {path:'asset/edit',component:AssetEditModalComponent}
 ];

@@ -1,4 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+
+// components/purchase/purchased-item-modal/purchased-item-modal.component.ts
+import {
+  Component, EventEmitter, Input, OnInit,
+  OnChanges, Output, SimpleChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
@@ -8,30 +13,20 @@ import {
   PurchasedItemDto,
   UpdatePurchasedItemDto
 } from '../../../models/purchase';
-
-import {
-  AssetBrand,
-  AssetCategoryApi,
-  AssetModel
-} from '../../../models/model';
-
+import { AssetBrand, AssetCategoryApi, AssetModel } from '../../../models/model';
 import { WARRANTY_PERIODS } from '../../../enums/enum';
 import { PurchasedItemService } from '../../../Services/purchased-item.service';
 import { CategoryService } from '../../../Services/category-service.service';
-import { NotificationService } from '../../../Services/notification-service.service';
+import { ToastService } from '../../../Services/toast.service';
 
 @Component({
   selector: 'app-purchased-item-modal',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ClarityModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule, ClarityModule],
   templateUrl: './purchased-item-modal.component.html',
   styleUrl: './purchased-item-modal.component.css'
 })
-export class PurchasedItemModalComponent implements OnInit {
+export class PurchasedItemModalComponent implements OnInit, OnChanges {
 
   @Input() isOpen = false;
   @Input() purchaseId!: string;
@@ -41,222 +36,235 @@ export class PurchasedItemModalComponent implements OnInit {
   @Output() saved = new EventEmitter<PurchasedItemDto>();
 
   form!: FormGroup;
-
   categories: AssetCategoryApi[] = [];
   filteredBrands: AssetBrand[] = [];
   filteredModels: AssetModel[] = [];
-
   warrantyPeriods = WARRANTY_PERIODS;
 
   saving = false;
   isEditMode = false;
   subTotal = 0;
 
+  private categoriesLoaded = false;
+  private isPopulating = false;
+
   constructor(
     private fb: FormBuilder,
     private itemService: PurchasedItemService,
     private categoryService: CategoryService,
-    private notification: NotificationService
+    private toast: ToastService
   ) {}
+
+  // ─── LIFECYCLE ───
 
   ngOnInit(): void {
     this.initForm();
     this.loadCategories();
-    this.setupDropdowns();
     this.setupCalculation();
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Handle editItem change after categories are loaded
+    if (changes['editItem'] && this.editItem && this.categoriesLoaded && this.form) {
+      this.populateEditForm(this.editItem);
+    }
+
+    // Handle modal open with editItem
+    if (changes['isOpen'] && this.isOpen && this.editItem && this.categoriesLoaded && this.form) {
+      this.populateEditForm(this.editItem);
+    }
+
+    // Reset form when opening in add mode
+    if (changes['isOpen'] && this.isOpen && !this.editItem && this.form) {
+      this.resetForm();
+    }
+  }
+
+  // ─── FORM INITIALIZATION ───
 
   private initForm(): void {
     this.form = this.fb.group({
       categoryId: ['', Validators.required],
       brandId: ['', Validators.required],
       modelId: ['', Validators.required],
-      configuration: ['', [
-        Validators.required,
-        Validators.maxLength(300)
-      ]],
-      quantity: [1, [
-        Validators.required,
-        Validators.min(1)
-      ]],
-      unitPrice: [0, [
-        Validators.required,
-        Validators.min(0.01)
-      ]],
-      warrantyPeriod: ['36 Months', Validators.required]
+      configuration: ['', Validators.maxLength(300)],
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      unitPrice: [0, [Validators.required, Validators.min(0.01)]],
+      warrantyPeriod: ['36 Months']
     });
   }
 
+  private resetForm(): void {
+    this.isEditMode = false;
+    this.form.reset({
+      categoryId: '',
+      brandId: '',
+      modelId: '',
+      configuration: '',
+      quantity: 1,
+      unitPrice: 0,
+      warrantyPeriod: '36 Months'
+    });
+    this.filteredBrands = [];
+    this.filteredModels = [];
+    this.subTotal = 0;
+  }
+
+  // ─── DATA LOADING ───
+
   private loadCategories(): void {
     this.categoryService.getAll().subscribe({
-      next: data => {
+      next: (data) => {
         this.categories = data.filter(x => x.isActive);
+        this.categoriesLoaded = true;
 
-        if (this.editItem) {
-          this.openEdit(this.editItem);
+        // Setup cascading dropdowns after categories loaded
+        this.setupDropdowns();
+
+        // If editItem was passed before categories were ready
+        if (this.editItem && this.isOpen) {
+          this.populateEditForm(this.editItem);
         }
       },
       error: () => {
-        this.notification.error('Failed to load categories.');
+        this.toast.error('Failed to load categories.');
       }
     });
   }
 
+  // ─── CASCADING DROPDOWNS ───
+
   private setupDropdowns(): void {
+    // When category changes → populate brands, clear model
     this.form.get('categoryId')?.valueChanges.subscribe(categoryId => {
+      if (this.isPopulating) return;
 
-      const category = this.categories.find(
-        x => x.id === categoryId
-      );
+      if (!categoryId) {
+        this.filteredBrands = [];
+        this.filteredModels = [];
+        return;
+      }
 
-      this.filteredBrands =
-        category?.assetBrandDtos?.filter(x => x.isActive) || [];
-
+      const category = this.categories.find(x => x.id === categoryId);
+      this.filteredBrands = category?.assetBrandDtos?.filter(x => x.isActive) || [];
       this.filteredModels = [];
-
-      this.form.patchValue({
-        brandId: '',
-        modelId: ''
-      }, { emitEvent: false });
+      this.form.patchValue({ brandId: '', modelId: '' }, { emitEvent: false });
     });
 
+    // When brand changes → populate models
     this.form.get('brandId')?.valueChanges.subscribe(brandId => {
+      if (this.isPopulating) return;
+
+      if (!brandId) {
+        this.filteredModels = [];
+        return;
+      }
 
       const categoryId = this.form.get('categoryId')?.value;
-
-      const category = this.categories.find(
-        x => x.id === categoryId
-      );
-
-      this.filteredModels =
-        category?.assetModelDtos?.filter(
-          x => x.assetBrandId === brandId && x.isActive
-        ) || [];
-
-      this.form.patchValue({
-        modelId: ''
-      }, { emitEvent: false });
+      const category = this.categories.find(x => x.id === categoryId);
+      this.filteredModels = category?.assetModelDtos?.filter(
+        x => x.assetBrandId === brandId && x.isActive
+      ) || [];
+      this.form.patchValue({ modelId: '' }, { emitEvent: false });
     });
   }
+
+  // ─── SUBTOTAL CALCULATION ───
 
   private setupCalculation(): void {
-    this.form.get('quantity')?.valueChanges.subscribe(() => {
-      this.calculateSubTotal();
-    });
-
-    this.form.get('unitPrice')?.valueChanges.subscribe(() => {
-      this.calculateSubTotal();
-    });
+    this.form.get('quantity')?.valueChanges.subscribe(() => this.calcSubTotal());
+    this.form.get('unitPrice')?.valueChanges.subscribe(() => this.calcSubTotal());
   }
 
-  private calculateSubTotal(): void {
-    const quantity =
-      Number(this.form.get('quantity')?.value) || 0;
-
-    const unitPrice =
-      Number(this.form.get('unitPrice')?.value) || 0;
-
-    this.subTotal = quantity * unitPrice;
+  private calcSubTotal(): void {
+    const qty = Number(this.form.get('quantity')?.value) || 0;
+    const price = Number(this.form.get('unitPrice')?.value) || 0;
+    this.subTotal = qty * price;
   }
-ngOnChanges(changes: SimpleChanges): void {
 
-    if (changes['editItem'] && this.editItem) {
-
-      this.form.patchValue({
-        category: this.editItem.category,
-        brand: this.editItem.brand,
-        model: this.editItem.model,
-        configuration: this.editItem.configuration,
-        quantity: this.editItem.quantity,
-        unitPrice: this.editItem.unitPrice,
-        warranty: this.editItem.warrantyPeriod
-      });
-    }
-    }
-
-
-  openEdit(item: PurchasedItemDto): void {
-    if (!this.categories.length) {
-      return;
-    }
-
+  
+  private populateEditForm(item: PurchasedItemDto): void {
     this.isEditMode = true;
-    this.editItem = item;
+    this.isPopulating = true;
 
-    const category = this.categories.find(
-      x => x.categoryName === item.category
-    );
+    try {
+      // Step 1: Resolve Category
+      const category = this.categories.find(
+        x => x.categoryName.toLowerCase().trim() === item.category.toLowerCase().trim()
+      );
 
-    if (!category) {
-      this.notification.error('Category not found.');
-      return;
-    }
+      if (!category) {
+        this.toast.error(`Category "${item.category}" not found in active categories.`);
+        this.isPopulating = false;
+        return;
+      }
 
-    this.filteredBrands =
-      category.assetBrandDtos?.filter(x => x.isActive) || [];
+      // Step 2: Build brand list for this category
+      this.filteredBrands = category.assetBrandDtos?.filter(x => x.isActive) || [];
 
-    const brand = this.filteredBrands.find(
-      x => x.brandName === item.brand
-    );
+      // Step 3: Resolve Brand
+      const brand = this.filteredBrands.find(
+        x => x.brandName.toLowerCase().trim() === item.brand.toLowerCase().trim()
+      );
 
-    if (!brand) {
-      this.notification.error('Brand not found.');
-      return;
-    }
+      if (!brand) {
+        this.toast.error(`Brand "${item.brand}" not found under "${item.category}".`);
+        this.isPopulating = false;
+        return;
+      }
 
-    this.filteredModels =
-      category.assetModelDtos?.filter(
+      // Step 4: Build model list for this brand
+      this.filteredModels = category.assetModelDtos?.filter(
         x => x.assetBrandId === brand.id && x.isActive
       ) || [];
 
-    const model = this.filteredModels.find(
-      x => x.modelName === item.model
-    );
+      // Step 5: Resolve Model
+      const model = this.filteredModels.find(
+        x => x.modelName.toLowerCase().trim() === item.model.toLowerCase().trim()
+      );
 
-    if (!model) {
-      this.notification.error('Model not found.');
-      return;
+      if (!model) {
+        this.toast.error(`Model "${item.model}" not found under "${item.brand}".`);
+        this.isPopulating = false;
+        return;
+      }
+
+      // Step 6: Patch form with resolved IDs
+      this.form.patchValue({
+        categoryId: category.id,
+        brandId: brand.id,
+        modelId: model.id,
+        configuration: item.configuration || '',
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        warrantyPeriod: item.warrantyPeriod || '36 Months'
+      }, { emitEvent: false });
+
+      this.calcSubTotal();
+
+    } finally {
+      this.isPopulating = false;
     }
-
-     this.form.patchValue({
-        category: this.editItem.category,
-        brand: this.editItem.brand,
-        model: this.editItem.model,
-        configuration: this.editItem.configuration,
-        quantity: this.editItem.quantity,
-        unitPrice: this.editItem.unitPrice,
-        warranty: this.editItem.warrantyPeriod
-      });
-
-    this.calculateSubTotal();
-
-    this.isOpen = true;
   }
+
+  // ─── SAVE (CREATE / UPDATE) ───
 
   save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.toast.warning('Please fill all required fields.');
       return;
     }
 
     const value = this.form.getRawValue();
 
-    const category = this.categories.find(
-      x => x.id === value.categoryId
-    );
-
-    const brand = this.filteredBrands.find(
-      x => x.id === value.brandId
-    );
-
-    const model = this.filteredModels.find(
-      x => x.id === value.modelId
-    );
+    // Resolve names from IDs for the payload
+    const category = this.categories.find(x => x.id === value.categoryId);
+    const brand = this.filteredBrands.find(x => x.id === value.brandId);
+    const model = this.filteredModels.find(x => x.id === value.modelId);
 
     if (!category || !brand || !model) {
-      this.notification.error(
-        'Please select a valid category, brand and model.'
-      );
+      this.toast.error('Invalid selection. Please select category, brand and model.');
       return;
     }
 
@@ -266,106 +274,56 @@ ngOnChanges(changes: SimpleChanges): void {
       category: category.categoryName,
       brand: brand.brandName,
       model: model.modelName,
-      configuration: value.configuration.trim(),
+      configuration: (value.configuration || '').trim(),
       quantity: Number(value.quantity),
       unitPrice: Number(value.unitPrice),
-      warrantyPeriod: value.warrantyPeriod
+      warrantyPeriod: value.warrantyPeriod || ''
     };
 
     if (this.isEditMode && this.editItem) {
-
-      const dto: UpdatePurchasedItemDto = {
-        ...payload
-      };
-
-      this.itemService.update(
-        this.purchaseId,
-        this.editItem.id,
-        dto
-      ).subscribe({
-        next: result => {
+      // UPDATE
+      const dto: UpdatePurchasedItemDto = { ...payload };
+   debugger
+      this.itemService.update(this.purchaseId, this.editItem.id, dto).subscribe({
+        next: (result) => {
           this.saving = false;
-          this.notification.success(
-            'Asset item updated successfully.'
-          );
+          this.toast.success('Asset item updated successfully.');
           this.saved.emit(result);
           this.close();
         },
-        error: err => {
+        error: (err) => {
           this.saving = false;
-          this.notification.error(
-            err.error || 'Failed to update asset item.'
-          );
+          this.toast.error(err.error?.message || err.error || 'Failed to update item.');
         }
       });
+    } else {
+      // CREATE
+      const dto: CreatePurchasedItemDto = { ...payload };
 
-      return;
+      this.itemService.create(this.purchaseId, dto).subscribe({
+        next: (result) => {
+          this.saving = false;
+          this.toast.success('Asset item added successfully.');
+          this.saved.emit(result);
+          this.close();
+        },
+        error: (err) => {
+          this.saving = false;
+          this.toast.error(err.error?.message || err.error || 'Failed to add item.');
+        }
+      });
     }
-
-    const dto: CreatePurchasedItemDto = {
-      ...payload
-    };
-
-    this.itemService.create(
-      this.purchaseId,
-      dto
-    ).subscribe({
-      next: result => {
-        this.saving = false;
-        this.notification.success(
-          'Asset item created successfully.'
-        );
-        this.saved.emit(result);
-        this.close();
-      },
-      error: err => {
-        this.saving = false;
-        this.notification.error(
-          err.error || 'Failed to create asset item.'
-        );
-      }
-    });
   }
+
+  // ─── CLOSE MODAL ───
 
   close(): void {
     this.isOpen = false;
+    this.isEditMode = false;
+    this.editItem = null;
     this.saving = false;
+    this.resetForm();
     this.closed.emit();
   }
-
-  get modalTitle(): string {
-    return this.isEditMode
-      ? 'Edit Asset Item'
-      : 'Add Asset Item';
-  }
-
-  get submitButtonLabel(): string {
-    return this.isEditMode
-      ? 'Update'
-      : 'Save';
-  }
-
-  get selectedCategoryName(): string {
-    const id = this.form.get('categoryId')?.value;
-
-    return this.categories.find(
-      x => x.id === id
-    )?.categoryName || '';
-  }
-
-  get selectedBrandName(): string {
-    const id = this.form.get('brandId')?.value;
-
-    return this.filteredBrands.find(
-      x => x.id === id
-    )?.brandName || '';
-  }
-
-  get selectedModelName(): string {
-    const id = this.form.get('modelId')?.value;
-
-    return this.filteredModels.find(
-      x => x.id === id
-    )?.modelName || '';
-  }
 }
+

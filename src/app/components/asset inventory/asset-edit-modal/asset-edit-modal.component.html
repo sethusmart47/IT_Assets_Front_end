@@ -1,0 +1,62 @@
+
+<clr-modal [(clrModalOpen)]="isOpen" [clrModalClosable]="true" (clrModalOpenChange)="onCancel()">
+  <h3 class="modal-title">Edit Asset: {{ asset?.assetTag }}</h3>
+
+  <div class="modal-body">
+    <!-- Read-Only Info -->
+    <div class="readonly-section">
+      <div class="readonly-row">
+        <div class="readonly-item">
+          <span class="label">Asset Tag</span>
+          <span class="value mono">{{ asset?.assetTag }}</span>
+        </div>
+        <div class="readonly-item">
+          <span class="label">Serial Number</span>
+          <span class="value mono">{{ asset?.serialNumber }}</span>
+        </div>
+      </div>
+      <div class="readonly-row">
+        <div class="readonly-item">
+          <span class="label">Category</span>
+          <span class="value">{{ asset?.category }}</span>
+        </div>
+        <div class="readonly-item">
+          <span class="label">Brand</span>
+          <span class="value">{{ asset?.brand }}</span>
+        </div>
+        <div class="readonly-item">
+          <span class="label">Model</span>
+          <span class="value">{{ asset?.model }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editable Form -->
+    <form [formGroup]="editForm" class="edit-form">
+      <clr-select-container>
+        <label>Condition *</label>
+        <select clrSelect formControlName="condition">
+          <option *ngFor="let c of conditionOptions" [value]="c.value">{{ c.label }}</option>
+        </select>
+        <clr-control-error *clrIfError="'required'">Condition is required</clr-control-error>
+      </clr-select-container>
+
+      <clr-textarea-container>
+        <label>Remarks</label>
+        <textarea clrTextarea formControlName="remarks"
+                  placeholder="Enter remarks or notes about this asset..."
+                  rows="4"></textarea>
+      </clr-textarea-container>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-outline" (click)="onCancel()">Cancel</button>
+    <button class="btn btn-primary" (click)="onSave()"
+            [disabled]="editForm.invalid || saving">
+      <clr-spinner *ngIf="saving" clrInline clrSmall></clr-spinner>
+      Update Asset
+    </button>
+  </div>
+</clr-modal>
+

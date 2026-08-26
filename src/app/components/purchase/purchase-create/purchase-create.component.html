@@ -1,439 +1,313 @@
-<div class="purchase-form-container">
 
-  <div class="form-page-header">
-    <div class="header-breadcrumb">
-      <a (click)="goBack()" class="breadcrumb-link">Purchase Orders</a>
-      <clr-icon shape="angle" dir="right"></clr-icon>
-      <span>{{ isEditMode ? 'Edit' : 'Create' }} Purchase Order</span>
+<!-- purchase-create.component.html -->
+<app-toast-container></app-toast-container>
+
+<div class="purchase-form-container" *ngIf="!isLoading; else loadingTpl">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="header-left">
+      <a (click)="goBack()" class="breadcrumb-link">
+        <clr-icon shape="arrow" dir="left"></clr-icon> Purchase Orders
+      </a>
+      <clr-icon shape="angle" dir="right" class="sep"></clr-icon>
+      <span class="current-page">{{ isEditMode ? 'Edit' : 'Create' }} Purchase Order</span>
     </div>
-
-    <div class="header-actions">
-      <button class="btn btn-outline" (click)="goBack()">
-        Cancel
-      </button>
-
-      <button
-        class="btn btn-success"
-        (click)="completePurchase()"
+    <div class="header-right">
+      <button class="btn btn-outline" (click)="goBack()">Cancel</button>
+      <button class="btn btn-success-outline"
         *ngIf="isEditMode && items.length > 0"
+        (click)="completePurchase()"
         [disabled]="saving">
-
-        <clr-icon shape="check-circle"></clr-icon>
-        Save & Receive Assets
+        <clr-icon shape="check-circle"></clr-icon> Save &amp; Receive Assets
       </button>
     </div>
   </div>
 
+  <!-- CONTENT -->
   <div class="purchase-content">
 
-    <div class="section-title">
-      <span>1. PURCHASE INFORMATION</span>
-    </div>
-
-    <div class="info-banner">
-      Asset tags are not entered here. Individual assets and system-generated
-      asset tags are created after receiving unique serial numbers.
-    </div>
-
-    <form [formGroup]="purchaseForm">
-
-      <div class="purchase-grid">
-
-        <div class="field">
-          <label>PO Number <span>*</span></label>
-          <input
-            type="text"
-            class="input"
-            [value]="purchaseNumber"
-            readonly>
-        </div>
-
-        <div class="field">
-          <label>Vendor <span>*</span></label>
-
-          <select
-            class="input"
-            formControlName="vendorId">
-
-            <option [ngValue]="null" disabled>
-              Select Vendor
-            </option>
-
-            <option
-              *ngFor="let v of vendors"
-              [ngValue]="v.id">
-
-              {{ v.vendorName }}
-
-            </option>
-
-          </select>
-        </div>
-
-        <div class="field">
-          <label>PO Date <span>*</span></label>
-
-          <input
-            type="date"
-            class="input"
-            formControlName="purchaseDate">
-        </div>
-
-        <div class="field">
-          <label>Invoice Number <span>*</span></label>
-
-          <input
-            type="text"
-            class="input"
-            formControlName="invoiceNumber"
-            placeholder="Enter invoice number">
-        </div>
-
-        <div class="field">
-          <label>Invoice Date <span>*</span></label>
-
-          <input
-            type="date"
-            class="input"
-            formControlName="invoiceDate">
-        </div>
-
-        <div class="field">
-          <label>Expected Delivery Date <span>*</span></label>
-
-          <input
-            type="date"
-            class="input"
-            formControlName="expectedDeliveryDate">
-        </div>
-
+    <!-- ─── SECTION 1: PURCHASE INFO ─── -->
+    <div class="section-card">
+      <div class="section-title-bar">
+        <span class="step-circle">1</span>
+        <h4>PURCHASE INFORMATION</h4>
       </div>
 
-      <div class="field remarks">
-        <label>Remarks</label>
-
-        <textarea
-          class="textarea"
-          formControlName="remarks"
-          placeholder="Enter remarks or internal reference details...">
-        </textarea>
+      <div class="info-alert">
+        <clr-icon shape="info-circle"></clr-icon>
+        <span>Asset tags are generated after receiving serial numbers. They are not entered here.</span>
       </div>
 
-    </form>
-          <div class="section-actions">
-        <button class="btn btn-primary" (click)="savePurchase()" [clrLoading]="saving">
+      <form [formGroup]="purchaseForm">
+        <div class="form-grid">
+
+          <!-- PO Number -->
+          <div class="form-group">
+            <label>PO Number <span class="req">*</span></label>
+            <input type="text" class="form-control" [value]="purchaseNumber" readonly>
+          </div>
+
+          <!-- Vendor -->
+          <div class="form-group">
+            <label>Vendor <span class="req">*</span></label>
+            <select class="form-control" formControlName="vendorId">
+              <option [ngValue]="null" disabled>Select Vendor</option>
+              <option *ngFor="let v of vendors" [ngValue]="v.id">{{ v.vendorName }}</option>
+            </select>
+            <span class="error-text"
+              *ngIf="purchaseForm.get('vendorId')?.touched && purchaseForm.get('vendorId')?.hasError('required')">
+              Vendor is required.
+            </span>
+          </div>
+
+          <!-- PO Date -->
+          <div class="form-group">
+            <label>PO Date <span class="req">*</span></label>
+            <input type="date" class="form-control" formControlName="purchaseDate">
+            <span class="error-text"
+              *ngIf="purchaseForm.get('purchaseDate')?.touched && purchaseForm.get('purchaseDate')?.hasError('required')">
+              PO date is required.
+            </span>
+          </div>
+
+          <!-- Invoice Number -->
+          <div class="form-group">
+            <label>Invoice Number <span class="req">*</span></label>
+            <input type="text" class="form-control" formControlName="invoiceNumber" placeholder="INV-XXXX">
+            <span class="error-text"
+              *ngIf="purchaseForm.get('invoiceNumber')?.touched && purchaseForm.get('invoiceNumber')?.hasError('required')">
+              Invoice number is required.
+            </span>
+            <span class="error-text"
+              *ngIf="purchaseForm.get('invoiceNumber')?.hasError('maxlength')">
+              Max 100 characters.
+            </span>
+          </div>
+
+          <!-- Invoice Date -->
+          <div class="form-group">
+            <label>Invoice Date <span class="req">*</span></label>
+            <input type="date" class="form-control" formControlName="invoiceDate">
+            <span class="error-text"
+              *ngIf="purchaseForm.get('invoiceDate')?.touched && purchaseForm.get('invoiceDate')?.hasError('required')">
+              Invoice date is required.
+            </span>
+          </div>
+
+          <!-- Expected Delivery -->
+          <div class="form-group">
+            <label>Expected Delivery <span class="req">*</span></label>
+            <input type="date" class="form-control" formControlName="expectedDeliveryDate">
+            <span class="error-text"
+              *ngIf="purchaseForm.get('expectedDeliveryDate')?.touched && purchaseForm.get('expectedDeliveryDate')?.hasError('required')">
+              Delivery date is required.
+            </span>
+          </div>
+
+          <!-- Ownership Type -->
+          <div class="form-group">
+            <label>Ownership Type <span class="req">*</span></label>
+            <select class="form-control" formControlName="ownershipType">
+              <option *ngFor="let ot of ownershipTypes" [ngValue]="ot.value">{{ ot.label }}</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Remarks -->
+        <div class="form-group full-width">
+          <label>Remarks</label>
+          <textarea class="form-control textarea" formControlName="remarks"
+            placeholder="Enter internal reference details..." rows="3"></textarea>
+        </div>
+      </form>
+
+      <div class="section-footer">
+        <button class="btn btn-primary" (click)="savePurchase()" [disabled]="saving">
           <clr-icon shape="floppy"></clr-icon>
-          {{ isEditMode ? 'Update Purchase' : 'Save Purchase' }}
+          {{ saving ? 'Saving...' : (isEditMode ? 'Update Purchase' : 'Save Purchase') }}
         </button>
       </div>
-
-
-    <div class="asset-section">
-
-      <div class="asset-header">
-
-        <div class="section-title">
-          2. ASSET PROCUREMENT DETAILS
-        </div>
-
-        <span>
-          {{ items.length }} asset types / {{ totalUnits }} units
-        </span>
-
-      </div>
-
-
-      <clr-datagrid class="asset-datagrid">
-
-  <clr-dg-column>Category</clr-dg-column>
-  <clr-dg-column>Brand</clr-dg-column>
-  <clr-dg-column>Model</clr-dg-column>
-  <clr-dg-column>Configuration</clr-dg-column>
-  <clr-dg-column>Qty</clr-dg-column>
-  <clr-dg-column>Unit Price</clr-dg-column>
-  <clr-dg-column>Warranty</clr-dg-column>
-  <clr-dg-column>Subtotal</clr-dg-column>
-  <clr-dg-column>action </clr-dg-column>
-
-  <clr-dg-row *clrDgItems="let item of items">
-
-    <clr-dg-cell>
-      <span class="category-badge">
-        {{ item.category }}
-      </span>
-    </clr-dg-cell>
-
-    <clr-dg-cell>
-      {{ item.brand }}
-    </clr-dg-cell>
-
-    <clr-dg-cell>
-      {{ item.model }}
-    </clr-dg-cell>
-
-    <clr-dg-cell>
-      {{ item.configuration }}
-    </clr-dg-cell>
-
-    <clr-dg-cell>
-      {{ item.quantity }}
-    </clr-dg-cell>
-
-    <clr-dg-cell>
-      ₹{{ item.unitPrice | number:'1.0-0' }}
-    </clr-dg-cell>
-
-    <clr-dg-cell>
-      {{ item.warrantyPeriod }}
-    </clr-dg-cell>
-
-    <clr-dg-cell>
-      <strong>
-        ₹{{ item.subTotal | number:'1.0-0' }}
-      </strong>
-    </clr-dg-cell>
-
-    <clr-dg-cell class="action-cell">
-
-      <button
-        type="button"
-        class="action-button"
-        title="Edit"
-        (click)="openEditItemModal(item)">
-
-        <clr-icon shape="pencil">e</clr-icon>
-
-      </button>
-
-      <button
-        type="button"
-        class="action-button delete"
-        title="Delete"
-        (click)="deleteItem(item)">
-
-        <clr-icon shape="trash">d</clr-icon>
-
-      </button>
-
-    </clr-dg-cell>
-
-  </clr-dg-row>
-
-  <clr-dg-placeholder>
-    No asset items added yet.
-  </clr-dg-placeholder>
-
-</clr-datagrid>
-
-
-      <button
-        type="button"
-        class="add-item-button"
-        (click)="openAddItemModal()"
-        *ngIf="isEditMode">
-
-        <clr-icon shape="plus"></clr-icon>
-        Add Asset Item
-
-      </button>
-
-
-      <div class="total-row">
-
-        <span>Total Purchase Amount</span>
-
-        <strong>
-          ₹{{ totalAmount | number:'1.0-0' }}
-        </strong>
-
-      </div>
-
     </div>
 
-
-    <div class="invoice-section">
-
-  <div class="section-title">
-    4. INVOICE ATTACHMENT
-  </div>
-
-  <div class="upload-buttons">
-
-    <button
-      type="button"
-      class="upload-button"
-      (click)="pdfInput.click()">
-
-      <clr-icon shape="file"></clr-icon>
-      Upload Invoice PDF
-
-    </button>
-
-    <button
-      type="button"
-      class="upload-button"
-      (click)="imageInput.click()">
-
-      <clr-icon shape="image"></clr-icon>
-      Upload Invoice Image
-
-    </button>
-
-    <input
-      #pdfInput
-      type="file"
-      hidden
-      accept=".pdf"
-      multiple
-      (change)="onFileSelected($event)">
-
-    <input
-      #imageInput
-      type="file"
-      hidden
-      accept=".png,.jpg,.jpeg"
-      multiple
-      (change)="onFileSelected($event)">
-
-  </div>
-
-  <div
-    class="upload-zone"
-    [class.drag-over]="isDragOver"
-    (dragover)="onDragOver($event)"
-    (dragleave)="onDragLeave($event)"
-    (drop)="onDrop($event)">
-
-    <div *ngIf="!uploading">
-
-      <div class="upload-text">
-        Drop invoice files here or
-        <span (click)="imageInput.click()">browse files</span>
+    <!-- ─── SECTION 2: ASSET ITEMS ─── -->
+    <div class="section-card" *ngIf="isEditMode">
+      <div class="section-title-bar">
+        <span class="step-circle">2</span>
+        <h4>ASSET PROCUREMENT DETAILS</h4>
+        <span class="badge-info">{{ items.length }} type(s) &middot; {{ totalUnits }} unit(s)</span>
       </div>
 
-      <div class="upload-hint">
-        Accepted: PDF, PNG, JPG, JPEG — maximum 25 MB
+      <!-- Datagrid -->
+      <clr-datagrid *ngIf="items.length > 0" class="datagrid-compact">
+        <clr-dg-column [clrDgField]="'category'">Category</clr-dg-column>
+        <clr-dg-column [clrDgField]="'brand'">Brand</clr-dg-column>
+        <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
+        <clr-dg-column>Configuration</clr-dg-column>
+        <clr-dg-column class="num-col">Qty</clr-dg-column>
+        <clr-dg-column class="num-col">Unit Price</clr-dg-column>
+        <clr-dg-column>Warranty</clr-dg-column>
+        <clr-dg-column class="num-col">Subtotal</clr-dg-column>
+        <clr-dg-column class="action-col">Actions</clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let item of items">
+          <clr-dg-cell><span class="cat-badge">{{ item.category }}</span></clr-dg-cell>
+          <clr-dg-cell>{{ item.brand }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.model }}</clr-dg-cell>
+          <clr-dg-cell class="truncate-cell">{{ item.configuration || '—' }}</clr-dg-cell>
+          <clr-dg-cell class="num-col">{{ item.quantity }}</clr-dg-cell>
+          <clr-dg-cell class="num-col">₹{{ item.unitPrice | number:'1.0-0' }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.warrantyPeriod || '—' }}</clr-dg-cell>
+          <clr-dg-cell class="num-col"><strong>₹{{ item.subTotal | number:'1.0-0' }}</strong></clr-dg-cell>
+          <clr-dg-cell class="action-col">
+            <button class="btn btn-sm btn-icon btn-link" title="Edit" (click)="openEditItemModal(item)">
+              <clr-icon shape="pencil"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-icon btn-link text-danger" title="Delete" (click)="deleteItem(item)">
+              <clr-icon shape="trash"></clr-icon>
+            </button>
+          </clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          <clr-dg-pagination #pagination [clrDgPageSize]="10">
+            {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }}
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="items.length === 0">
+        <clr-icon shape="shopping-bag" size="48"></clr-icon>
+        <p>No asset items added yet.</p>
+        <p class="muted">Click "Add Asset Item" to get started.</p>
       </div>
 
-    </div>
-
-    <div *ngIf="uploading">
-
-      <span class="spinner spinner-sm"></span>
-
-      <div>
-        Uploading files...
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div
-    class="uploaded-files"
-    *ngIf="attachments.length > 0">
-
-    <div
-      class="uploaded-file"
-      *ngFor="let attachment of attachments">
-
-      <div class="attachment-preview">
-
-        <img
-          *ngIf="attachment.contentType?.startsWith('image/')"
-          [src]="attachmentService.getDownloadUrl(purchaseId!, attachment.id)"
-          [alt]="attachment.fileName">
-
-        <clr-icon
-          *ngIf="!attachment.contentType?.startsWith('image/')"
-          shape="file"
-          size="32">
-        </clr-icon>
-
-      </div>
-
-      <div class="attachment-info">
-
-        <div class="attachment-name">
-          {{ attachment.fileName }}
-        </div>
-
-        <div class="attachment-type">
-          {{ attachment.contentType }}
-        </div>
-
-      </div>
-
-      <div class="attachment-actions">
-
-        <button
-          type="button"
-          class="btn btn-sm btn-link"
-          (click)="viewAttachment(attachment)">
-
-          <clr-icon shape="eye"></clr-icon>
-          View
-
+      <!-- Footer -->
+      <div class="items-bar">
+        <button class="btn btn-outline btn-sm" (click)="openAddItemModal()">
+          <clr-icon shape="plus"></clr-icon> Add Asset Item
         </button>
-
-        <button
-          type="button"
-          class="btn btn-sm btn-link delete-link"
-          (click)="deleteAttachment(attachment)">
-
-          <clr-icon shape="trash"></clr-icon>
-          Remove
-
-        </button>
-
+        <div class="total-display" *ngIf="items.length > 0">
+          <span>Total:</span>
+          <strong>₹{{ totalAmount | number:'1.0-0' }}</strong>
+        </div>
       </div>
-
     </div>
 
-  </div>
+    <!-- ─── SECTION 3: ATTACHMENTS ─── -->
+    <div class="section-card" *ngIf="isEditMode">
+      <div class="section-title-bar">
+        <span class="step-circle">3</span>
+        <h4>INVOICE ATTACHMENTS</h4>
+      </div>
 
-</div>
+      <div class="upload-toolbar">
+        <button class="btn btn-outline btn-sm" (click)="pdfInput.click()">
+          <clr-icon shape="file"></clr-icon> Upload PDF
+        </button>
+        <button class="btn btn-outline btn-sm" (click)="imgInput.click()">
+          <clr-icon shape="image"></clr-icon> Upload Image
+        </button>
+        <input #pdfInput type="file" hidden accept=".pdf" multiple (change)="onFileSelected($event)">
+        <input #imgInput type="file" hidden accept=".png,.jpg,.jpeg" multiple (change)="onFileSelected($event)">
+      </div>
 
+      <!-- Drag & Drop Zone -->
+      <div class="dropzone"
+        [class.active]="isDragOver"
+        [class.uploading]="uploading"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)">
+        <div *ngIf="!uploading">
+          <clr-icon shape="upload-cloud" size="32"></clr-icon>
+          <p>Drop files here or <a (click)="imgInput.click()">browse</a></p>
+          <small>PDF, PNG, JPG — max 25 MB</small>
+        </div>
+        <div *ngIf="uploading" class="uploading-state">
+          <span class="spinner spinner-sm"></span>
+          <span>Uploading...</span>
+        </div>
+      </div>
 
-    <div
-      class="before-save-message"
-      *ngIf="!isEditMode">
+      <!-- Thumbnails Grid -->
+      <div class="thumbnails-grid" *ngIf="attachments.length > 0">
+        <div class="thumb-card" *ngFor="let att of attachments">
+          <div class="thumb-preview" (click)="viewAttachment(att)">
+            <!-- Image Thumbnail -->
+            <img *ngIf="isImageAttachment(att)"
+              [src]="getThumbnailUrl(att)"
+              [alt]="att.fileName"
+              class="thumb-img"
+              loading="lazy">
+            <!-- File Icon for non-images -->
+            <div *ngIf="!isImageAttachment(att)" class="thumb-icon">
+              <clr-icon [attr.shape]="getFileIcon(att.contentType)" size="36"></clr-icon>
+            </div>
+            <div class="thumb-hover">
+              <clr-icon shape="eye" size="20"></clr-icon>
+            </div>
+          </div>
+          <div class="thumb-info">
+            <span class="thumb-name" [title]="att.fileName">{{ att.fileName }}</span>
+            <span class="thumb-size">{{ formatFileSize(att.fileSize) }}</span>
+          </div>
+          <div class="thumb-actions">
+            <button class="btn btn-link btn-sm" (click)="viewAttachment(att)" title="View">
+              <clr-icon shape="eye"></clr-icon>
+            </button>
+            <button class="btn btn-link btn-sm text-danger" (click)="deleteAttachment(att)" title="Delete">
+              <clr-icon shape="trash"></clr-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- PRE-SAVE MESSAGE -->
+    <div class="pre-save-banner" *ngIf="!isEditMode">
       <clr-icon shape="info-circle"></clr-icon>
-
-      <span>
-        Save the purchase information first. After saving, you can add
-        asset items and upload invoice attachments.
-      </span>
-
+      <span>Save the purchase first. Then you can add items and attachments.</span>
     </div>
 
   </div>
-
 </div>
 
+<!-- Loading -->
+<ng-template #loadingTpl>
+  <div class="page-loading">
+    <span class="spinner spinner-md"></span>
+    <p>Loading purchase details...</p>
+  </div>
+</ng-template>
 
-<!-- <app-purchased-item-modal
-  [isOpen]="isItemModalOpen"
-  [purchaseId]="purchaseId"
-  [editItem]="selectedItem"
-  (closed)="closeItemModal()"
-  (saved)="itemSaved($event)">
-</app-purchased-item-modal> -->
 <!-- Item Modal -->
 <app-purchased-item-modal
   *ngIf="itemModalOpen"
   [isOpen]="itemModalOpen"
   [purchaseId]="purchaseId!"
   [editItem]="editingItem"
-  (closed)="itemModalOpen = false"
+  (closed)="onItemModalClosed()"
   (saved)="onItemSaved($event)">
 </app-purchased-item-modal>
+
+<!-- Delete Confirm -->
 <app-confirm-dialog
   [isOpen]="isDeleteOpen"
   [loading]="deleting"
-  [message]="'Are you sure you want to delete model: ' + deleteItemRef+ '?'"
+  [title]="'Delete Asset Item'"
+  [message]="deleteConfirmMessage"
   (onConfirm)="confirmDelete()"
   (onCancel)="cancelDelete()">
 </app-confirm-dialog>
+
+<!-- Image Preview -->
+<app-image-preview-modal
+  *ngIf="isPreviewOpen"
+  [isOpen]="isPreviewOpen"
+  [imageUrl]="previewImageUrl!"
+  (closed)="closePreview()">
+</app-image-preview-modal>
+

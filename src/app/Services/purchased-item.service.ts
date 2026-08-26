@@ -27,7 +27,7 @@ export class PurchasedItemService {
   }
 
   update(purchaseId: string, itemId: string, dto: UpdatePurchasedItemDto): Observable<PurchasedItemDto> {
-    return this.http.put<PurchasedItemDto>(`${this.baseUrl}/${purchaseId}/items/${itemId}`, dto);
+    return this.http.put<PurchasedItemDto>(`${this.baseUrl}/${itemId}`, dto);
   }
 
   delete(purchaseId: string, itemId: string): Observable<string> {
