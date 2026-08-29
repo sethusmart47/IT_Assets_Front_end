@@ -59,7 +59,8 @@ export interface AssetLifecycleHistoryDto {
   remarks: string | null;
   performedBy: string;
   performedDate: string;
-  employeeId: string | null;
+   employeeName: string | null;
+  employeeEmail: string | null;
   referenceId: string | null;
   referenceType: string | null;
 }
@@ -101,6 +102,8 @@ export interface AvailablePurchaseDto {
   totalQty: number;
   registeredQty: number;
   remainingQty: number;
+  ownershipType: number;
+  ownershipTypeName: string;
 }
 
 export interface AvailablePurchaseItemDto {

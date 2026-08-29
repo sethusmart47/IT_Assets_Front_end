@@ -1,0 +1,87 @@
+
+
+<clr-vertical-nav>
+
+  <a clrVerticalNavLink routerLink="/dashboard" routerLinkActive="active">
+    <cds-icon shape="dashboard" clrVerticalNavIcon></cds-icon>
+    Dashboard
+  </a>
+
+  <clr-vertical-nav-group>
+    <a routerLink="#" hidden aria-hidden="true"></a>
+    PEOPLE & ASSETS
+
+    <clr-vertical-nav-group-children *clrIfExpanded>
+      <a clrVerticalNavLink routerLink="/employees" routerLinkActive="active">
+        <cds-icon shape="users" clrVerticalNavIcon></cds-icon>
+        Employees
+      </a>
+
+      <a clrVerticalNavLink routerLink="/asset-assignment" routerLinkActive="active">
+        <cds-icon shape="link" clrVerticalNavIcon></cds-icon>
+        Asset Assignment
+      </a>
+
+      <a clrVerticalNavLink routerLink="/service-warranty" routerLinkActive="active">
+        <cds-icon shape="shield-check" clrVerticalNavIcon></cds-icon>
+        Service & Warranty
+      </a>
+    </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
+
+  <clr-vertical-nav-group>
+    <a routerLink="#" hidden aria-hidden="true"></a>
+    PROCUREMENT & INVENTORY
+
+    <clr-vertical-nav-group-children *clrIfExpanded>
+      <a clrVerticalNavLink routerLink="/asset/list" routerLinkActive="active">
+        <cds-icon shape="box" clrVerticalNavIcon></cds-icon>
+        Asset Inventory
+      </a>
+
+      <a clrVerticalNavLink routerLink="/vendor" routerLinkActive="active">
+        <cds-icon shape="store" clrVerticalNavIcon></cds-icon>
+        Vendors
+      </a>
+
+      <a clrVerticalNavLink routerLink="/purchase" routerLinkActive="active">
+        <cds-icon shape="shopping-cart" clrVerticalNavIcon></cds-icon>
+        Purchases
+      </a>
+
+      <a clrVerticalNavLink routerLink="/reports" routerLinkActive="active">
+        <cds-icon shape="bar-chart" clrVerticalNavIcon></cds-icon>
+        Reports
+      </a>
+    </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
+
+  <clr-vertical-nav-group>
+    <a routerLink="#" hidden aria-hidden="true"></a>
+    SETTINGS
+
+    <clr-vertical-nav-group-children *clrIfExpanded>
+
+      <clr-vertical-nav-group>
+        <a routerLink="#" hidden aria-hidden="true"></a>
+        Device
+
+        <clr-vertical-nav-group-children *clrIfExpanded>
+          <a clrVerticalNavLink routerLink="/category" routerLinkActive="active">
+            Category
+          </a>
+
+          <a clrVerticalNavLink routerLink="/brand" routerLinkActive="active">
+            Brand
+          </a>
+
+          <a clrVerticalNavLink routerLink="/model" routerLinkActive="active">
+            Model
+          </a>
+        </clr-vertical-nav-group-children>
+      </clr-vertical-nav-group>
+
+    </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
+
+</clr-vertical-nav>

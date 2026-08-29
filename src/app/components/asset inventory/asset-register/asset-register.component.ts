@@ -44,7 +44,7 @@ availablePurchases: AvailablePurchaseDto[] = [];
   ) {
     this.commonForm = this.fb.group({
       condition: [1, Validators.required],
-      ownershipType: [1, Validators.required],
+      //ownershipType: [1, Validators.required],
       warrantyStartDate: ['', Validators.required],
       warrantyEndDate: ['', Validators.required],
       warrantyMonths: [{ value: 0, disabled: true }],
@@ -266,7 +266,7 @@ availablePurchases: AvailablePurchaseDto[] = [];
       model: this.selectedItem.model,
       configuration: this.selectedItem.configuration,
       condition: this.commonForm.get('condition')?.value,
-      ownershipType: this.commonForm.get('ownershipType')?.value,
+      ownershipType: this.selectedPurchase.ownershipType,
       warrantyStartDate: this.commonForm.get('warrantyStartDate')?.value,
       warrantyEndDate: this.commonForm.get('warrantyEndDate')?.value,
       warrantyMonths: this.commonForm.get('warrantyMonths')?.value,
@@ -294,7 +294,8 @@ availablePurchases: AvailablePurchaseDto[] = [];
            !!this.selectedItem &&
            this.commonForm.valid &&
            this.enteredCount > 0 &&
-           this.errorCount === 0;
+           this.errorCount === 0 &&
+           this.isValidated==true;
   }
 
   goBack(): void {

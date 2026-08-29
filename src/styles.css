@@ -2,3 +2,7 @@
 @import '@clr/ui/clr-ui.min.css';
 @import '@clr/icons/clr-icons.min.css';
 @import '@cds/core/global.min.css';
+
+label .required {
+  color: red;
+}

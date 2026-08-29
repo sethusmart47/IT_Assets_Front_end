@@ -1,8 +1,7 @@
-══════════════════════════════════════════════════════════════════════════════
 
 .register-container {
   padding: 1.5rem;
-  max-width: 1200px;
+  max-width: 1500px;
 }
 
 .page-header {
@@ -74,7 +73,7 @@
 
   .info-row {
     display: flex;
-    gap: 2rem;
+    gap: 4rem;
     flex-wrap: wrap;
   }
 

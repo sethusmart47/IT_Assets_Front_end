@@ -1,4 +1,4 @@
-═══════════════════════════════════════════════════════════════════════ -->
+
 
 <div class="register-container">
 
@@ -11,6 +11,7 @@
       <h2>Register Assets</h2>
     </div>
   </div>
+  
 
   <!-- Step 1: Select Purchase Order -->
   <div class="step-section">
@@ -21,7 +22,7 @@
 
     <div class="step-content">
       <clr-select-container>
-        <label>Purchase Order *</label>
+        <label>Purchase Order <span class="required">*</span></label>
         <select clrSelect (change)="onPurchaseSelect($any($event.target).value)">
           <option value="">-- Select Purchase Order --</option>
           <option *ngFor="let po of availablePurchases" [value]="po.id">
@@ -29,6 +30,8 @@
           </option>
         </select>
       </clr-select-container>
+
+      
 
       <!-- Purchase Info Card -->
       <div class="info-card" *ngIf="selectedPurchase">
@@ -44,6 +47,10 @@
           <div class="info-item">
             <span class="info-label">PO Date</span>
             <span class="info-value">{{ selectedPurchase.purchaseDate | date:'dd-MMM-yyyy' }}</span>
+          </div>
+           <div class="info-item">
+            <span class="info-label">ownershipType</span>
+            <span class="info-value">{{ selectedPurchase.ownershipTypeName }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">Total Qty</span>
@@ -62,39 +69,49 @@
 
       <!-- Available Items Table -->
       <div class="items-table" *ngIf="availableItems.length > 0">
-        <h5>Available Items — Select one to register</h5>
-        <table class="table table-compact">
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Brand</th>
-              <th>Model</th>
-              <th>Configuration</th>
-              <th>Purchased</th>
-              <th>Registered</th>
-              <th>Remaining</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of availableItems"
-                [class.selected-row]="selectedItem?.purchaseItemId === item.purchaseItemId">
-              <td>{{ item.category }}</td>
-              <td>{{ item.brand }}</td>
-              <td>{{ item.model }}</td>
-              <td>{{ item.configuration || '—' }}</td>
-              <td>{{ item.purchasedQty }}</td>
-              <td>{{ item.registeredQty }}</td>
-              <td><strong>{{ item.remainingQty }}</strong></td>
-              <td>
-                <button class="btn btn-sm btn-primary-outline" (click)="onItemSelect(item)">
-                  Select
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  <h5>Available Items — Select one to register</h5>
+
+  <clr-datagrid>
+
+    <clr-dg-column>Category</clr-dg-column>
+    <clr-dg-column>Brand</clr-dg-column>
+    <clr-dg-column>Model</clr-dg-column>
+    <clr-dg-column>Configuration</clr-dg-column>
+    <clr-dg-column>Purchased</clr-dg-column>
+    <clr-dg-column>Registered</clr-dg-column>
+    <clr-dg-column>Remaining</clr-dg-column>
+    <clr-dg-column>Action</clr-dg-column>
+
+    <clr-dg-row
+      *ngFor="let item of availableItems"
+      [class.selected-row]="selectedItem?.purchaseItemId === item.purchaseItemId">
+
+      <clr-dg-cell>{{ item.category }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.brand }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.model }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.configuration || '—' }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.purchasedQty }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.registeredQty }}</clr-dg-cell>
+      <clr-dg-cell>
+        <strong>{{ item.remainingQty }}</strong>
+      </clr-dg-cell>
+
+      <clr-dg-cell>
+        <button
+          class="btn btn-sm btn-primary-outline"
+          (click)="onItemSelect(item)">
+          Select
+        </button>
+      </clr-dg-cell>
+
+    </clr-dg-row>
+
+    <clr-dg-footer>
+      {{ availableItems.length }} items
+    </clr-dg-footer>
+
+  </clr-datagrid>
+</div>
     </div>
   </div>
 
@@ -134,29 +151,29 @@
         <div class="clr-row">
           <div class="clr-col-md-3">
             <clr-select-container>
-              <label>Condition *</label>
+              <label>Condition <span class="required">*</span></label>
               <select clrSelect formControlName="condition">
                 <option *ngFor="let c of conditionOptions" [value]="c.value">{{ c.label }}</option>
               </select>
             </clr-select-container>
           </div>
-          <div class="clr-col-md-3">
+          <!-- <div class="clr-col-md-3">
             <clr-select-container>
               <label>Ownership Type *</label>
               <select clrSelect formControlName="ownershipType">
                 <option *ngFor="let o of ownershipOptions" [value]="o.value">{{ o.label }}</option>
               </select>
             </clr-select-container>
-          </div>
+          </div> -->
           <div class="clr-col-md-2">
             <clr-input-container>
-              <label>Warranty Start *</label>
+              <label>Warranty Start <span class="required">*</span></label>
               <input clrInput type="date" formControlName="warrantyStartDate" />
             </clr-input-container>
           </div>
           <div class="clr-col-md-2">
             <clr-input-container>
-              <label>Warranty End *</label>
+              <label>Warranty End <span class="required">*</span></label>
               <input clrInput type="date" formControlName="warrantyEndDate" />
             </clr-input-container>
           </div>

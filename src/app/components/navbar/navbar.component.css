@@ -1,0 +1,71 @@
+.navbar {
+  height: 60px;
+  background: #1e2a38;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  position: relative;
+}
+
+.company-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.user-section {
+  position: relative;
+  cursor: pointer;
+}
+
+.username {
+  margin-right: 5px;
+}
+
+.arrow {
+  font-size: 12px;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  background: white;
+  color: black;
+  border-radius: 4px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  width: 120px;
+}
+
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #f2f2f2;
+}
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navbar {
+  height: 56px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.company-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+clr-vertical-nav {
+  flex: 1;
+  height: calc(100vh - 56px);
+}

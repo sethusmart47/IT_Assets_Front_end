@@ -44,13 +44,13 @@
 
           <!-- PO Number -->
           <div class="form-group">
-            <label>PO Number <span class="req">*</span></label>
+            <label>PO Number <span class="required">*</span></label>
             <input type="text" class="form-control" [value]="purchaseNumber" readonly>
           </div>
 
           <!-- Vendor -->
           <div class="form-group">
-            <label>Vendor <span class="req">*</span></label>
+            <label>Vendor <span class="required">*</span></label>
             <select class="form-control" formControlName="vendorId">
               <option [ngValue]="null" disabled>Select Vendor</option>
               <option *ngFor="let v of vendors" [ngValue]="v.id">{{ v.vendorName }}</option>
@@ -63,7 +63,7 @@
 
           <!-- PO Date -->
           <div class="form-group">
-            <label>PO Date <span class="req">*</span></label>
+            <label>PO Date <span class="required">*</span></label>
             <input type="date" class="form-control" formControlName="purchaseDate">
             <span class="error-text"
               *ngIf="purchaseForm.get('purchaseDate')?.touched && purchaseForm.get('purchaseDate')?.hasError('required')">
@@ -73,7 +73,7 @@
 
           <!-- Invoice Number -->
           <div class="form-group">
-            <label>Invoice Number <span class="req">*</span></label>
+            <label>Invoice Number <span class="required">*</span></label>
             <input type="text" class="form-control" formControlName="invoiceNumber" placeholder="INV-XXXX">
             <span class="error-text"
               *ngIf="purchaseForm.get('invoiceNumber')?.touched && purchaseForm.get('invoiceNumber')?.hasError('required')">
@@ -87,7 +87,7 @@
 
           <!-- Invoice Date -->
           <div class="form-group">
-            <label>Invoice Date <span class="req">*</span></label>
+            <label>Invoice Date <span class="required">*</span></label>
             <input type="date" class="form-control" formControlName="invoiceDate">
             <span class="error-text"
               *ngIf="purchaseForm.get('invoiceDate')?.touched && purchaseForm.get('invoiceDate')?.hasError('required')">
@@ -97,7 +97,7 @@
 
           <!-- Expected Delivery -->
           <div class="form-group">
-            <label>Expected Delivery <span class="req">*</span></label>
+            <label>Expected Delivery <span class="required">*</span></label>
             <input type="date" class="form-control" formControlName="expectedDeliveryDate">
             <span class="error-text"
               *ngIf="purchaseForm.get('expectedDeliveryDate')?.touched && purchaseForm.get('expectedDeliveryDate')?.hasError('required')">
@@ -107,7 +107,7 @@
 
           <!-- Ownership Type -->
           <div class="form-group">
-            <label>Ownership Type <span class="req">*</span></label>
+            <label>Ownership Type <span class="required">*</span></label>
             <select class="form-control" formControlName="ownershipType">
               <option *ngFor="let ot of ownershipTypes" [ngValue]="ot.value">{{ ot.label }}</option>
             </select>
@@ -147,7 +147,7 @@
         <clr-dg-column>Configuration</clr-dg-column>
         <clr-dg-column class="num-col">Qty</clr-dg-column>
         <clr-dg-column class="num-col">Unit Price</clr-dg-column>
-        <clr-dg-column>Warranty</clr-dg-column>
+       
         <clr-dg-column class="num-col">Subtotal</clr-dg-column>
         <clr-dg-column class="action-col">Actions</clr-dg-column>
 
@@ -158,7 +158,7 @@
           <clr-dg-cell class="truncate-cell">{{ item.configuration || '—' }}</clr-dg-cell>
           <clr-dg-cell class="num-col">{{ item.quantity }}</clr-dg-cell>
           <clr-dg-cell class="num-col">₹{{ item.unitPrice | number:'1.0-0' }}</clr-dg-cell>
-          <clr-dg-cell>{{ item.warrantyPeriod || '—' }}</clr-dg-cell>
+       
           <clr-dg-cell class="num-col"><strong>₹{{ item.subTotal | number:'1.0-0' }}</strong></clr-dg-cell>
           <clr-dg-cell class="action-col">
             <button class="btn btn-sm btn-icon btn-link" title="Edit" (click)="openEditItemModal(item)">

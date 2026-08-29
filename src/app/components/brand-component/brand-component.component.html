@@ -27,7 +27,7 @@
     <form [formGroup]="form" clrForm clrLayout="vertical">
 
       <clr-select-container>
-        <label>Category *</label>
+        <label>Category <span class="required">*</span></label>
         <select clrSelect formControlName="assetCategoryId">
           <option value="">-- Select Category --</option>
           <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.categoryName }}</option>
@@ -36,7 +36,7 @@
       </clr-select-container>
 
       <clr-input-container>
-        <label>Brand Name *</label>
+        <label>Brand Name <span class="required">*</span></label>
         <input clrInput formControlName="brandName" placeholder="Enter brand name" />
         <clr-control-error *clrIfError="'required'">Brand name is required.</clr-control-error>
         <clr-control-error *clrIfError="'maxlength'">Max 100 characters allowed.</clr-control-error>

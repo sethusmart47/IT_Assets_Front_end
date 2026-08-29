@@ -1,4 +1,17 @@
+<div class="app-shell">
 
-  <router-outlet></router-outlet>
-<!-- <app-view-employee></app-view-employee> -->
-<!-- <app-add-employee></app-add-employee> -->
+  <header class="navbar">
+    <div class="company-name">Nordex</div>
+  </header>
+
+  <div class="app-body">
+
+    <app-navbar></app-navbar>
+
+    <main class="app-content">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+
+</div>

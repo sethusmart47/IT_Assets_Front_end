@@ -66,7 +66,7 @@ export interface PurchasedItemDto {
   configuration: string;
   quantity: number;
   unitPrice: number;
-  warrantyPeriod: string;
+  //warrantyPeriod: string;
   subTotal: number;
 }
 
@@ -77,7 +77,7 @@ export interface CreatePurchasedItemDto {
   configuration: string;
   quantity: number;
   unitPrice: number;
-  warrantyPeriod: string;
+ 
 }
 
 export interface UpdatePurchasedItemDto {
@@ -87,7 +87,7 @@ export interface UpdatePurchasedItemDto {
   configuration: string;
   quantity: number;
   unitPrice: number;
-  warrantyPeriod: string;
+  
 }
 
 export interface PurchaseAttachmentDto {

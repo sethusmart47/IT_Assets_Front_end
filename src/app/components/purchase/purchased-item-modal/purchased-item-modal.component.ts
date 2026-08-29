@@ -39,7 +39,7 @@ export class PurchasedItemModalComponent implements OnInit, OnChanges {
   categories: AssetCategoryApi[] = [];
   filteredBrands: AssetBrand[] = [];
   filteredModels: AssetModel[] = [];
-  warrantyPeriods = WARRANTY_PERIODS;
+ // warrantyPeriods = WARRANTY_PERIODS;
 
   saving = false;
   isEditMode = false;
@@ -90,7 +90,7 @@ export class PurchasedItemModalComponent implements OnInit, OnChanges {
       configuration: ['', Validators.maxLength(300)],
       quantity: [1, [Validators.required, Validators.min(1)]],
       unitPrice: [0, [Validators.required, Validators.min(0.01)]],
-      warrantyPeriod: ['36 Months']
+      // warrantyPeriod: ['36 Months']
     });
   }
 
@@ -103,7 +103,7 @@ export class PurchasedItemModalComponent implements OnInit, OnChanges {
       configuration: '',
       quantity: 1,
       unitPrice: 0,
-      warrantyPeriod: '36 Months'
+      //warrantyPeriod: '36 Months'
     });
     this.filteredBrands = [];
     this.filteredModels = [];
@@ -237,7 +237,7 @@ export class PurchasedItemModalComponent implements OnInit, OnChanges {
         configuration: item.configuration || '',
         quantity: item.quantity,
         unitPrice: item.unitPrice,
-        warrantyPeriod: item.warrantyPeriod || '36 Months'
+        //warrantyPeriod: item.warrantyPeriod || '36 Months'
       }, { emitEvent: false });
 
       this.calcSubTotal();
@@ -277,7 +277,7 @@ export class PurchasedItemModalComponent implements OnInit, OnChanges {
       configuration: (value.configuration || '').trim(),
       quantity: Number(value.quantity),
       unitPrice: Number(value.unitPrice),
-      warrantyPeriod: value.warrantyPeriod || ''
+      //warrantyPeriod: value.warrantyPeriod || ''
     };
 
     if (this.isEditMode && this.editItem) {
