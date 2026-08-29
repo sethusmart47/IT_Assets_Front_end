@@ -1,0 +1,17 @@
+<clr-modal [(clrModalOpen)]="isOpen" [clrModalClosable]="true" [clrModalSize]="'sm'">
+  <h3 class="modal-title">
+    <clr-icon [attr.shape]="iconShape" size="22" [ngClass]="iconClass"></clr-icon>
+    {{ config.title }}
+  </h3>
+  <div class="modal-body">
+    <p class="confirmation-message">{{ config.message }}</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline" (click)="onCancel()">
+      {{ cancelText }}
+    </button>
+    <button [ngClass]="confirmBtnClass" (click)="onConfirm()">
+      {{ confirmText }}
+    </button>
+  </div>
+</clr-modal>

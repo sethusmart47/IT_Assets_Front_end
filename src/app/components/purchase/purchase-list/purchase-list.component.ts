@@ -56,6 +56,9 @@ this.loading=false
     navigateToCreate() {
     this.router.navigate(['purchases/create']);
   }
+  viewpurchse(id:string){
+this.router.navigate(['purchases',id,'view'])
+  }
   navigateToEdit(purchase: PurchaseListDto): void {
     this.router.navigate(['/purchases', purchase.id, 'edit']);
   }

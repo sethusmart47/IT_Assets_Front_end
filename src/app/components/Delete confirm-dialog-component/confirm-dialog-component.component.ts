@@ -1,7 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { ClarityModule } from '@clr/angular';
-
+export interface ConfirmationConfig {
+  title: string;
+  message: string;
+  confirmText?: string;         // Default: 'Confirm'
+  cancelText?: string;          // Default: 'Cancel'
+  type?: 'default' | 'danger' | 'warning';  // Button color
+}
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,

@@ -5,10 +5,11 @@ import { ModelService } from '../../Services/model-service.service';
 import { BrandService } from '../../Services/brand-service.service';
 import { CategoryService } from '../../Services/category-service.service';
 import { NotificationService } from '../../Services/notification-service.service';
-import { ConfirmDialogComponentComponent } from '../confirm-dialog-component/confirm-dialog-component.component';
+import { ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
 import { ReusableDatagridComponentComponent } from '../reusable-datagrid-component/reusable-datagrid-component.component';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
+import { ToastService } from '../../Services/toast.service';
 
 @Component({
   selector: 'app-model-component',
@@ -51,7 +52,7 @@ export class ModelComponentComponent {
     private modelService: ModelService,
     private brandService: BrandService,
     private categoryService: CategoryService,
-    private notification: NotificationService
+    private notification: ToastService
   ) {}
 
   ngOnInit(): void {

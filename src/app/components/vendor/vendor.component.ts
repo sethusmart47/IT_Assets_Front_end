@@ -3,10 +3,12 @@ import { Vendor } from '../../models/model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VendorService } from '../../Services/vendor.service';
 import { NotificationService } from '../../Services/notification-service.service';
-import { ConfirmDialogComponentComponent } from '../confirm-dialog-component/confirm-dialog-component.component';
+import { ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
 
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
+import { ConfirmationService } from '../../Services/confirmation.service';
+import { ToastService } from '../../Services/toast.service';
 
 @Component({
   selector: 'app-vendor',
@@ -36,7 +38,8 @@ export class VendorComponent {
   constructor(
     private fb: FormBuilder,
     private vendorService: VendorService,
-    private notification: NotificationService
+    private notification: ToastService,
+    private confirmation:ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -134,7 +137,7 @@ export class VendorComponent {
           this.loadData();
         },
         error: (err) => {
-          this.notification.error(err.error || 'Failed to update vendor.');
+          this.notification.error(err.error || 'Failed to update vendor');
           this.saving = false;
         }
       });
@@ -163,16 +166,21 @@ export class VendorComponent {
   }
 
   // ─── DELETE ───
-  openDelete(item: Vendor): void {
-    this.deleteItemRef = item;
-    this.isDeleteOpen = true;
-  }
+ openDelete(item: Vendor): void {
+  this.confirmation.confirmDanger(
+    'Delete Vendor',
+    `Are you sure you want to delete "${item.vendorName}"?`,
+    () => {
+      this.confirmDelete(item);
+    }
+  );
+}
 
-  confirmDelete(): void {
-    if (!this.deleteItemRef) return;
+  confirmDelete(item:Vendor): void {
+   
     this.deleting = true;
 
-    this.vendorService.delete(this.deleteItemRef.id).subscribe({
+    this.vendorService.delete(item.id).subscribe({
       next: () => {
         this.notification.success('Vendor deleted successfully.');
         this.isDeleteOpen = false;

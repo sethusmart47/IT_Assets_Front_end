@@ -5,10 +5,11 @@ import { CategoryService } from '../../Services/category-service.service';
 import { NotificationService } from '../../Services/notification-service.service';
 import { ClarityModule } from '@clr/angular';
 
-import {  ConfirmDialogComponentComponent } from '../confirm-dialog-component/confirm-dialog-component.component';
+import {  ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
 import { ReusableDatagridComponentComponent } from '../reusable-datagrid-component/reusable-datagrid-component.component';
 import { CommonModule } from '@angular/common';     
 import { BrandService } from '../../Services/brand-service.service';
+import { ToastService } from '../../Services/toast.service';
 @Component({
   selector: 'app-brand-component',
   standalone: true,
@@ -45,7 +46,7 @@ brands: AssetBrand[] = [];
     private fb: FormBuilder,
     private brandService: BrandService,
     private categoryService: CategoryService,
-    private notification: NotificationService
+    private notification: ToastService
   ) {}
 
   ngOnInit(): void {

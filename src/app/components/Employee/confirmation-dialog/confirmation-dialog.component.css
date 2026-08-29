@@ -1,0 +1,32 @@
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.icon-danger {
+  color: #c62828;
+}
+
+.icon-warning {
+  color: #e65100;
+}
+
+.icon-info {
+  color: #0072a3;
+}
+
+.confirmation-message {
+  font-size: 0.92rem;
+  color: #333;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

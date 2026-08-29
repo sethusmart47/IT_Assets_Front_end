@@ -1,0 +1,243 @@
+<div class="employee-detail-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-link" (click)="onBackToList()">
+        <clr-icon shape="arrow" dir="left" size="16"></clr-icon> Back to Employees
+      </button>
+      <h2 *ngIf="selectedEmployee">
+        <clr-icon shape="user" size="24"></clr-icon>
+        {{ selectedEmployee.employeeName }}
+      </h2>
+    </div>
+    <div class="header-actions" *ngIf="selectedEmployee">
+      <button class="btn btn-success btn-sm" (click)="onAssignAsset()">
+        <clr-icon shape="plus" size="16"></clr-icon> Assign Asset
+      </button>
+      <button class="btn btn-warning btn-sm" (click)="onOpenSurrenderModal()"
+              [disabled]="activeAssignments.length === 0">
+        <clr-icon shape="upload" size="16"></clr-icon> Surrender All
+      </button>
+    </div>
+  </div>
+
+  <!-- Employee Info Card -->
+  <div class="employee-info-card" *ngIf="selectedEmployee">
+    <div class="info-item">
+      <span class="label">Email</span>
+      <span class="value">{{ selectedEmployee.email }}</span>
+    </div>
+    <div class="info-item">
+      <span class="label">Department</span>
+      <span class="value">{{ selectedEmployee.department }}</span>
+    </div>
+    <div class="info-item">
+      <span class="label">Designation</span>
+      <span class="value">{{ selectedEmployee.designation }}</span>
+    </div>
+    <div class="info-item">
+      <span class="label">Active Assets</span>
+      <span class="value badge badge-info">{{ selectedEmployee.activeAssetCount }}</span>
+    </div>
+  </div>
+
+  <!-- Current Assets (Active) -->
+  <div class="section-block">
+    <h4>
+      <clr-icon shape="devices" size="20"></clr-icon>
+      Current Assets (Active)
+    </h4>
+
+    <clr-datagrid [clrDgLoading]="assignmentsLoading">
+      <clr-dg-column>Asset Tag</clr-dg-column>
+      <clr-dg-column>Serial Number</clr-dg-column>
+      <clr-dg-column>Category</clr-dg-column>
+      <clr-dg-column>Brand</clr-dg-column>
+      <clr-dg-column>Model</clr-dg-column>
+      <clr-dg-column>Configuration</clr-dg-column>
+      <clr-dg-column>Assigned Date</clr-dg-column>
+      <clr-dg-column>Action</clr-dg-column>
+
+      <clr-dg-row *clrDgItems="let item of activeAssignments">
+        <clr-dg-cell>
+          <span class="asset-tag">{{ item.assetTag }}</span>
+        </clr-dg-cell>
+        <clr-dg-cell>{{ item.serialNumber }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.category }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.brand }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.model }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.configuration || '-' }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.assignedDate | date:'dd-MMM-yyyy' }}</clr-dg-cell>
+        <clr-dg-cell>
+          <button class="btn btn-sm btn-outline" (click)="onOpenReturnModal(item)">
+            <clr-icon shape="undo" size="14"></clr-icon> Return
+          </button>
+        </clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-placeholder>No active assets assigned to this employee.</clr-dg-placeholder>
+
+      <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+          {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }}
+        </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+
+  <!-- Assignment History -->
+  <div class="section-block">
+    <h4>
+      <clr-icon shape="history" size="20"></clr-icon>
+      Assignment History
+    </h4>
+
+    <clr-datagrid>
+      <clr-dg-column>Asset Tag</clr-dg-column>
+      <clr-dg-column>Serial Number</clr-dg-column>
+      <clr-dg-column>Category</clr-dg-column>
+      <clr-dg-column>Brand / Model</clr-dg-column>
+      <clr-dg-column>Assigned Date</clr-dg-column>
+      <clr-dg-column>Returned Date</clr-dg-column>
+      <clr-dg-column>Condition</clr-dg-column>
+      <clr-dg-column>Remarks</clr-dg-column>
+
+      <clr-dg-row *clrDgItems="let item of historyAssignments">
+        <clr-dg-cell>{{ item.assetTag }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.serialNumber }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.category }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.brand }} / {{ item.model }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.assignedDate | date:'dd-MMM-yyyy' }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.returnedDate | date:'dd-MMM-yyyy' }}</clr-dg-cell>
+        <clr-dg-cell>
+          <span class="condition-badge"
+                [class.good]="item.conditionAtReturn === 1"
+                [class.damaged]="item.conditionAtReturn === 2"
+                [class.lost]="item.conditionAtReturn === 3">
+            {{ item.conditionAtReturnName || '-' }}
+          </span>
+        </clr-dg-cell>
+        <clr-dg-cell>{{ item.remarks || '-' }}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-placeholder>No assignment history found.</clr-dg-placeholder>
+
+      <clr-dg-footer>
+        <clr-dg-pagination #pagination2 [clrDgPageSize]="10">
+          {{ pagination2.firstItem + 1 }} - {{ pagination2.lastItem + 1 }} of {{ pagination2.totalItems }}
+        </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+
+  <!-- ═══════ RETURN MODAL ═══════ -->
+  <clr-modal [(clrModalOpen)]="returnModalOpen" [clrModalSize]="'md'">
+    <h3 class="modal-title">
+      <clr-icon shape="undo" size="20"></clr-icon>
+      Return Asset
+    </h3>
+    <div class="modal-body">
+      <div class="return-asset-info" *ngIf="selectedAssignment">
+        <div class="info-row">
+          <span class="label">Asset Tag:</span>
+          <span class="value">{{ selectedAssignment.assetTag }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Serial Number:</span>
+          <span class="value">{{ selectedAssignment.serialNumber }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Category:</span>
+          <span class="value">{{ selectedAssignment.category }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Model:</span>
+          <span class="value">{{ selectedAssignment.brand }} {{ selectedAssignment.model }}</span>
+        </div>
+      </div>
+
+      <hr />
+
+      <form [formGroup]="returnForm" class="clr-form clr-form-vertical">
+        <clr-select-container>
+          <label>Condition at Return <span class="required">*</span></label>
+          <select clrSelect formControlName="conditionAtReturn">
+            <option [ngValue]="null" disabled>Select condition...</option>
+            <option *ngFor="let c of conditions" [ngValue]="c.value">{{ c.label }}</option>
+          </select>
+          <clr-control-error *clrIfError="'required'">Condition is required.</clr-control-error>
+        </clr-select-container>
+
+        <clr-textarea-container>
+          <label>Remarks (Optional)</label>
+          <textarea clrTextarea formControlName="remarks" placeholder="Enter remarks..."></textarea>
+        </clr-textarea-container>
+
+        <div class="status-info" *ngIf="returnForm.value.conditionAtReturn">
+          <clr-icon shape="info-circle" size="16"></clr-icon>
+          <span *ngIf="returnForm.value.conditionAtReturn === 1">Asset will become <strong>Available</strong></span>
+          <span *ngIf="returnForm.value.conditionAtReturn === 2">Asset will go to <strong>In Service</strong></span>
+          <span *ngIf="returnForm.value.conditionAtReturn === 3">Asset will be marked as <strong>Lost</strong></span>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" (click)="returnModalOpen = false">Cancel</button>
+      <button class="btn btn-primary" (click)="onConfirmReturn()" [disabled]="returnForm.invalid">
+        <clr-icon shape="check" size="16"></clr-icon> Confirm Return
+      </button>
+    </div>
+  </clr-modal>
+
+  <!-- ═══════ SURRENDER ALL MODAL ═══════ -->
+  <clr-modal [(clrModalOpen)]="surrenderModalOpen" [clrModalSize]="'xl'">
+    <h3 class="modal-title">
+      <clr-icon shape="upload" size="20"></clr-icon>
+      Surrender All Assets — {{ selectedEmployee?.employeeName }}
+    </h3>
+    <div class="modal-body">
+      <p class="surrender-note">
+        Set condition for each asset. All selected assets will be returned.
+      </p>
+
+      <table class="table table-compact">
+        <thead>
+          <tr>
+            <th>Asset Tag</th>
+            <th>Serial Number</th>
+            <th>Category</th>
+            <th>Model</th>
+            <th>Condition *</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of surrenderSelections; let i = index">
+            <td>{{ item.assignment.assetTag }}</td>
+            <td>{{ item.assignment.serialNumber }}</td>
+            <td>{{ item.assignment.category }}</td>
+            <td>{{ item.assignment.brand }} {{ item.assignment.model }}</td>
+            <td>
+              <select class="clr-select" [(ngModel)]="surrenderSelections[i].conditionAtReturn">
+                <option *ngFor="let c of conditions" [ngValue]="c.value">{{ c.label }}</option>
+              </select>
+            </td>
+            <td>
+              <input type="text" class="clr-input"
+                     placeholder="Optional..."
+                     [(ngModel)]="surrenderSelections[i].remarks" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" (click)="surrenderModalOpen = false">Cancel</button>
+      <button class="btn btn-warning" (click)="onConfirmSurrender()">
+        <clr-icon shape="upload" size="16"></clr-icon>
+        Surrender {{ surrenderSelections.length }} Asset(s)
+      </button>
+    </div>
+  </clr-modal>
+</div>

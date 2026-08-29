@@ -72,5 +72,8 @@
 .badge-neutral { background: #6d7884; color: #fff; }
 
 clr-datagrid{
-    height: 500px;
+    max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
 }

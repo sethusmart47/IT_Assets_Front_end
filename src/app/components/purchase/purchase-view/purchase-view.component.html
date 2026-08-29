@@ -1,0 +1,315 @@
+
+<!-- purchase-view.component.html -->
+<app-toast-container></app-toast-container>
+
+<!-- LOADING STATE -->
+<div class="page-loading" *ngIf="isLoading">
+  <span class="spinner spinner-md"></span>
+  <p>Loading purchase details...</p>
+</div>
+
+<!-- ERROR STATE -->
+<div class="page-error" *ngIf="!isLoading && loadError">
+  <clr-icon shape="error-standard" size="48"></clr-icon>
+  <h3>Failed to load purchase</h3>
+  <p>Something went wrong. Please try again.</p>
+  <button class="btn btn-primary" (click)="loadPurchase()">Retry</button>
+  <button class="btn btn-outline" (click)="goBack()">Go Back</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="view-container" *ngIf="!isLoading && !loadError && purchase">
+
+  <!-- ─── HEADER ─── -->
+  <div class="view-header">
+    <div class="header-left">
+      <a (click)="goBack()" class="back-link">
+        <clr-icon shape="arrow" dir="left"></clr-icon> Purchase Orders
+      </a>
+      <clr-icon shape="angle" dir="right" class="sep"></clr-icon>
+      <span class="po-number">{{ purchase.purchaseNumber }}</span>
+      <span class="status-badge" [ngClass]="statusClass">{{ statusLabel }}</span>
+    </div>
+
+    <div class="header-actions">
+      <!-- <button class="btn btn-outline btn-sm" (click)="printPage()" title="Print">
+        <clr-icon shape="printer"></clr-icon> Print
+      </button> -->
+
+      <button class="btn btn-outline btn-sm" (click)="goToEdit()" *ngIf="!isCompleted">
+        <clr-icon shape="pencil"></clr-icon> Edit
+      </button>
+
+      <button class="btn btn-success" (click)="openReceiveConfirm()" *ngIf="canReceive">
+        <clr-icon shape="check-circle"></clr-icon> Receive Assets
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── SUMMARY CARDS ─── -->
+  <div class="summary-strip">
+    <div class="summary-card">
+      <span class="summary-label">Total Items</span>
+      <span class="summary-value">{{ purchase.items.length }}</span>
+    </div>
+    <div class="summary-card">
+      <span class="summary-label">Total Units</span>
+      <span class="summary-value">{{ totalUnits }}</span>
+    </div>
+    <div class="summary-card">
+      <span class="summary-label">Total Amount</span>
+      <span class="summary-value amount">₹{{ totalAmount | number:'1.0-0' }}</span>
+    </div>
+    <div class="summary-card">
+      <span class="summary-label">Vendor</span>
+      <span class="summary-value vendor">{{ purchase.vendorName || '—' }}</span>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 1: PURCHASE DETAILS ─── -->
+  <div class="detail-card">
+    <div class="card-header">
+      <span class="step-circle">1</span>
+      <h4>PURCHASE INFORMATION</h4>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span class="detail-label">PO Number</span>
+        <span class="detail-value">{{ purchase.purchaseNumber }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Vendor</span>
+        <span class="detail-value">{{ purchase.vendorName || '—' }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">PO Date</span>
+        <span class="detail-value">{{ purchase.purchaseDate }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Invoice Number</span>
+        <span class="detail-value">{{ purchase.invoiceNumber || '—' }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Invoice Date</span>
+        <span class="detail-value">{{ purchase.invoiceDate }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Expected Delivery</span>
+        <span class="detail-value">{{ purchase.expectedDeliveryDate }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Ownership Type</span>
+        <span class="detail-value">{{ purchase.ownershipTypeName || '—' }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Status</span>
+        <span class="detail-value">
+          <span class="status-badge-sm" [ngClass]="statusClass">{{ statusLabel }}</span>
+        </span>
+      </div>
+
+      <div class="detail-item full-width" *ngIf="purchase.remarks">
+        <span class="detail-label">Remarks</span>
+        <span class="detail-value remarks-text">{{ purchase.remarks }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 2: ASSET ITEMS ─── -->
+  <div class="detail-card">
+    <div class="card-header">
+      <span class="step-circle">2</span>
+      <h4>ASSET PROCUREMENT DETAILS</h4>
+      <span class="badge-pill">
+        {{ purchase.items.length }} type(s) &middot; {{ totalUnits }} unit(s)
+      </span>
+    </div>
+
+    <!-- Items Datagrid -->
+    <clr-datagrid *ngIf="purchase.items.length > 0" class="items-grid">
+      <clr-dg-column>S.No</clr-dg-column>
+      <clr-dg-column [clrDgField]="'category'">Category</clr-dg-column>
+      <clr-dg-column [clrDgField]="'brand'">Brand</clr-dg-column>
+      <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
+      <clr-dg-column>Configuration</clr-dg-column>
+      <clr-dg-column class="num-col">Qty</clr-dg-column>
+      <clr-dg-column class="num-col">Unit Price</clr-dg-column>
+      
+      <clr-dg-column class="num-col">Subtotal</clr-dg-column>
+
+      <clr-dg-row *clrDgItems="let item of purchase.items; let i = index">
+        <clr-dg-cell class="sno-cell">{{ i + 1 }}</clr-dg-cell>
+        <clr-dg-cell>
+          <span class="cat-badge">{{ item.category }}</span>
+        </clr-dg-cell>
+        <clr-dg-cell>{{ item.brand }}</clr-dg-cell>
+        <clr-dg-cell>
+          <strong>{{ item.model }}</strong>
+        </clr-dg-cell>
+        <clr-dg-cell class="config-cell">{{ item.configuration || '—' }}</clr-dg-cell>
+        <clr-dg-cell class="num-col">{{ item.quantity }}</clr-dg-cell>
+        <clr-dg-cell class="num-col">₹{{ item.unitPrice | number:'1.0-0' }}</clr-dg-cell>
+        
+        <clr-dg-cell class="num-col">
+          <strong>₹{{ item.subTotal | number:'1.0-0' }}</strong>
+        </clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+          {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }} items
+        </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+
+    <!-- Empty Items -->
+    <div class="empty-block" *ngIf="purchase.items.length === 0">
+      <clr-icon shape="shopping-bag" size="40"></clr-icon>
+      <p>No items in this purchase order.</p>
+    </div>
+
+    <!-- Total Bar -->
+    <div class="total-bar" *ngIf="purchase.items.length > 0">
+      <div class="total-left">
+        <span>{{ totalUnits }} total units across {{ purchase.items.length }} asset type(s)</span>
+      </div>
+      <div class="total-right">
+        <span>Grand Total:</span>
+        <strong>₹{{ totalAmount | number:'1.0-0' }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 3: ATTACHMENTS ─── -->
+  <div class="detail-card" *ngIf="purchase.attachments.length > 0">
+    <div class="card-header">
+      <span class="step-circle">3</span>
+      <h4>INVOICE ATTACHMENTS</h4>
+      <span class="badge-pill">{{ purchase.attachments.length }} file(s)</span>
+    </div>
+
+    <div class="attachments-grid">
+      <div class="att-card" *ngFor="let att of purchase.attachments">
+
+        <!-- Thumbnail -->
+        <div class="att-thumb" (click)="viewAttachment(att)">
+          <img
+    *ngIf="isImageAttachment(att)"
+    [src]="getPreviewUrl(att)"
+    [alt]="att.fileName"
+    class="thumb-img"
+    loading="lazy"
+    (error)="onImageError($event)">
+            [src]="getThumbnailUrl(att)"
+            [alt]="att.fileName"
+            class="att-img"
+            loading="lazy">
+          <div *ngIf="!isImageAttachment(att)" class="att-icon-box">
+            <clr-icon [attr.shape]="getFileIcon(att.contentType)" size="36"></clr-icon>
+          </div>
+          <div class="att-overlay">
+            <clr-icon shape="eye" size="20"></clr-icon>
+          </div>
+        </div>
+
+        <!-- File Info -->
+        <div class="att-info">
+          <span class="att-name" [title]="att.fileName">{{ att.fileName }}</span>
+          <span class="att-size">{{ formatFileSize(att.fileSize) }}</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="att-actions">
+          <button class="btn btn-link btn-sm" (click)="viewAttachment(att)" title="View">
+            <clr-icon shape="eye"></clr-icon> View
+          </button>
+          <button class="btn btn-link btn-sm" (click)="downloadAttachment(att)" title="Download">
+            <clr-icon shape="download"></clr-icon> Download
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TIMELINE ─── -->
+  <!-- <div class="detail-card" *ngIf="purchase.createdAt || purchase.completedAt">
+    <div class="card-header">
+      <span class="step-circle">4</span>
+      <h4>ACTIVITY TIMELINE</h4>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item" *ngIf="purchase.createdAt">
+        <div class="timeline-dot created"></div>
+        <div class="timeline-content">
+          <strong>Purchase Created</strong>
+          <span class="timeline-date">{{ formatDate(purchase.createdAt) }}</span>
+          <span class="timeline-by" *ngIf="purchase.createdBy">by {{ purchase.createdBy }}</span>
+        </div>
+      </div>
+
+      <div class="timeline-item" *ngIf="purchase.updatedAt">
+        <div class="timeline-dot updated"></div>
+        <div class="timeline-content">
+          <strong>Last Updated</strong>
+          <span class="timeline-date">{{ formatDate(purchase.updatedAt) }}</span>
+        </div>
+      </div>
+
+      <div class="timeline-item" *ngIf="purchase.completedAt">
+        <div class="timeline-dot completed"></div>
+        <div class="timeline-content">
+          <strong>Assets Received</strong>
+          <span class="timeline-date">{{ formatDate(purchase.completedAt) }}</span>
+          <span class="timeline-by" *ngIf="purchase.completedBy">by {{ purchase.completedBy }}</span>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- ─── BOTTOM ACTIONS ─── -->
+  <div class="bottom-actions">
+    <button class="btn btn-outline" (click)="goBack()">
+      <clr-icon shape="arrow" dir="left"></clr-icon> Back to Purchase Orders
+    </button>
+
+    <div class="bottom-right">
+      <button class="btn btn-outline" (click)="goToEdit()" *ngIf="!isCompleted">
+        <clr-icon shape="pencil"></clr-icon> Edit Purchase
+      </button>
+
+      <button class="btn btn-success" (click)="openReceiveConfirm()" *ngIf="canReceive">
+        <clr-icon shape="check-circle"></clr-icon> Receive Assets
+      </button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- <app-confirm-dialog
+  [isOpen]="isReceiveOpen"
+  [loading]="receiving"
+  [title]="'Receive Assets'"
+  [message]="'Are you sure you want to mark this purchase as received? This will generate asset tags for all ' + totalUnits + ' unit(s). This action cannot be undone.'"
+  [confirmText]="'Yes, Receive Assets'"
+  (onConfirm)="confirmReceive()"
+  (onCancel)="cancelReceive()">
+</app-confirm-dialog> -->
+
+<!-- ─── IMAGE PREVIEW ─── -->
+<app-image-preview-modal
+  *ngIf="isPreviewOpen"
+  [isOpen]="isPreviewOpen"
+  [imageUrl]="previewImageUrl!"
+  (closed)="closePreview()">
+</app-image-preview-modal>
+

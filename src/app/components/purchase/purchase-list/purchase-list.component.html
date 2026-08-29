@@ -75,9 +75,11 @@
         </span>
       </clr-dg-cell>
       <clr-dg-cell class="action-cell">
-        
-          <button (click)="navigateToEdit(purchase)">
-              <clr-icon shape="pencil"></clr-icon>
+        <button class="btn btn-sm btn-icon btn-link" title="View" (click)="viewpurchse(purchase.id)">
+          <cds-icon shape="eye"></cds-icon>
+        </button>
+          <button  class="btn btn-sm btn-icon btn-link" title="Edit" (click)="navigateToEdit(purchase)">
+                 <cds-icon shape="pencil"></cds-icon>
             </button>
     
       </clr-dg-cell>
