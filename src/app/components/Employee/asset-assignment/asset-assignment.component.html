@@ -1,0 +1,214 @@
+
+<div class="assign-asset-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-link" (click)="onCancel()">
+        <clr-icon shape="arrow" dir="left" size="18"></clr-icon> Back to Employee
+      </button>
+      <h2>
+        <clr-icon shape="assign-user" size="24"></clr-icon>
+        Assign Asset to Employee
+      </h2>
+    </div>
+  </div>
+
+  <!-- Employee Info Banner -->
+  <div class="employee-banner" *ngIf="employee">
+    <clr-icon shape="user" size="20"></clr-icon>
+    <span class="emp-name">{{ employee.employeeName }}</span>
+    <span class="emp-meta">{{ employee.email }} | {{ employee.department }} | {{ employee.designation }}</span>
+  </div>
+
+  <!-- STEP 1: Search Asset -->
+  <div class="section-card">
+    <h4>
+      <span class="step-number">1</span>
+      Search Available Asset
+    </h4>
+
+    <form [formGroup]="searchForm" class="search-form" (ngSubmit)="onSearchAsset()">
+      <div class="search-row">
+        <clr-radio-container clrInline>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio formControlName="searchType" value="serialNumber" />
+            <label>Serial Number</label>
+          </clr-radio-wrapper>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio formControlName="searchType" value="assetTag" />
+            <label>Asset Tag</label>
+          </clr-radio-wrapper>
+        </clr-radio-container>
+
+        <div class="search-input-group">
+          <clr-input-container>
+            <label>{{ searchForm.value.searchType === 'serialNumber' ? 'Serial Number' : 'Asset Tag' }}</label>
+            <input clrInput
+                   formControlName="searchValue"
+                   [placeholder]="searchForm.value.searchType === 'serialNumber' ? 'Enter serial number...' : 'Enter asset tag...'" />
+            <clr-control-error *clrIfError="'required'">This field is required.</clr-control-error>
+          </clr-input-container>
+
+          <button type="submit" class="btn btn-primary btn-sm" [clrLoading]="searching">
+            <clr-icon shape="search" size="16"></clr-icon> Search
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" (click)="onClearSearch()">
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="info-note">
+        <clr-icon shape="info-circle" size="16"></clr-icon>
+        Only assets with <strong>"Available"</strong> status will be returned.
+      </div>
+    </form>
+
+    <!-- Search Error -->
+    <clr-alert [clrAlertType]="'warning'" [clrAlertClosable]="false" *ngIf="searchError">
+      <clr-alert-item>
+        <span class="alert-text">{{ searchError }}</span>
+      </clr-alert-item>
+    </clr-alert>
+  </div>
+
+  <!-- STEP 2: Asset Details (Read-Only) -->
+  <div class="section-card" *ngIf="assetDetail">
+    <h4>
+      <span class="step-number">2</span>
+      Asset Details
+      <span class="status-badge available">{{ assetDetail.statusName }}</span>
+    </h4>
+
+    <div class="asset-detail-grid">
+      <!-- Identity -->
+      <div class="detail-group">
+        <h5>Identity</h5>
+        <div class="detail-row">
+          <span class="label">Asset Tag</span>
+          <span class="value mono">{{ assetDetail.assetTag }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Serial Number</span>
+          <span class="value mono">{{ assetDetail.serialNumber }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Status</span>
+          <span class="value">{{ assetDetail.statusName }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Condition</span>
+          <span class="value">{{ assetDetail.conditionName }}</span>
+        </div>
+      </div>
+
+      <!-- Classification -->
+      <div class="detail-group">
+        <h5>Classification</h5>
+        <div class="detail-row">
+          <span class="label">Category</span>
+          <span class="value">{{ assetDetail.category }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Brand</span>
+          <span class="value">{{ assetDetail.brand }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Model</span>
+          <span class="value">{{ assetDetail.model }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Configuration</span>
+          <span class="value">{{ assetDetail.configuration || '-' }}</span>
+        </div>
+      </div>
+
+      <!-- Purchase -->
+      <div class="detail-group">
+        <h5>Purchase</h5>
+        <div class="detail-row">
+          <span class="label">PO Number</span>
+          <span class="value">{{ assetDetail.purchaseNumber }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Vendor</span>
+          <span class="value">{{ assetDetail.vendorName }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Purchase Date</span>
+          <span class="value">{{ assetDetail.purchaseDate | date:'dd-MMM-yyyy' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Ownership</span>
+          <span class="value">{{ assetDetail.ownershipTypeName }}</span>
+        </div>
+      </div>
+
+      <!-- Warranty -->
+      <div class="detail-group">
+        <h5>Warranty</h5>
+        <div class="detail-row">
+          <span class="label">Start Date</span>
+          <span class="value">{{ assetDetail.warrantyStartDate | date:'dd-MMM-yyyy' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">End Date</span>
+          <span class="value">{{ assetDetail.warrantyEndDate | date:'dd-MMM-yyyy' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Duration</span>
+          <span class="value">{{ assetDetail.warrantyMonths }} months</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Status</span>
+          <span class="value">
+            <span class="warranty-badge" [class.active]="assetDetail.isWarrantyActive" [class.expired]="!assetDetail.isWarrantyActive">
+              {{ assetDetail.isWarrantyActive ? 'Active (' + assetDetail.warrantyDaysRemaining + ' days)' : 'Expired' }}
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lifecycle History -->
+    <!-- <div class="lifecycle-section" *ngIf="assetDetail.lifecycleHistories?.length > 0">
+      <h5>
+        <clr-icon shape="timeline" size="16"></clr-icon> Lifecycle History
+      </h5>
+      <div class="timeline">
+        <div class="timeline-item" *ngFor="let history of assetDetail.lifecycleHistories">
+          <div class="timeline-dot"
+               [class.registered]="history.action === 'Registered'"
+               [class.assigned]="history.action === 'Assigned'"
+               [class.returned]="history.action === 'Returned'">
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <strong>{{ history.action }}</strong>
+              <span class="timeline-date">{{ history.performedDate | date:'dd-MMM-yyyy HH:mm' }}</span>
+            </div>
+            <div class="timeline-detail" *ngIf="history.employeeName">
+              Employee: {{ history.employeeName }} ({{ history.employeeEmail }})
+            </div>
+            <div class="timeline-detail" *ngIf="history.remarks">
+              {{ history.remarks }}
+            </div>
+            <div class="timeline-status">
+              {{ history.oldStatus || '-' }} → {{ history.newStatus }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+<app-confirmation-dialog></app-confirmation-dialog>
+    <!-- Confirm Assignment Button -->
+    <div class="action-bar">
+      <button class="btn btn-success" (click)="onConfirmAssignment()" [clrLoading]="assigning">
+        <clr-icon shape="check" size="16"></clr-icon> Confirm Assignment
+      </button>
+      <button class="btn btn-outline" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+</div>
+

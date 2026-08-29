@@ -138,7 +138,7 @@
       <div class="card-body">
         <div class="field-row" *ngIf="!asset.currentEmployeeId">
           <span class="field-label">Employee</span>
-          <span class="field-value muted">Not Assigned</span>
+          <span class="field-value muted"></span>
         </div>
         <div class="field-row" *ngIf="asset.currentEmployeeId">
           <span class="field-label">Employee ID</span>
@@ -159,7 +159,8 @@
       </div>
     </div>
   </div>
-
+  <!-- Lifecycle History -->
+    
   <!-- Lifecycle Timeline Section -->
   <div class="detail-section">
     <h4 class="section-title">Lifecycle Timeline</h4>
@@ -180,6 +181,9 @@
               <span class="old-status">{{ history.oldStatusName }}</span>
               <cds-icon shape="arrow" direction="right"></cds-icon>
               <span class="new-status">{{ history.newStatusName }}</span>
+            </div>
+             <div class="timeline-detail" *ngIf="history.employeeName">
+              Employee: {{ history.employeeName }} ({{ history.employeeEmail }})
             </div>
             <div class="timeline-status" *ngIf="!history.oldStatusName">
               <span class="new-status">{{ history.newStatusName }}</span>

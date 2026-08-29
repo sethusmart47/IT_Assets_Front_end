@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
-import { ConfirmDialogComponentComponent } from '../../confirm-dialog-component/confirm-dialog-component.component';
+import { ConfirmDialogComponentComponent } from '../../Delete confirm-dialog-component/confirm-dialog-component.component';
 import { AssetDetailComponent } from '../asset-detail/asset-detail.component';
 
 import { WarrantyStatusPipe } from '../../../pipes/warranty-status.pipe';

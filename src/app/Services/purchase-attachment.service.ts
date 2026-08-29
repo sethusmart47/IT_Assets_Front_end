@@ -22,12 +22,14 @@ export class PurchaseAttachmentService {
     files.forEach(file => formData.append('files', file));
     return this.http.post<PurchaseAttachmentDto[]>(`${this.baseUrl}/${purchaseId}/attachments`, formData);
   }
-
+  getPreviewUrl(purchaseId: string, attachmentId: string): string {
+    return `${this.baseUrl}/${purchaseId}/${attachmentId}/preview`;
+  }
   getDownloadUrl(purchaseId: string, attachmentId: string): string {
     return `${this.baseUrl}/${purchaseId}/attachments/${attachmentId}/download`;
   }
 
-  delete(purchaseId: string, attachmentId: string): Observable<string> {
-    return this.http.delete(`${this.baseUrl}/${purchaseId}/attachments/${attachmentId}`, { responseType: 'text' });
+  delete( attachmentId: string): Observable<string> {
+    return this.http.delete<string>(`${this.baseUrl}/${attachmentId}`);
   }
 }

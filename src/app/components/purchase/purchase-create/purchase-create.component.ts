@@ -17,7 +17,7 @@ import { VendorService } from '../../../Services/vendor.service';
 import { ToastService } from '../../../Services/toast.service';
 
 import { PurchasedItemModalComponent } from '../purchased-item-modal/purchased-item-modal.component';
-import { ConfirmDialogComponentComponent } from '../../confirm-dialog-component/confirm-dialog-component.component';
+import { ConfirmDialogComponentComponent } from '../../Delete confirm-dialog-component/confirm-dialog-component.component';
 
 
 import { ToastContainerComponent } from '../../toast-container/toast-containe.component';
@@ -288,6 +288,12 @@ export class PurchaseCreateComponent implements OnInit {
 
   // ─── ATTACHMENTS ───
 
+  // ─── REPLACE these methods in purchase-create.component.ts ───
+
+  // ──────────────────────────────────────────────
+  // DRAG & DROP + FILE SELECT (keep as-is)
+  // ──────────────────────────────────────────────
+
   onDragOver(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
@@ -345,22 +351,40 @@ export class PurchaseCreateComponent implements OnInit {
     });
   }
 
+  // ──────────────────────────────────────────────
+  // ✅ FIX 1: Use getPreviewUrl instead of getDownloadUrl
+  // OLD: return this.attachmentService.getDownloadUrl(...)  ← forces download, <img> won't render
+  // NEW: return this.attachmentService.getPreviewUrl(...)   ← returns inline, <img> renders it
+  // ──────────────────────────────────────────────
+
   isImageAttachment(att: PurchaseAttachmentDto): boolean {
-    return att.contentType?.startsWith('image/') || false;
+    if (!att.contentType) return false;
+    return att.contentType.startsWith('image/');
   }
 
+  // ✅ FIXED — was getDownloadUrl, now getPreviewUrl
   getThumbnailUrl(att: PurchaseAttachmentDto): string {
-    return this.attachmentService.getDownloadUrl(this.purchaseId!, att.id);
+    return this.attachmentService.getPreviewUrl(this.purchaseId!, att.id);
   }
 
+  // ✅ FIXED — preview modal uses getPreviewUrl, non-images use getDownloadUrl
   viewAttachment(att: PurchaseAttachmentDto): void {
-    const url = this.attachmentService.getDownloadUrl(this.purchaseId!, att.id);
     if (this.isImageAttachment(att)) {
-      this.previewImageUrl = url;
+      // Image → open in preview modal (uses /preview endpoint)
+      this.previewImageUrl = this.attachmentService.getPreviewUrl(this.purchaseId!, att.id);
       this.isPreviewOpen = true;
     } else {
+      // PDF/other → open in new tab (uses /download endpoint)
+      const url = this.attachmentService.getDownloadUrl(this.purchaseId!, att.id);
       window.open(url, '_blank');
     }
+  }
+
+  // ✅ NEW — fallback when image fails to load
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/images/no-preview.png';
+    img.alt = 'Image not available';
   }
 
   closePreview(): void {
@@ -368,8 +392,12 @@ export class PurchaseCreateComponent implements OnInit {
     this.previewImageUrl = null;
   }
 
+  // ──────────────────────────────────────────────
+  // DELETE (keep as-is)
+  // ──────────────────────────────────────────────
+
   deleteAttachment(att: PurchaseAttachmentDto): void {
-    this.attachmentService.delete(this.purchaseId!, att.id).subscribe({
+    this.attachmentService.delete(att.id).subscribe({
       next: () => {
         this.attachments = this.attachments.filter(a => a.id !== att.id);
         this.toast.success('Attachment removed.');
@@ -381,7 +409,7 @@ export class PurchaseCreateComponent implements OnInit {
   getFileIcon(contentType: string): string {
     if (!contentType) return 'document';
     if (contentType.includes('pdf')) return 'file';
-    if (contentType.includes('image')) return 'image';
+    if (contentType.startsWith('image/')) return 'image';
     return 'document';
   }
 
@@ -391,6 +419,7 @@ export class PurchaseCreateComponent implements OnInit {
     if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / 1048576).toFixed(1) + ' MB';
   }
+
 
   // ─── COMPLETE ───
 
@@ -413,7 +442,7 @@ export class PurchaseCreateComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/purchases']);
+    this.router.navigate(['/purchase']);
   }
 }
 

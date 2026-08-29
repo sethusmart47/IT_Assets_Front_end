@@ -5,9 +5,10 @@ import { CategoryService } from '../../Services/category-service.service';
 import { NotificationService } from '../../Services/notification-service.service';
 import { ClarityModule } from '@clr/angular';
 
-import {  ConfirmDialogComponentComponent } from '../confirm-dialog-component/confirm-dialog-component.component';
+import {  ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
 import { ReusableDatagridComponentComponent } from '../reusable-datagrid-component/reusable-datagrid-component.component';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../Services/toast.service';
 
 @Component({
   selector: 'app-category',
@@ -42,7 +43,7 @@ export class CategoryComponent implements OnInit  {
   constructor(
     private fb: FormBuilder,
     private categoryService: CategoryService,
-    private notification: NotificationService
+    private notification: ToastService
   ) {}
 
   ngOnInit(): void {

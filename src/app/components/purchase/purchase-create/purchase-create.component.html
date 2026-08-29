@@ -197,10 +197,13 @@
     </div>
 
     <!-- ─── SECTION 3: ATTACHMENTS ─── -->
-    <div class="section-card" *ngIf="isEditMode">
+     <div class="section-card" *ngIf="isEditMode">
       <div class="section-title-bar">
         <span class="step-circle">3</span>
         <h4>INVOICE ATTACHMENTS</h4>
+        <span class="badge-info" *ngIf="attachments.length > 0">
+          {{ attachments.length }} file(s)
+        </span>
       </div>
 
       <div class="upload-toolbar">
@@ -236,30 +239,37 @@
       <div class="thumbnails-grid" *ngIf="attachments.length > 0">
         <div class="thumb-card" *ngFor="let att of attachments">
           <div class="thumb-preview" (click)="viewAttachment(att)">
-            <!-- Image Thumbnail -->
+
+            <!-- ✅ IMAGE THUMBNAIL — uses /preview endpoint now -->
             <img *ngIf="isImageAttachment(att)"
               [src]="getThumbnailUrl(att)"
               [alt]="att.fileName"
               class="thumb-img"
-              loading="lazy">
-            <!-- File Icon for non-images -->
+              loading="lazy"
+              (error)="onImageError($event)">
+
+            <!-- FILE ICON for non-images -->
             <div *ngIf="!isImageAttachment(att)" class="thumb-icon">
               <clr-icon [attr.shape]="getFileIcon(att.contentType)" size="36"></clr-icon>
             </div>
+
+            <!-- Hover overlay -->
             <div class="thumb-hover">
               <clr-icon shape="eye" size="20"></clr-icon>
             </div>
           </div>
+
           <div class="thumb-info">
             <span class="thumb-name" [title]="att.fileName">{{ att.fileName }}</span>
             <span class="thumb-size">{{ formatFileSize(att.fileSize) }}</span>
           </div>
+
           <div class="thumb-actions">
             <button class="btn btn-link btn-sm" (click)="viewAttachment(att)" title="View">
-              <clr-icon shape="eye"></clr-icon>
+              <cds-icon shape="eye"></cds-icon>
             </button>
             <button class="btn btn-link btn-sm text-danger" (click)="deleteAttachment(att)" title="Delete">
-              <clr-icon shape="trash"></clr-icon>
+              <cds-icon shape="trash"></cds-icon>
             </button>
           </div>
         </div>

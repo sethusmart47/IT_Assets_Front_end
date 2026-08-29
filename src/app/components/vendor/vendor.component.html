@@ -78,7 +78,7 @@
         <!-- Vendor Name -->
         <div class="clr-col-md-6">
           <clr-input-container>
-            <label>Vendor Name *</label>
+            <label>Vendor Name <span class="required">*</span></label>
             <input clrInput formControlName="vendorName" placeholder="Enter vendor name" />
             <clr-control-error *clrIfError="'required'">Vendor name is required.</clr-control-error>
             <clr-control-error *clrIfError="'maxlength'">Max 200 characters.</clr-control-error>
@@ -88,7 +88,7 @@
         <!-- Contact Person -->
         <div class="clr-col-md-6">
           <clr-input-container>
-            <label>Contact Person *</label>
+            <label>Contact Person <span class="required">*</span></label>
             <input clrInput formControlName="contactPerson" placeholder="Enter contact person" />
             <clr-control-error *clrIfError="'required'">Contact person is required.</clr-control-error>
             <clr-control-error *clrIfError="'maxlength'">Max 100 characters.</clr-control-error>
@@ -100,7 +100,7 @@
         <!-- Email -->
         <div class="clr-col-md-6">
           <clr-input-container>
-            <label>Email *</label>
+            <label>Email <span class="required">*</span></label>
             <input clrInput formControlName="email" placeholder="Enter email address" type="email" />
             <clr-control-error *clrIfError="'required'">Email is required.</clr-control-error>
             <clr-control-error *clrIfError="'email'">Enter a valid email address.</clr-control-error>
@@ -111,7 +111,7 @@
         <!-- Phone -->
         <div class="clr-col-md-6">
           <clr-input-container>
-            <label>Phone *</label>
+            <label>Phone <span class="required">*</span></label>
             <input clrInput formControlName="phone" placeholder="Enter phone number" />
             <clr-control-error *clrIfError="'required'">Phone is required.</clr-control-error>
             <clr-control-error *clrIfError="'maxlength'">Max 20 characters.</clr-control-error>
@@ -162,11 +162,11 @@
     </button>
   </div>
 </clr-modal>
-
-<app-confirm-dialog
+<!--  -->
+<!-- <app-confirm-dialog
   [isOpen]="isDeleteOpen"
   [loading]="deleting"
   [message]="'Are you sure you want to delete vendor: ' + deleteItemRef?.vendorName + '?'"
   (onConfirm)="confirmDelete()"
   (onCancel)="cancelDelete()">
-</app-confirm-dialog>
+</app-confirm-dialog> -->

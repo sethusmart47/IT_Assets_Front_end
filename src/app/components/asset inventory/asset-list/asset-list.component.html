@@ -113,11 +113,22 @@
       </clr-dg-cell>
     </clr-dg-row>
 
-    <clr-dg-footer>
-      <clr-dg-pagination #pagination [clrDgPageSize]="10">
-        {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }} assets
-      </clr-dg-pagination>
-    </clr-dg-footer>
+   <clr-dg-footer>
+  <clr-dg-pagination #pagination [clrDgPageSize]="10">
+
+    <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50]">
+      Assets per page
+    </clr-dg-page-size>
+
+    {{ pagination.firstItem + 1 }}
+    -
+    {{ pagination.lastItem + 1 }}
+    of
+    {{ pagination.totalItems }}
+    assets
+
+  </clr-dg-pagination>
+</clr-dg-footer>
   </clr-datagrid>
 
   <!-- Edit Modal -->

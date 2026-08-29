@@ -1,12 +1,12 @@
  .toast-wrapper {
       position: fixed;
-      top: 16px;
-      right: 16px;
+      bottom: 16px;
+      right: 30px;
       z-index: 99999;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-width: 380px;
+      flex-direction: row;
+      gap: 30px;
+      width: 900px;
       pointer-events: none;
     }
     .toast-item {
@@ -19,7 +19,7 @@
       box-shadow: 0 6px 16px rgba(0,0,0,0.12);
       animation: slideIn 0.3s ease-out;
       cursor: pointer;
-      min-width: 320px;
+      min-width: 400px;
     }
     @keyframes slideIn {
       from { transform: translateX(100%); opacity: 0; }

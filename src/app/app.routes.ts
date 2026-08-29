@@ -12,6 +12,10 @@ import { AssetRegisterComponent } from './components/asset inventory/asset-regis
 import { AssetListComponent } from './components/asset inventory/asset-list/asset-list.component';
 import { AssetDetailComponent } from './components/asset inventory/asset-detail/asset-detail.component';
 import { AssetEditModalComponent } from './components/asset inventory/asset-edit-modal/asset-edit-modal.component';
+import { EmployeeComponent } from './components/Employee/employee/employee.component';
+import { AssetAssignmentComponent } from './components/Employee/asset-assignment/asset-assignment.component';
+import { EmployeeDetailComponent } from './components/Employee/employee-detail/employee-detail.component';
+import { PurchaseViewComponent } from './components/purchase/purchase-view/purchase-view.component';
 
 export const routes: Routes = [
 
@@ -22,8 +26,43 @@ export const routes: Routes = [
    {path:'purchase',component:PurchaseListComponent},
    {path:'purchases/create',component:PurchaseCreateComponent},
    {path:'purchases/:id/edit',component:PurchaseCreateComponent},
+   {path:'purchases/:id/view',component:PurchaseViewComponent},
    {path:'asset/register',component:AssetRegisterComponent},
    {path:'asset/list',component:AssetListComponent},
    {path:'asset/detail/:id',component:AssetDetailComponent},
-   {path:'asset/edit',component:AssetEditModalComponent}
-];
+   
+   {path:'asset/edit',component:AssetEditModalComponent},
+   {path:'employee',component:EmployeeComponent},
+   {path:'asset/assignment/:id',component:AssetAssignmentComponent},
+   {path:'employee/detail/:id',component:EmployeeDetailComponent}
+    
+  ];
+// <div class="lifecycle-section" *ngIf="assetDetail.lifecycleHistories?.length > 0">
+//       <h5>
+//         <clr-icon shape="timeline" size="16"></clr-icon> Lifecycle History
+//       </h5>
+//       <div class="timeline">
+//         <div class="timeline-item" *ngFor="let history of assetDetail.lifecycleHistories">
+//           <div class="timeline-dot"
+//                [class.registered]="history.action === 'Registered'"
+//                [class.assigned]="history.action === 'Assigned'"
+//                [class.returned]="history.action === 'Returned'">
+//           </div>
+//           <div class="timeline-content">
+//             <div class="timeline-header">
+//               <strong>{{ history.action }}</strong>
+//               <span class="timeline-date">{{ history.performedDate | date:'dd-MMM-yyyy HH:mm' }}</span>
+//             </div>
+//             <div class="timeline-detail" *ngIf="history.employeeName">
+//               Employee: {{ history.employeeName }} ({{ history.employeeEmail }})
+//             </div>
+//             <div class="timeline-detail" *ngIf="history.remarks">
+//               {{ history.remarks }}
+//             </div>
+//             <div class="timeline-status">
+//               {{ history.oldStatus || '-' }} → {{ history.newStatus }}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
