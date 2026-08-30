@@ -30,6 +30,7 @@ export const routes: Routes = [
    {path:'purchases/create',component:PurchaseCreateComponent},
    {path:'purchases/:id/edit',component:PurchaseCreateComponent},
    {path:'purchases/:id/view',component:PurchaseViewComponent},
+   {path:'purchases/:id/view',component:PurchaseViewComponent},
    {path:'asset/register',component:AssetRegisterComponent},
    {path:'asset/list',component:AssetListComponent},
    {path:'asset/detail/:id',component:AssetDetailComponent},
