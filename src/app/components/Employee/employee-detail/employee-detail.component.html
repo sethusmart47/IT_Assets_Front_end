@@ -4,20 +4,20 @@
   <div class="page-header">
     <div class="header-left">
       <button class="btn btn-sm btn-link" (click)="onBackToList()">
-        <clr-icon shape="arrow" dir="left" size="16"></clr-icon> Back to Employees
+        <cds-icon shape="arrow" dir="left" size="16"></cds-icon> Back to Employees
       </button>
       <h2 *ngIf="selectedEmployee">
-        <clr-icon shape="user" size="24"></clr-icon>
+        <cds-icon shape="user" size="24"></cds-icon>
         {{ selectedEmployee.employeeName }}
       </h2>
     </div>
     <div class="header-actions" *ngIf="selectedEmployee">
       <button class="btn btn-success btn-sm" (click)="onAssignAsset()">
-        <clr-icon shape="plus" size="16"></clr-icon> Assign Asset
+        <cds-icon shape="plus" size="16"></cds-icon> Assign Asset
       </button>
       <button class="btn btn-warning btn-sm" (click)="onOpenSurrenderModal()"
               [disabled]="activeAssignments.length === 0">
-        <clr-icon shape="upload" size="16"></clr-icon> Surrender All
+        <cds-icon shape="upload" size="16"></cds-icon> Surrender All
       </button>
     </div>
   </div>
@@ -45,7 +45,7 @@
   <!-- Current Assets (Active) -->
   <div class="section-block">
     <h4>
-      <clr-icon shape="devices" size="20"></clr-icon>
+      <cds-icon shape="devices" size="20"></cds-icon>
       Current Assets (Active)
     </h4>
 
@@ -71,7 +71,7 @@
         <clr-dg-cell>{{ item.assignedDate | date:'dd-MMM-yyyy' }}</clr-dg-cell>
         <clr-dg-cell>
           <button class="btn btn-sm btn-outline" (click)="onOpenReturnModal(item)">
-            <clr-icon shape="undo" size="14"></clr-icon> Return
+            <cds-icon shape="undo" size="14"></cds-icon> Return
           </button>
         </clr-dg-cell>
       </clr-dg-row>
@@ -89,7 +89,7 @@
   <!-- Assignment History -->
   <div class="section-block">
     <h4>
-      <clr-icon shape="history" size="20"></clr-icon>
+      <cds-icon shape="history" size="20"></cds-icon>
       Assignment History
     </h4>
 
@@ -134,7 +134,7 @@
   <!-- ═══════ RETURN MODAL ═══════ -->
   <clr-modal [(clrModalOpen)]="returnModalOpen" [clrModalSize]="'md'">
     <h3 class="modal-title">
-      <clr-icon shape="undo" size="20"></clr-icon>
+      <cds-icon shape="undo" size="20"></cds-icon>
       Return Asset
     </h3>
     <div class="modal-body">
@@ -175,7 +175,7 @@
         </clr-textarea-container>
 
         <div class="status-info" *ngIf="returnForm.value.conditionAtReturn">
-          <clr-icon shape="info-circle" size="16"></clr-icon>
+          <cds-icon shape="info-circle" size="16"></cds-icon>
           <span *ngIf="returnForm.value.conditionAtReturn === 1">Asset will become <strong>Available</strong></span>
           <span *ngIf="returnForm.value.conditionAtReturn === 2">Asset will go to <strong>In Service</strong></span>
           <span *ngIf="returnForm.value.conditionAtReturn === 3">Asset will be marked as <strong>Lost</strong></span>
@@ -185,7 +185,7 @@
     <div class="modal-footer">
       <button class="btn btn-outline" (click)="returnModalOpen = false">Cancel</button>
       <button class="btn btn-primary" (click)="onConfirmReturn()" [disabled]="returnForm.invalid">
-        <clr-icon shape="check" size="16"></clr-icon> Confirm Return
+        <cds-icon shape="check" size="16"></cds-icon> Confirm Return
       </button>
     </div>
   </clr-modal>
@@ -193,7 +193,7 @@
   <!-- ═══════ SURRENDER ALL MODAL ═══════ -->
   <clr-modal [(clrModalOpen)]="surrenderModalOpen" [clrModalSize]="'xl'">
     <h3 class="modal-title">
-      <clr-icon shape="upload" size="20"></clr-icon>
+      <cds-icon shape="upload" size="20"></cds-icon>
       Surrender All Assets — {{ selectedEmployee?.employeeName }}
     </h3>
     <div class="modal-body">
@@ -235,7 +235,7 @@
     <div class="modal-footer">
       <button class="btn btn-outline" (click)="surrenderModalOpen = false">Cancel</button>
       <button class="btn btn-warning" (click)="onConfirmSurrender()">
-        <clr-icon shape="upload" size="16"></clr-icon>
+        <cds-icon shape="upload" size="16"></cds-icon>
         Surrender {{ surrenderSelections.length }} Asset(s)
       </button>
     </div>

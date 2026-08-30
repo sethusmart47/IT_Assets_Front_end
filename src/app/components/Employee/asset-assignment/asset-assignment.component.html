@@ -5,10 +5,10 @@
   <div class="page-header">
     <div class="header-left">
       <button class="btn btn-sm btn-link" (click)="onCancel()">
-        <clr-icon shape="arrow" dir="left" size="18"></clr-icon> Back to Employee
+        <cds-icon shape="arrow" dir="left" size="18"></cds-icon> Back to Employee
       </button>
       <h2>
-        <clr-icon shape="assign-user" size="24"></clr-icon>
+        <cds-icon shape="assign-user" size="24"></cds-icon>
         Assign Asset to Employee
       </h2>
     </div>
@@ -16,7 +16,7 @@
 
   <!-- Employee Info Banner -->
   <div class="employee-banner" *ngIf="employee">
-    <clr-icon shape="user" size="20"></clr-icon>
+    <cds-icon shape="user" size="20"></cds-icon>
     <span class="emp-name">{{ employee.employeeName }}</span>
     <span class="emp-meta">{{ employee.email }} | {{ employee.department }} | {{ employee.designation }}</span>
   </div>
@@ -51,7 +51,7 @@
           </clr-input-container>
 
           <button type="submit" class="btn btn-primary btn-sm" [clrLoading]="searching">
-            <clr-icon shape="search" size="16"></clr-icon> Search
+            <cds-icon shape="search" size="16"></cds-icon> Search
           </button>
           <button type="button" class="btn btn-outline btn-sm" (click)="onClearSearch()">
             Clear
@@ -60,7 +60,7 @@
       </div>
 
       <div class="info-note">
-        <clr-icon shape="info-circle" size="16"></clr-icon>
+        <cds-icon shape="info-circle" size="16"></cds-icon>
         Only assets with <strong>"Available"</strong> status will be returned.
       </div>
     </form>
@@ -174,7 +174,7 @@
     <!-- Lifecycle History -->
     <!-- <div class="lifecycle-section" *ngIf="assetDetail.lifecycleHistories?.length > 0">
       <h5>
-        <clr-icon shape="timeline" size="16"></clr-icon> Lifecycle History
+        <cds-icon shape="timeline" size="16"></cds-icon> Lifecycle History
       </h5>
       <div class="timeline">
         <div class="timeline-item" *ngFor="let history of assetDetail.lifecycleHistories">
@@ -205,7 +205,7 @@
     <!-- Confirm Assignment Button -->
     <div class="action-bar">
       <button class="btn btn-success" (click)="onConfirmAssignment()" [clrLoading]="assigning">
-        <clr-icon shape="check" size="16"></clr-icon> Confirm Assignment
+        <cds-icon shape="check" size="16"></cds-icon> Confirm Assignment
       </button>
       <button class="btn btn-outline" (click)="onCancel()">Cancel</button>
     </div>

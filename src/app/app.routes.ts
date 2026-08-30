@@ -16,6 +16,9 @@ import { EmployeeComponent } from './components/Employee/employee/employee.compo
 import { AssetAssignmentComponent } from './components/Employee/asset-assignment/asset-assignment.component';
 import { EmployeeDetailComponent } from './components/Employee/employee-detail/employee-detail.component';
 import { PurchaseViewComponent } from './components/purchase/purchase-view/purchase-view.component';
+import { ServiceRequestListComponent } from './components/serviceRequest/service-request-list/service-request-list.component';
+import { ServiceRequestCreateComponent } from './components/serviceRequest/service-request-create/service-request-create.component';
+import { ServiceRequestDetailComponent } from './components/serviceRequest/service-request-detail/service-request-detail.component';
 
 export const routes: Routes = [
 
@@ -34,12 +37,14 @@ export const routes: Routes = [
    {path:'asset/edit',component:AssetEditModalComponent},
    {path:'employee',component:EmployeeComponent},
    {path:'asset/assignment/:id',component:AssetAssignmentComponent},
-   {path:'employee/detail/:id',component:EmployeeDetailComponent}
-    
+   {path:'employee/detail/:id',component:EmployeeDetailComponent},
+    {path:'service',component:ServiceRequestListComponent},
+    {path:'create/service',component:ServiceRequestCreateComponent},
+    {path:'service/request/:id',component:ServiceRequestDetailComponent}
   ];
 // <div class="lifecycle-section" *ngIf="assetDetail.lifecycleHistories?.length > 0">
 //       <h5>
-//         <clr-icon shape="timeline" size="16"></clr-icon> Lifecycle History
+//         <cds-icon shape="timeline" size="16"></cds-icon> Lifecycle History
 //       </h5>
 //       <div class="timeline">
 //         <div class="timeline-item" *ngFor="let history of assetDetail.lifecycleHistories">

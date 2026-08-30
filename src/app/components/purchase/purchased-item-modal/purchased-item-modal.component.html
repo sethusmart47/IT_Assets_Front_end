@@ -7,7 +7,7 @@
   (clrModalOpenChange)="!$event && close()">
 
   <h3 class="modal-title">
-    <clr-icon [attr.shape]="isEditMode ? 'pencil' : 'plus-circle'" class="title-icon"></clr-icon>
+    <cds-icon [attr.shape]="isEditMode ? 'pencil' : 'plus-circle'" class="title-icon"></cds-icon>
     {{ isEditMode ? 'Edit Asset Item' : 'Add Asset Item' }}
   </h3>
 
@@ -16,7 +16,7 @@
 
       <!-- Info Box -->
       <div class="modal-info">
-        <clr-icon shape="info-circle" class="info-icon"></clr-icon>
+        <cds-icon shape="info-circle" class="info-icon"></cds-icon>
         <span>Enter asset details for this purchase order. Line total is auto-calculated.</span>
       </div>
 
@@ -138,7 +138,7 @@
 
       <!-- Note Box -->
       <div class="modal-note">
-        <clr-icon shape="info-standard" class="note-icon"></clr-icon>
+        <cds-icon shape="info-standard" class="note-icon"></cds-icon>
         <div>
           <strong>Note:</strong> Subtotal = Quantity × Unit Price. It updates automatically.
         </div>
@@ -154,8 +154,8 @@
     <button type="button" class="btn btn-primary" (click)="save()"
       [disabled]="saving || form.invalid">
       <span class="spinner spinner-inline spinner-sm" *ngIf="saving"></span>
-      <clr-icon *ngIf="!saving && !isEditMode" shape="plus"></clr-icon>
-      <clr-icon *ngIf="!saving && isEditMode" shape="check"></clr-icon>
+      <cds-icon *ngIf="!saving && !isEditMode" shape="plus"></cds-icon>
+      <cds-icon *ngIf="!saving && isEditMode" shape="check"></cds-icon>
       {{ saving ? 'Saving...' : (isEditMode ? 'Update Item' : 'Add Item') }}
     </button>
   </div>

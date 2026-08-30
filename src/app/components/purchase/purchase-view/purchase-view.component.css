@@ -18,7 +18,7 @@
   color: #666;
 }
 
-.page-error clr-icon { color: #dc2626; }
+.page-error cds-icon { color: #dc2626; }
 .page-error h3 { margin: 0; color: #333; }
 .page-error p { color: #888; }
 
@@ -272,7 +272,7 @@
   color: #999;
 }
 
-.empty-block clr-icon {
+.empty-block cds-icon {
   color: #ddd;
   margin-bottom: 8px;
 }

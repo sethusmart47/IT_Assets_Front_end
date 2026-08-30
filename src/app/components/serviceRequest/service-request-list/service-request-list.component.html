@@ -1,0 +1,70 @@
+<div class="service-request-list-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h2>
+      <cds-icon shape="wrench" size="28"></cds-icon>
+      Service Requests
+    </h2>
+    <button class="btn btn-success new-service-btn" (click)="onCreateNew()">
+      <cds-icon shape="plus" size="16"></cds-icon> New Service Request
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <input type="text"
+           class="clr-input"
+           placeholder="Search by asset tag, issue type, priority, status..."
+           [(ngModel)]="searchText" />
+  </div>
+
+  <!-- Datagrid -->
+  <clr-datagrid [clrDgLoading]="loading">
+    <clr-dg-column [clrDgField]="'assetTag'">Asset Tag</clr-dg-column>
+    <clr-dg-column>Serial Number</clr-dg-column>
+    <clr-dg-column [clrDgField]="'category'">Category</clr-dg-column>
+    <clr-dg-column [clrDgField]="'issueType'">Issue Type</clr-dg-column>
+    <clr-dg-column [clrDgField]="'priority'">Priority</clr-dg-column>
+    <clr-dg-column>Vendor</clr-dg-column>
+    <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
+    <clr-dg-column>Reported Date</clr-dg-column>
+    <clr-dg-column>Resolved Date</clr-dg-column>
+    <clr-dg-column>Action</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let req of filteredRequests">
+      <clr-dg-cell>
+        <span class="asset-tag-link" (click)="onView(req)">{{ req.assetTag }}</span>
+      </clr-dg-cell>
+      <clr-dg-cell>{{ req.serialNumber }}</clr-dg-cell>
+      <clr-dg-cell>{{ req.category }}</clr-dg-cell>
+      <clr-dg-cell>{{ req.issueType }}</clr-dg-cell>
+      <clr-dg-cell>
+        <span class="priority-badge" [ngClass]="getPriorityClass(req.priority)">
+          {{ req.priority }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>{{ req.vendorName || '-' }}</clr-dg-cell>
+      <clr-dg-cell>
+        <span class="status-badge" [ngClass]="getStatusClass(req.status)">
+          {{ req.status }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>{{ req.reportedDate | date:'dd-MMM-yyyy' }}</clr-dg-cell>
+      <clr-dg-cell>{{ req.resolvedDate ? (req.resolvedDate | date:'dd-MMM-yyyy') : '-' }}</clr-dg-cell>
+      <clr-dg-cell>
+        <button class="btn btn-sm btn-link" (click)="onView(req)">
+          <cds-icon shape="eye" size="16"></cds-icon> View
+        </button>
+      </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-placeholder>No service requests found.</clr-dg-placeholder>
+
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="10">
+        {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }} requests
+      </clr-dg-pagination>
+    </clr-dg-footer>
+  </clr-datagrid>
+</div>

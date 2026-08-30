@@ -200,7 +200,7 @@
   color: #888;
 }
 
-.empty-state clr-icon { color: #ddd; margin-bottom: 8px; }
+.empty-state cds-icon { color: #ddd; margin-bottom: 8px; }
 .empty-state .muted { font-size: 13px; color: #aaa; }
 
 /* ─── ITEMS BAR ─── */

@@ -12,7 +12,7 @@ import '@cds/core/icon/register.js';
 import { ClarityIcons, cogIcon, pencilIcon, trashIcon } from '@cds/core/icon';
 //import { cogIcon ,pencilIcon, trashIcon } from '@cds/core/icon/shapes';
 ClarityIcons.addIcons(cogIcon,pencilIcon,
-  trashIcon );
+  trashIcon, );
 
 import { provideAnimations } from '@angular/platform-browser/animations'; 
 bootstrapApplication(AppComponent, {

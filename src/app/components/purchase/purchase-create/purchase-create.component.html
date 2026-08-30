@@ -8,9 +8,9 @@
   <div class="page-header">
     <div class="header-left">
       <a (click)="goBack()" class="breadcrumb-link">
-        <clr-icon shape="arrow" dir="left"></clr-icon> Purchase Orders
+        <cds-icon shape="arrow" dir="left"></cds-icon> Purchase Orders
       </a>
-      <clr-icon shape="angle" dir="right" class="sep"></clr-icon>
+      <cds-icon shape="angle" dir="right" class="sep"></cds-icon>
       <span class="current-page">{{ isEditMode ? 'Edit' : 'Create' }} Purchase Order</span>
     </div>
     <div class="header-right">
@@ -19,7 +19,7 @@
         *ngIf="isEditMode && items.length > 0"
         (click)="completePurchase()"
         [disabled]="saving">
-        <clr-icon shape="check-circle"></clr-icon> Save &amp; Receive Assets
+        <cds-icon shape="check-circle"></cds-icon> Save &amp; Receive Assets
       </button>
     </div>
   </div>
@@ -35,7 +35,7 @@
       </div>
 
       <div class="info-alert">
-        <clr-icon shape="info-circle"></clr-icon>
+        <cds-icon shape="info-circle"></cds-icon>
         <span>Asset tags are generated after receiving serial numbers. They are not entered here.</span>
       </div>
 
@@ -125,7 +125,7 @@
 
       <div class="section-footer">
         <button class="btn btn-primary" (click)="savePurchase()" [disabled]="saving">
-          <clr-icon shape="floppy"></clr-icon>
+          <cds-icon shape="floppy"></cds-icon>
           {{ saving ? 'Saving...' : (isEditMode ? 'Update Purchase' : 'Save Purchase') }}
         </button>
       </div>
@@ -162,10 +162,10 @@
           <clr-dg-cell class="num-col"><strong>₹{{ item.subTotal | number:'1.0-0' }}</strong></clr-dg-cell>
           <clr-dg-cell class="action-col">
             <button class="btn btn-sm btn-icon btn-link" title="Edit" (click)="openEditItemModal(item)">
-              <clr-icon shape="pencil"></clr-icon>
+              <cds-icon shape="pencil"></cds-icon>
             </button>
             <button class="btn btn-sm btn-icon btn-link text-danger" title="Delete" (click)="deleteItem(item)">
-              <clr-icon shape="trash"></clr-icon>
+              <cds-icon shape="trash"></cds-icon>
             </button>
           </clr-dg-cell>
         </clr-dg-row>
@@ -179,7 +179,7 @@
 
       <!-- Empty State -->
       <div class="empty-state" *ngIf="items.length === 0">
-        <clr-icon shape="shopping-bag" size="48"></clr-icon>
+        <cds-icon shape="shopping-bag" size="48"></cds-icon>
         <p>No asset items added yet.</p>
         <p class="muted">Click "Add Asset Item" to get started.</p>
       </div>
@@ -187,7 +187,7 @@
       <!-- Footer -->
       <div class="items-bar">
         <button class="btn btn-outline btn-sm" (click)="openAddItemModal()">
-          <clr-icon shape="plus"></clr-icon> Add Asset Item
+          <cds-icon shape="plus"></cds-icon> Add Asset Item
         </button>
         <div class="total-display" *ngIf="items.length > 0">
           <span>Total:</span>
@@ -208,10 +208,10 @@
 
       <div class="upload-toolbar">
         <button class="btn btn-outline btn-sm" (click)="pdfInput.click()">
-          <clr-icon shape="file"></clr-icon> Upload PDF
+          <cds-icon shape="file"></cds-icon> Upload PDF
         </button>
         <button class="btn btn-outline btn-sm" (click)="imgInput.click()">
-          <clr-icon shape="image"></clr-icon> Upload Image
+          <cds-icon shape="image"></cds-icon> Upload Image
         </button>
         <input #pdfInput type="file" hidden accept=".pdf" multiple (change)="onFileSelected($event)">
         <input #imgInput type="file" hidden accept=".png,.jpg,.jpeg" multiple (change)="onFileSelected($event)">
@@ -225,7 +225,7 @@
         (dragleave)="onDragLeave($event)"
         (drop)="onDrop($event)">
         <div *ngIf="!uploading">
-          <clr-icon shape="upload-cloud" size="32"></clr-icon>
+          <cds-icon shape="upload-cloud" size="32"></cds-icon>
           <p>Drop files here or <a (click)="imgInput.click()">browse</a></p>
           <small>PDF, PNG, JPG — max 25 MB</small>
         </div>
@@ -250,12 +250,12 @@
 
             <!-- FILE ICON for non-images -->
             <div *ngIf="!isImageAttachment(att)" class="thumb-icon">
-              <clr-icon [attr.shape]="getFileIcon(att.contentType)" size="36"></clr-icon>
+              <cds-icon [attr.shape]="getFileIcon(att.contentType)" size="36"></cds-icon>
             </div>
 
             <!-- Hover overlay -->
             <div class="thumb-hover">
-              <clr-icon shape="eye" size="20"></clr-icon>
+              <cds-icon shape="eye" size="20"></cds-icon>
             </div>
           </div>
 
@@ -278,7 +278,7 @@
 
     <!-- PRE-SAVE MESSAGE -->
     <div class="pre-save-banner" *ngIf="!isEditMode">
-      <clr-icon shape="info-circle"></clr-icon>
+      <cds-icon shape="info-circle"></cds-icon>
       <span>Save the purchase first. Then you can add items and attachments.</span>
     </div>
 

@@ -10,7 +10,7 @@
 
 <!-- ERROR STATE -->
 <div class="page-error" *ngIf="!isLoading && loadError">
-  <clr-icon shape="error-standard" size="48"></clr-icon>
+  <cds-icon shape="error-standard" size="48"></cds-icon>
   <h3>Failed to load purchase</h3>
   <p>Something went wrong. Please try again.</p>
   <button class="btn btn-primary" (click)="loadPurchase()">Retry</button>
@@ -24,24 +24,24 @@
   <div class="view-header">
     <div class="header-left">
       <a (click)="goBack()" class="back-link">
-        <clr-icon shape="arrow" dir="left"></clr-icon> Purchase Orders
+        <cds-icon shape="arrow" dir="left"></cds-icon> Purchase Orders
       </a>
-      <clr-icon shape="angle" dir="right" class="sep"></clr-icon>
+      <cds-icon shape="angle" dir="right" class="sep"></cds-icon>
       <span class="po-number">{{ purchase.purchaseNumber }}</span>
       <span class="status-badge" [ngClass]="statusClass">{{ statusLabel }}</span>
     </div>
 
     <div class="header-actions">
       <!-- <button class="btn btn-outline btn-sm" (click)="printPage()" title="Print">
-        <clr-icon shape="printer"></clr-icon> Print
+        <cds-icon shape="printer"></cds-icon> Print
       </button> -->
 
       <button class="btn btn-outline btn-sm" (click)="goToEdit()" *ngIf="!isCompleted">
-        <clr-icon shape="pencil"></clr-icon> Edit
+        <cds-icon shape="pencil"></cds-icon> Edit
       </button>
 
       <button class="btn btn-success" (click)="openReceiveConfirm()" *ngIf="canReceive">
-        <clr-icon shape="check-circle"></clr-icon> Receive Assets
+        <cds-icon shape="check-circle"></cds-icon> Receive Assets
       </button>
     </div>
   </div>
@@ -172,7 +172,7 @@
 
     <!-- Empty Items -->
     <div class="empty-block" *ngIf="purchase.items.length === 0">
-      <clr-icon shape="shopping-bag" size="40"></clr-icon>
+      <cds-icon shape="shopping-bag" size="40"></cds-icon>
       <p>No items in this purchase order.</p>
     </div>
 
@@ -213,10 +213,10 @@
             class="att-img"
             loading="lazy">
           <div *ngIf="!isImageAttachment(att)" class="att-icon-box">
-            <clr-icon [attr.shape]="getFileIcon(att.contentType)" size="36"></clr-icon>
+            <cds-icon [attr.shape]="getFileIcon(att.contentType)" size="36"></cds-icon>
           </div>
           <div class="att-overlay">
-            <clr-icon shape="eye" size="20"></clr-icon>
+            <cds-icon shape="eye" size="20"></cds-icon>
           </div>
         </div>
 
@@ -229,10 +229,10 @@
         <!-- Actions -->
         <div class="att-actions">
           <button class="btn btn-link btn-sm" (click)="viewAttachment(att)" title="View">
-            <clr-icon shape="eye"></clr-icon> View
+            <cds-icon shape="eye"></cds-icon> View
           </button>
           <button class="btn btn-link btn-sm" (click)="downloadAttachment(att)" title="Download">
-            <clr-icon shape="download"></clr-icon> Download
+            <cds-icon shape="download"></cds-icon> Download
           </button>
         </div>
       </div>
@@ -278,16 +278,16 @@
   <!-- ─── BOTTOM ACTIONS ─── -->
   <div class="bottom-actions">
     <button class="btn btn-outline" (click)="goBack()">
-      <clr-icon shape="arrow" dir="left"></clr-icon> Back to Purchase Orders
+      <cds-icon shape="arrow" dir="left"></cds-icon> Back to Purchase Orders
     </button>
 
     <div class="bottom-right">
       <button class="btn btn-outline" (click)="goToEdit()" *ngIf="!isCompleted">
-        <clr-icon shape="pencil"></clr-icon> Edit Purchase
+        <cds-icon shape="pencil"></cds-icon> Edit Purchase
       </button>
 
       <button class="btn btn-success" (click)="openReceiveConfirm()" *ngIf="canReceive">
-        <clr-icon shape="check-circle"></clr-icon> Receive Assets
+        <cds-icon shape="check-circle"></cds-icon> Receive Assets
       </button>
     </div>
   </div>

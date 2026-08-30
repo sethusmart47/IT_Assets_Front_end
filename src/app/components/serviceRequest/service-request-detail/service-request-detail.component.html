@@ -1,0 +1,169 @@
+<div class="service-request-detail-container" *ngIf="!loading && serviceRequest">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-link" (click)="onBackToList()">
+        <cds-icon shape="arrow" dir="left" size="16"></cds-icon> Back to Service Requests
+      </button>
+      <h2>
+        <cds-icon shape="wrench" size="24"></cds-icon>
+        Service Request — {{ serviceRequest.assetTag }}
+      </h2>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-success btn-sm"
+              (click)="onOpenResolveModal()"
+              *ngIf="!isResolved">
+        <cds-icon shape="check" size="16"></cds-icon> Resolve
+      </button>
+    </div>
+  </div>
+
+  <!-- Status Banner -->
+  <div class="status-banner" [ngClass]="getStatusClass(serviceRequest.status)">
+    <cds-icon shape="info-circle" size="18"></cds-icon>
+    <strong>Status: {{ serviceRequest.status }}</strong>
+    <span *ngIf="serviceRequest.resolvedDate">
+      | Resolved on {{ serviceRequest.resolvedDate | date:'dd-MMM-yyyy' }}
+    </span>
+  </div>
+
+  <!-- Detail Cards -->
+  <div class="detail-cards-grid">
+
+    <!-- Asset Info -->
+    <div class="detail-card">
+      <h5>Asset Information</h5>
+      <div class="detail-row">
+        <span class="label">Asset Tag</span>
+        <span class="value mono">{{ serviceRequest.assetTag }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Serial Number</span>
+        <span class="value mono">{{ serviceRequest.serialNumber }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Category</span>
+        <span class="value">{{ serviceRequest.category }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Brand</span>
+        <span class="value">{{ serviceRequest.brand }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Model</span>
+        <span class="value">{{ serviceRequest.model }}</span>
+      </div>
+      <div class="detail-row" *ngIf="serviceRequest.configuration">
+        <span class="label">Configuration</span>
+        <span class="value">{{ serviceRequest.configuration }}</span>
+      </div>
+    </div>
+
+    <!-- Service Info -->
+    <div class="detail-card">
+      <h5>Service Information</h5>
+      <div class="detail-row">
+        <span class="label">Issue Type</span>
+        <span class="value">{{ serviceRequest.issueType }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Priority</span>
+        <span class="value">
+          <span class="priority-badge" [ngClass]="getPriorityClass(serviceRequest.priority)">
+            {{ serviceRequest.priority }}
+          </span>
+        </span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Reported Date</span>
+        <span class="value">{{ serviceRequest.reportedDate | date:'dd-MMM-yyyy' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Vendor</span>
+        <span class="value">{{ serviceRequest.vendorName || '-' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Created Date</span>
+        <span class="value">{{ serviceRequest.createdDate | date:'dd-MMM-yyyy HH:mm' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Issue Description -->
+  <div class="section-card" *ngIf="serviceRequest.issueDescription">
+    <h5>Issue Description</h5>
+    <p class="description-text">{{ serviceRequest.issueDescription }}</p>
+  </div>
+
+  <!-- Resolution Notes (if resolved) -->
+  <div class="section-card resolved-section" *ngIf="isResolved">
+    <h5>
+      <cds-icon shape="check-circle" size="18"></cds-icon>
+      Resolution
+    </h5>
+    <div class="detail-row">
+      <span class="label">Resolved Date</span>
+      <span class="value">{{ serviceRequest.resolvedDate | date:'dd-MMM-yyyy HH:mm' }}</span>
+    </div>
+    <div class="detail-row" *ngIf="serviceRequest.resolutionNotes">
+      <span class="label">Notes</span>
+      <span class="value">{{ serviceRequest.resolutionNotes }}</span>
+    </div>
+  </div>
+
+  <!-- ═══════ RESOLVE MODAL ═══════ -->
+  <clr-modal [(clrModalOpen)]="resolveModalOpen" [clrModalSize]="'md'">
+    <h3 class="modal-title">
+      <cds-icon shape="check-circle" size="20"></cds-icon>
+      Resolve Service Request
+    </h3>
+    <div class="modal-body">
+      <div class="resolve-info">
+        <div class="info-row">
+          <span class="label">Asset Tag:</span>
+          <span class="value">{{ serviceRequest.assetTag }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Issue Type:</span>
+          <span class="value">{{ serviceRequest.issueType }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Priority:</span>
+          <span class="value">{{ serviceRequest.priority }}</span>
+        </div>
+      </div>
+
+      <hr />
+
+      <form [formGroup]="resolveForm" class="clr-form clr-form-vertical">
+        <clr-textarea-container>
+          <label>Resolution Notes (Optional)</label>
+          <textarea clrTextarea formControlName="resolutionNotes"
+                    rows="4"
+                    placeholder="Describe what was done to resolve the issue..."></textarea>
+        </clr-textarea-container>
+      </form>
+
+      <div class="resolve-note">
+        <cds-icon shape="info-circle" size="16"></cds-icon>
+        Resolving will restore the asset to its previous status (Available or Assigned).
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" (click)="resolveModalOpen = false">Cancel</button>
+      <button class="btn btn-success" (click)="onConfirmResolve()" [disabled]="resolving">
+        <span class="spinner spinner-sm spinner-inline" *ngIf="resolving"></span>
+        <cds-icon shape="check" size="16" *ngIf="!resolving"></cds-icon>
+        Resolve
+      </button>
+    </div>
+  </clr-modal>
+</div>
+
+<!-- Loading -->
+<div class="loading-container" *ngIf="loading">
+  <span class="spinner spinner-md"></span>
+  <p>Loading service request...</p>
+</div>

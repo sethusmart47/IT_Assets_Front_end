@@ -1,0 +1,277 @@
+<div class="service-request-create-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <button class="btn btn-sm btn-link" (click)="onCancel()">
+        <cds-icon shape="arrow" dir="left" size="16"></cds-icon> Back to Service Requests
+      </button>
+      <h2>
+        <cds-icon shape="wrench" size="24"></cds-icon>
+        Create Service Request
+      </h2>
+    </div>
+  </div>
+
+  <!-- STEP 1: Search Asset -->
+  <div class="section-card">
+    <div class="section-title-bar">
+      <span class="step-circle">1</span>
+      <h4>SELECT ASSET TO SERVICE </h4>
+    </div>
+ <form [formGroup]="searchForm" class="search-form" (ngSubmit)="onSearchAsset()">
+      <div class="search-row">
+        <clr-radio-container clrInline>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio formControlName="searchType" value="serialNumber" />
+            <label>Serial Number</label>
+          </clr-radio-wrapper>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio formControlName="searchType" value="assetTag" />
+            <label>Asset Tag</label>
+          </clr-radio-wrapper>
+        </clr-radio-container>
+
+        <div class="search-input-group">
+          <clr-input-container>
+            <label>{{ searchForm.value.searchType === 'serialNumber' ? 'Serial Number' : 'Asset Tag' }}</label>
+            <input clrInput
+                   formControlName="searchValue"
+                   [placeholder]="searchForm.value.searchType === 'serialNumber' ? 'Enter serial number...' : 'Enter asset tag...'" />
+            <clr-control-error *clrIfError="'required'">This field is required.</clr-control-error>
+          </clr-input-container>
+
+          <button type="submit" class="btn btn-primary btn-sm" [clrLoading]="searching">
+            <cds-icon shape="search" size="16"></cds-icon> Search
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" (click)="onClearSearch()">
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="info-note">
+        <cds-icon shape="info-circle" size="16"></cds-icon>
+        Only assets with <strong>"Available"</strong> status will be returned.
+      </div>
+    </form>
+
+    <!-- Search Error -->
+    <clr-alert [clrAlertType]="'warning'" [clrAlertClosable]="false" *ngIf="searchError">
+      <clr-alert-item>
+        <span class="alert-text">{{ searchError }}</span>
+      </clr-alert-item>
+    </clr-alert>
+  </div>
+
+
+  <!-- STEP 2: Asset Details (Always shown if found) -->
+  <div class="section-card" *ngIf="assetDetail">
+    <div class="section-title-bar">
+      <span class="step-circle">2</span>
+      <h4>ASSET DETAILS</h4>
+      <span class="status-badge" [ngClass]="{
+        'status-available': assetDetail.statusName === 'Available',
+        'status-assigned': assetDetail.statusName === 'Assigned',
+        'status-inservice': assetDetail.statusName === 'InService',
+        'status-lost': assetDetail.statusName === 'Lost'
+      }">{{ assetDetail.statusName }}</span>
+    </div>
+
+    <!-- ALERT: Warranty Expired -->
+    <div class="alert-banner alert-danger" *ngIf="isWarrantyExpired">
+      <cds-icon shape="exclamation-triangle" size="20"></cds-icon>
+      <div>
+        <strong>This asset is out of warranty</strong>
+        <p>This asset is out of warranty and is not eligible for service request creation.</p>
+      </div>
+    </div>
+
+    <!-- ALERT: Already In Service -->
+    <div class="alert-banner alert-warning" *ngIf="isAlreadyInService">
+      <cds-icon shape="exclamation-circle" size="20"></cds-icon>
+      <div>
+        <strong>Active service request exists</strong>
+        <p>This asset already has an active service request and cannot create a duplicate.</p>
+      </div>
+    </div>
+
+    <!-- ALERT: Asset Lost -->
+    <div class="alert-banner alert-warning" *ngIf="isAssetLost">
+      <cds-icon shape="exclamation-circle" size="20"></cds-icon>
+      <div>
+        <strong>Asset is marked as Lost</strong>
+        <p>Lost assets are not eligible for service request creation.</p>
+      </div>
+    </div>
+
+    <!-- Asset Details Grid (Always shown) -->
+    <div class="asset-detail-grid">
+
+      <!-- Identity -->
+      <div class="detail-group">
+        <h5>Identity</h5>
+        <div class="detail-row">
+          <span class="label">Asset Tag</span>
+          <span class="value mono">{{ assetDetail.assetTag }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Serial Number</span>
+          <span class="value mono">{{ assetDetail.serialNumber }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Status</span>
+          <span class="value">{{ assetDetail.statusName }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Condition</span>
+          <span class="value">{{ assetDetail.conditionName }}</span>
+        </div>
+      </div>
+
+      <!-- Classification -->
+      <div class="detail-group">
+        <h5>Classification</h5>
+        <div class="detail-row">
+          <span class="label">Category</span>
+          <span class="value">{{ assetDetail.category }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Brand</span>
+          <span class="value">{{ assetDetail.brand }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Model</span>
+          <span class="value">{{ assetDetail.model }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Configuration</span>
+          <span class="value">{{ assetDetail.configuration || '-' }}</span>
+        </div>
+      </div>
+
+      <!-- Purchase -->
+      <div class="detail-group">
+        <h5>Purchase</h5>
+        <div class="detail-row">
+          <span class="label">PO Number</span>
+          <span class="value">{{ assetDetail.purchaseNumber }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Vendor</span>
+          <span class="value">{{ assetDetail.vendorName }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Purchase Date</span>
+          <span class="value">{{ assetDetail.purchaseDate | date:'dd-MMM-yyyy' }}</span>
+        </div>
+      </div>
+
+      <!-- Warranty -->
+      <div class="detail-group">
+        <h5>Warranty</h5>
+        <div class="detail-row">
+          <span class="label">Start Date</span>
+          <span class="value">{{ assetDetail.warrantyStartDate | date:'dd-MMM-yyyy' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">End Date</span>
+          <span class="value">{{ assetDetail.warrantyEndDate | date:'dd-MMM-yyyy' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Duration</span>
+          <span class="value">{{ assetDetail.warrantyMonths }} months</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Status</span>
+          <span class="value">
+            <span class="warranty-badge"
+                  [class.active]="assetDetail.isWarrantyActive"
+                  [class.expired]="!assetDetail.isWarrantyActive">
+              {{ assetDetail.isWarrantyActive
+                ? 'Active (' + assetDetail.warrantyDaysRemaining + ' days)'
+                : 'Expired' }}
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Service Request Form -->
+  <div class="section-card" *ngIf="assetDetail">
+    <div class="section-title-bar">
+      <span class="step-circle">3</span>
+      <h4>SERVICE REQUEST DETAILS</h4>
+    </div>
+
+    <form [formGroup]="serviceForm" class="clr-form clr-form-vertical service-form">
+
+      <div class="form-grid">
+
+        <!-- Issue Type -->
+        <clr-select-container>
+          <label>Issue Type <span class="required">*</span></label>
+          <select clrSelect formControlName="issueType">
+            <option value="" disabled>Select issue type...</option>
+            <option *ngFor="let type of issueTypes" [value]="type">{{ type }}</option>
+          </select>
+          <clr-control-error *clrIfError="'required'">Issue type is required.</clr-control-error>
+        </clr-select-container>
+
+        <!-- Reported Date -->
+        <clr-date-container>
+          <label>Reported Date <span class="required">*</span></label>
+          <input type="date" clrDate formControlName="reportedDate" />
+          <clr-control-error *clrIfError="'required'">Reported date is required.</clr-control-error>
+        </clr-date-container>
+
+        <!-- Priority -->
+        <clr-select-container>
+          <label>Priority <span class="required">*</span></label>
+          <select clrSelect formControlName="priority">
+            <option value="" disabled>Select priority...</option>
+            <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+          </select>
+          <clr-control-error *clrIfError="'required'">Priority is required.</clr-control-error>
+        </clr-select-container>
+
+        <!-- Vendor (Optional) -->
+        <clr-select-container>
+          <label>Assign Vendor</label>
+          <select clrSelect formControlName="vendorName">
+            <option [ngValue]="null">-- No Vendor --</option>
+            <option *ngFor="let v of vendors" [value]="v.vendorName">{{ v.vendorName }}</option>
+          </select>
+        </clr-select-container>
+      </div>
+
+      <!-- Issue Description -->
+      <clr-textarea-container>
+        <label>Issue Description</label>
+        <textarea clrTextarea formControlName="issueDescription"
+                  rows="4"
+                  placeholder="Describe the issue in detail..."></textarea>
+      </clr-textarea-container>
+
+      <!-- Submit Note -->
+      <div class="submit-note" *ngIf="!isWarrantyExpired && !isAlreadyInService && !isAssetLost">
+        <cds-icon shape="info-circle" size="16"></cds-icon>
+        Submitting sets the asset status to <strong>"In Service"</strong>.
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-bar">
+        <button class="btn btn-primary"
+                (click)="onSubmit()"
+                [disabled]="!canSubmit || submitting">
+          <span class="spinner spinner-sm spinner-inline" *ngIf="submitting"></span>
+          <cds-icon shape="check" size="16" *ngIf="!submitting"></cds-icon>
+          Submit Request
+        </button>
+        <button class="btn btn-outline" (click)="onCancel()">Cancel</button>
+      </div>
+
+    </form>
+  </div>
+</div>
