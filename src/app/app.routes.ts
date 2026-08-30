@@ -19,9 +19,10 @@ import { PurchaseViewComponent } from './components/purchase/purchase-view/purch
 import { ServiceRequestListComponent } from './components/serviceRequest/service-request-list/service-request-list.component';
 import { ServiceRequestCreateComponent } from './components/serviceRequest/service-request-create/service-request-create.component';
 import { ServiceRequestDetailComponent } from './components/serviceRequest/service-request-detail/service-request-detail.component';
+import { HomeComponent } from './components/home/home.component';
 
 export const routes: Routes = [
-
+    {path:'',component:HomeComponent},
    {path:'category', component: CategoryComponent},
    {path:'brand',component:BrandComponentComponent},
    { path: 'vendor', component: VendorComponent },
@@ -43,32 +44,3 @@ export const routes: Routes = [
     {path:'create/service',component:ServiceRequestCreateComponent},
     {path:'service/request/:id',component:ServiceRequestDetailComponent}
   ];
-// <div class="lifecycle-section" *ngIf="assetDetail.lifecycleHistories?.length > 0">
-//       <h5>
-//         <cds-icon shape="timeline" size="16"></cds-icon> Lifecycle History
-//       </h5>
-//       <div class="timeline">
-//         <div class="timeline-item" *ngFor="let history of assetDetail.lifecycleHistories">
-//           <div class="timeline-dot"
-//                [class.registered]="history.action === 'Registered'"
-//                [class.assigned]="history.action === 'Assigned'"
-//                [class.returned]="history.action === 'Returned'">
-//           </div>
-//           <div class="timeline-content">
-//             <div class="timeline-header">
-//               <strong>{{ history.action }}</strong>
-//               <span class="timeline-date">{{ history.performedDate | date:'dd-MMM-yyyy HH:mm' }}</span>
-//             </div>
-//             <div class="timeline-detail" *ngIf="history.employeeName">
-//               Employee: {{ history.employeeName }} ({{ history.employeeEmail }})
-//             </div>
-//             <div class="timeline-detail" *ngIf="history.remarks">
-//               {{ history.remarks }}
-//             </div>
-//             <div class="timeline-status">
-//               {{ history.oldStatus || '-' }} → {{ history.newStatus }}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>

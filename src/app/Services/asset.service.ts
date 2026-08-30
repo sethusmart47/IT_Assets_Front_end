@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AssetDetailDto, AssetDto, AssetListDto, AvailablePurchaseDto, AvailablePurchaseItemDto, BulkCreateAssetDto, CreateAssetDto, RegistrationSummaryDto, UpdateAssetDto, ValidateSerialNumbersDto, ValidationResultDto } from '../models/Asset';
+import {  AssetDetail, AssetDto, AssetListDto, AvailablePurchaseDto, AvailablePurchaseItemDto, BulkCreateAssetDto, CreateAssetDto, RegistrationSummaryDto, UpdateAssetDto, ValidateSerialNumbersDto, ValidationResultDto } from '../models/Asset';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environment';
 
@@ -22,9 +22,9 @@ export class AssetService {
     return this.http.get<AssetListDto[]>(this.apiUrl, { params });
   }
 
-  getById(id: string): Observable<AssetDetailDto> {
+  getById(id: string): Observable<AssetDetail> {
     debugger
-    return this.http.get<AssetDetailDto>(`${this.apiUrl}/${id}`);
+    return this.http.get<AssetDetail>(`${this.apiUrl}/${id}`);
   }
 
   register(dto: CreateAssetDto): Observable<AssetDto> {

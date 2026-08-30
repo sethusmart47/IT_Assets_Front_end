@@ -10,6 +10,7 @@ import { ReusableDatagridComponentComponent } from '../reusable-datagrid-compone
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
 import { ToastService } from '../../Services/toast.service';
+import { ConfirmationService } from '../../Services/confirmation.service';
 
 @Component({
   selector: 'app-model-component',
@@ -45,14 +46,15 @@ export class ModelComponentComponent {
   // Delete
   isDeleteOpen: boolean = false;
   deleting: boolean = false;
-  deleteItemRef: AssetModel | null = null;
+  
 
   constructor(
     private fb: FormBuilder,
     private modelService: ModelService,
     private brandService: BrandService,
     private categoryService: CategoryService,
-    private notification: ToastService
+    private notification: ToastService,
+    private confirmation:ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -194,19 +196,23 @@ export class ModelComponentComponent {
 
   // ─── DELETE ───
   openDelete(item: AssetModel): void {
-    this.deleteItemRef = item;
-    this.isDeleteOpen = true;
+   this.confirmation.confirmDanger(
+    'Delete  Device Model ',`Are you sure you want to delete "${item.modelName}"?`,  
+  ()=>{
+    this.confirmDelete(item)
+  } 
+  )
   }
 
-  confirmDelete(): void {
-    if (!this.deleteItemRef) return;
+  confirmDelete(item:AssetModel): void {
+    
     this.deleting = true;
-    this.modelService.delete(this.deleteItemRef.id).subscribe({
+    this.modelService.delete(item.id).subscribe({
       next: () => {
         this.notification.success('Model deleted successfully.');
         this.isDeleteOpen = false;
         this.deleting = false;
-        this.deleteItemRef = null;
+       
         this.loadData();
       },
       error: (err) => {
@@ -218,7 +224,7 @@ export class ModelComponentComponent {
 
   cancelDelete(): void {
     this.isDeleteOpen = false;
-    this.deleteItemRef = null;
+   
   }
 
   closeModal(): void {

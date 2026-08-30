@@ -9,6 +9,7 @@ import {  ConfirmDialogComponentComponent } from '../Delete confirm-dialog-compo
 import { ReusableDatagridComponentComponent } from '../reusable-datagrid-component/reusable-datagrid-component.component';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../Services/toast.service';
+import { ConfirmationService } from '../../Services/confirmation.service';
 
 @Component({
   selector: 'app-category',
@@ -43,7 +44,8 @@ export class CategoryComponent implements OnInit  {
   constructor(
     private fb: FormBuilder,
     private categoryService: CategoryService,
-    private notification: ToastService
+    private notification: ToastService,
+    private confirmation:ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -134,24 +136,28 @@ export class CategoryComponent implements OnInit  {
             }}
       // ─── DELETE ───
   openDelete(item: AssetCategory): void {
-    this.deleteItem = item;
-    this.isDeleteOpen = true;
+     this.confirmation.confirmDanger(
+    'Delete Vendor',
+    `Are you sure you want to delete "${item.categoryName}"?`,
+    () => {
+      this.confirmDelete(item);
+    }
+  );
   }
 
-  confirmDelete(): void {
-    if (!this.deleteItem) return;
-    this.deleting = true;
-    this.categoryService.delete(this.deleteItem.id).subscribe({
+  confirmDelete(item:AssetCategory): void {
+   
+    this.categoryService.delete(item.id).subscribe({
       next: () => {
         this.notification.success('Category deleted successfully.');
         this.isDeleteOpen = false;
         this.deleting = false;
-        this.deleteItem = null;
+      
         this.loadData();
       },
       error: (err) => {
         this.notification.error(err.error || 'Failed to delete category.');
-        this.deleting = false;
+        
       }
     });
   }

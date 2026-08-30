@@ -16,7 +16,7 @@ export interface AssetListDto {
   createdDate: string;
 }
 
-export interface AssetDetailDto {
+export interface AssetDetail {
   id: string;
   assetTag: string;
   serialNumber: string;
@@ -43,26 +43,22 @@ export interface AssetDetailDto {
   purchaseNumber: string;
   vendorName: string;
   purchaseDate: string;
-  lifecycleHistories: AssetLifecycleHistoryDto[];
+  lifecycleHistories: AssetLifecycleHistory[];
   createdDate: string;
   createdBy: string | null;
 }
 
-export interface AssetLifecycleHistoryDto {
+export interface AssetLifecycleHistory {
   id: string;
   assetId: string;
   action: string;
-  oldStatus: number | null;
-  oldStatusName: string | null;
-  newStatus: number;
-  newStatusName: string;
+  oldStatus: string | null;
+  newStatus: string;
+  employeeName: string | null;
+  employeeEmail: string | null;
   remarks: string | null;
   performedBy: string;
   performedDate: string;
-   employeeName: string | null;
-  employeeEmail: string | null;
-  referenceId: string | null;
-  referenceType: string | null;
 }
 
 export interface AssetDto {

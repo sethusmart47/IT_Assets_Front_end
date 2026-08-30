@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AssetDetail, AssignAssetRequest, Employee } from '../../../models/Employee';
+import {  AssignAssetRequest, Employee } from '../../../models/Employee';
 import { ToastService } from '../../../Services/toast.service';
 import { AssetAssignmentService } from '../../../Services/asset-assignment.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { ConfirmationService } from '../../../Services/confirmation.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { EmployeeService } from '../../../Services/employee.service';
+import { AssetDetail } from '../../../models/Asset';
 
 @Component({
   selector: 'app-asset-assignment',
@@ -154,7 +155,7 @@ this.toaster.error(err.error ||
         this.toaster.success(
           `Asset "${result.assetTag}" assigned to "${result.employeeName}" successfully.`
         );
-        this.router.navigate(['/asset-assignment', this.employeeId]);
+        this.router.navigate(['/asset/assignment', this.employeeId]);
       },
       error: (err) => {
         this.assigning = false;
@@ -166,6 +167,6 @@ this.toaster.error(err.error ||
   // ─── Navigation ────────────────────────────────────────────────────────────────
 
   onCancel(): void {
-    this.router.navigate(['/asset-assignment', this.employeeId]);
+    this.router.navigate(['/employee/detail', this.employeeId]);
   }
 }

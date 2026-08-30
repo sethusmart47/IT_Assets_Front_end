@@ -10,6 +10,7 @@ import { ReusableDatagridComponentComponent } from '../reusable-datagrid-compone
 import { CommonModule } from '@angular/common';     
 import { BrandService } from '../../Services/brand-service.service';
 import { ToastService } from '../../Services/toast.service';
+import { ConfirmationService } from '../../Services/confirmation.service';
 @Component({
   selector: 'app-brand-component',
   standalone: true,
@@ -46,7 +47,8 @@ brands: AssetBrand[] = [];
     private fb: FormBuilder,
     private brandService: BrandService,
     private categoryService: CategoryService,
-    private notification: ToastService
+    private notification: ToastService,
+    private confirmation:ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -159,31 +161,34 @@ brands: AssetBrand[] = [];
 
   // ─── DELETE ───
   openDelete(item: AssetBrand): void {
-    this.deleteItemRef = item;
-    this.isDeleteOpen = true;
+      this.confirmation.confirmDanger(
+    'Delete Vendor',
+    `Are you sure you want to delete "${item.brandName}"?`,
+    () => {
+      this.confirmDelete(item);
+    }
+  );
   }
 
-  confirmDelete(): void {
-    if (!this.deleteItemRef) return;
-    this.deleting = true;
-    this.brandService.delete(this.deleteItemRef.id).subscribe({
+  confirmDelete(item:AssetBrand): void {
+   
+    this.brandService.delete(item.id).subscribe({
       next: () => {
         this.notification.success('Brand deleted successfully.');
         this.isDeleteOpen = false;
-        this.deleting = false;
-        this.deleteItemRef = null;
+      
         this.loadData();
       },
       error: (err) => {
         this.notification.error(err.error || 'Failed to delete brand.');
-        this.deleting = false;
+        
       }
     });
   }
 
   cancelDelete(): void {
     this.isDeleteOpen = false;
-    this.deleteItemRef = null;
+    
   }
 
   closeModal(): void {

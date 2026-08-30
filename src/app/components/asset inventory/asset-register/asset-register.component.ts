@@ -5,6 +5,7 @@ import { AssetService } from '../../../Services/asset.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
+import { ToastService } from '../../../Services/toast.service';
 
 @Component({
   selector: 'app-asset-register',
@@ -40,7 +41,8 @@ availablePurchases: AvailablePurchaseDto[] = [];
   constructor(
     private assetService: AssetService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toaster:ToastService
   ) {
     this.commonForm = this.fb.group({
       condition: [1, Validators.required],
@@ -280,7 +282,11 @@ availablePurchases: AvailablePurchaseDto[] = [];
         this.saving = false;
         this.router.navigate(['/asset/list']);
       },
-      error: () => { this.saving = false; }
+      error: (err) => { 
+        this.toaster.error(err.error||'Failed to upload Asset')
+        this.saving = false;
+        
+       }
     });
   }
 
@@ -299,7 +305,7 @@ availablePurchases: AvailablePurchaseDto[] = [];
   }
 
   goBack(): void {
-    this.router.navigate(['/asset-inventory']);
+    this.router.navigate(['/asset/list']);
   }
 
   private formatDate(date: Date): string {

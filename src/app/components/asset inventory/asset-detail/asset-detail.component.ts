@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { AssetService } from '../../../Services/asset.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AssetDetailDto } from '../../../models/Asset';
+
 import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AssetEditModalComponent } from '../asset-edit-modal/asset-edit-modal.component';
+import { AssetDetail } from '../../../models/Asset';
 
 @Component({
   selector: 'app-asset-detail',
@@ -15,7 +16,7 @@ import { AssetEditModalComponent } from '../asset-edit-modal/asset-edit-modal.co
   styleUrl: './asset-detail.component.css'
 })
 export class AssetDetailComponent {
-asset: AssetDetailDto | null = null;
+asset: AssetDetail | null = null;
   loading = false;
   editModalOpen = false;
   deleteConfirmOpen = false;

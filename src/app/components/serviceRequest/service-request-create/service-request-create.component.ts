@@ -9,9 +9,10 @@ import { VendorDto } from '../../../models/purchase';
 import { ClarityModule } from '@clr/angular';
 import { CommonModule } from '@angular/common';
 import { AssetAssignmentService } from '../../../Services/asset-assignment.service';
-import { AssetDetail } from '../../../models/Employee';
+
 import { VendorService } from '../../../Services/vendor.service';
 import { Vendor } from '../../../models/model';
+import { AssetDetail } from '../../../models/Asset';
 
 @Component({
   selector: 'app-service-request-create',

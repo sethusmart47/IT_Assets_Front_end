@@ -177,16 +177,16 @@
             <span class="timeline-date">{{ history.performedDate | date:'dd-MMM-yyyy hh:mm a' }}</span>
           </div>
           <div class="timeline-body">
-            <div class="timeline-status" *ngIf="history.oldStatusName">
-              <span class="old-status">{{ history.oldStatusName }}</span>
+            <div class="timeline-status" *ngIf="history.oldStatus">
+              <span class="old-status">{{ history.oldStatus }}</span>
               <cds-icon shape="arrow" direction="right"></cds-icon>
-              <span class="new-status">{{ history.newStatusName }}</span>
+              <span class="new-status">{{ history.newStatus }}</span>
             </div>
              <div class="timeline-detail" *ngIf="history.employeeName">
               Employee: {{ history.employeeName }} ({{ history.employeeEmail }})
             </div>
-            <div class="timeline-status" *ngIf="!history.oldStatusName">
-              <span class="new-status">{{ history.newStatusName }}</span>
+            <div class="timeline-status" *ngIf="!history.oldStatus">
+              <span class="new-status">{{ history.newStatus }}</span>
             </div>
             <p class="timeline-remark" *ngIf="history.remarks">{{ history.remarks }}</p>
             <span class="timeline-performer">By: {{ history.performedBy }}</span>

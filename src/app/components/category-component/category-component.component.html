@@ -52,11 +52,3 @@
   </div>
 </clr-modal>
 
-<!-- DELETE CONFIRM -->
-<app-confirm-dialog
-  [isOpen]="isDeleteOpen"
-  [loading]="deleting"
-  [message]="'Are you sure you want to delete category: ' + deleteItem?.categoryName + '?'"
-  (onConfirm)="confirmDelete()"
-  (onCancel)="cancelDelete()">
-</app-confirm-dialog>

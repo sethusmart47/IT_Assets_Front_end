@@ -2,7 +2,7 @@
 
 <clr-vertical-nav>
 
-  <a clrVerticalNavLink routerLink="/dashboard" routerLinkActive="active">
+  <a clrVerticalNavLink routerLink="/" routerLinkActive="active">
     <cds-icon shape="dashboard" clrVerticalNavIcon></cds-icon>
     Dashboard
   </a>
@@ -17,10 +17,10 @@
         Employees
       </a>
 
-      <a clrVerticalNavLink routerLink="/asset-assignment" routerLinkActive="active">
+      <!-- <a clrVerticalNavLink routerLink="/asset-assignment" routerLinkActive="active">
         <cds-icon shape="link" clrVerticalNavIcon></cds-icon>
         Asset Assignment
-      </a>
+      </a> -->
 
       <a clrVerticalNavLink routerLink="/service" routerLinkActive="active">
         <cds-icon shape="shield-check" clrVerticalNavIcon></cds-icon>
@@ -35,7 +35,7 @@
 
     <clr-vertical-nav-group-children *clrIfExpanded>
       <a clrVerticalNavLink routerLink="/asset/list" routerLinkActive="active">
-        <cds-icon shape="box" clrVerticalNavIcon></cds-icon>
+        <cds-icon shape="link" clrVerticalNavIcon></cds-icon>
         Asset Inventory
       </a>
 
@@ -49,10 +49,10 @@
         Purchases
       </a>
 
-      <a clrVerticalNavLink routerLink="/reports" routerLinkActive="active">
+      <!-- <a clrVerticalNavLink routerLink="/reports" routerLinkActive="active">
         <cds-icon shape="bar-chart" clrVerticalNavIcon></cds-icon>
         Reports
-      </a>
+      </a> -->
     </clr-vertical-nav-group-children>
   </clr-vertical-nav-group>
 

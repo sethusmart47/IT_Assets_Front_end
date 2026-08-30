@@ -9,10 +9,13 @@ import { routes } from './app/app.routes';         // ✅ import your routes arr
 //import '@cds/core/styles';
 import '@cds/core/button/register.js';
 import '@cds/core/icon/register.js';
-import { ClarityIcons, cogIcon, pencilIcon, trashIcon } from '@cds/core/icon';
-//import { cogIcon ,pencilIcon, trashIcon } from '@cds/core/icon/shapes';
-ClarityIcons.addIcons(cogIcon,pencilIcon,
-  trashIcon, );
+import { ClarityIcons, cogIcon,shieldCheckIcon, pencilIcon, trashIcon ,popOutIcon,arrowIcon, linkIcon, usersIcon, boxPlotIcon, storeIcon, shoppingCartIcon, dashboardIcon, refreshIcon, userIcon, devicesIcon, historyIcon, plusIcon, pasteIcon, timesCircleIcon, assignUserIcon, searchIcon, timelineIcon, checkIcon, uploadIcon, downloadIcon, angleIcon, infoCircleIcon, floppyIcon, shoppingBagIcon, fileIcon, uploadCloudIcon, errorStandardIcon, printerIcon, infoStandardIcon, wrenchIcon, exclamationCircleIcon, exclamationTriangleIcon} from '@cds/core/icon';
+
+ClarityIcons.addIcons(cogIcon,pencilIcon,arrowIcon,
+  trashIcon, shieldCheckIcon,linkIcon,usersIcon,storeIcon,shoppingCartIcon,boxPlotIcon,popOutIcon,
+  refreshIcon,userIcon,devicesIcon,historyIcon,
+  arrowIcon,trashIcon,plusIcon,pasteIcon,timesCircleIcon,assignUserIcon,searchIcon,timelineIcon,checkIcon,uploadIcon,downloadIcon,storeIcon,angleIcon,infoCircleIcon,floppyIcon,shoppingBagIcon,fileIcon,uploadCloudIcon,errorStandardIcon,printerIcon,infoStandardIcon,wrenchIcon,searchIcon,exclamationCircleIcon,exclamationTriangleIcon,
+  dashboardIcon);
 
 import { provideAnimations } from '@angular/platform-browser/animations'; 
 bootstrapApplication(AppComponent, {

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AssetDetail, AssignAssetRequest, AssignmentResponse, Employee, EmployeeAssignment, ReturnAssetRequest, ReturnResponse, SurrenderAssetsRequest } from '../models/Employee';
+import { AssignAssetRequest, AssignmentResponse, Employee, EmployeeAssignment, ReturnAssetRequest, ReturnResponse, SurrenderAssetsRequest } from '../models/Employee';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environment';
+import { AssetDetail } from '../models/Asset';
 
 @Injectable({
   providedIn: 'root'

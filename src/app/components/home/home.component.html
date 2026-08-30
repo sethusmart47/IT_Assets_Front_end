@@ -1,1 +1,290 @@
-<p>home works!</p>
+<div class="dashboard-container">
+
+  <!-- ─── HEADER ──────────────────────────────────────────────────────────────── -->
+  <div class="dashboard-header">
+    <h2><clr-icon shape="dashboard" size="28"></clr-icon> IT Asset Dashboard</h2>
+    <button class="btn btn-sm btn-outline" (click)="loadDashboard()">
+      <clr-icon shape="refresh" size="16" color:black></clr-icon> Refresh
+    </button>
+  </div>
+
+  <!-- ─── LOADING ─────────────────────────────────────────────────────────────── -->
+  <div class="loading-overlay" *ngIf="loading">
+    <span class="spinner spinner-md"></span>
+    <p>Loading dashboard...</p>
+  </div>
+
+  <!-- ─── ERROR ───────────────────────────────────────────────────────────────── -->
+  <clr-alert [clrAlertType]="'danger'" [clrAlertClosable]="false" *ngIf="error && !loading">
+    <clr-alert-item>
+      <span class="alert-text">{{ error }}</span>
+      <div class="alert-actions">
+        <button class="btn alert-action" (click)="loadDashboard()">Retry</button>
+      </div>
+    </clr-alert-item>
+  </clr-alert>
+
+  <!-- ─── MAIN CONTENT ───────────────────────────────────────────────────────── -->
+  <ng-container *ngIf="!loading && !error">
+
+    <!-- ─── FILTER BAR ──────────────────────────────────────────────────────── -->
+    <div class="filter-bar">
+      <div class="filter-item">
+        <label>Category</label>
+        <select [(ngModel)]="selectedCategory" (change)="onFilterChange()">
+          <option [ngValue]="null">All Categories</option>
+          <option *ngFor="let opt of categoryOptions" [value]="opt">{{ opt }}</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label>Brand</label>
+        <select [(ngModel)]="selectedBrand" (change)="onFilterChange()">
+          <option [ngValue]="null">All Brands</option>
+          <option *ngFor="let opt of brandOptions" [value]="opt">{{ opt }}</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label>Model</label>
+        <select [(ngModel)]="selectedModel" (change)="onFilterChange()">
+          <option [ngValue]="null">All Models</option>
+          <option *ngFor="let opt of modelOptions" [value]="opt">{{ opt }}</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label>Status</label>
+        <select [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+          <option [ngValue]="null">All Statuses</option>
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label>Location</label>
+        <select [(ngModel)]="selectedLocation" (change)="onFilterChange()">
+          <option [ngValue]="null">All Locations</option>
+          <option *ngFor="let opt of locationOptions" [value]="opt">{{ opt }}</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label>Warranty</label>
+        <select [(ngModel)]="selectedWarranty" (change)="onFilterChange()">
+          <option [ngValue]="null">All Warranty</option>
+          <option *ngFor="let w of warrantyOptions" [value]="w">{{ w }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ─── ACTIVE FILTER CHIPS ─────────────────────────────────────────────── -->
+    <div class="active-filters" *ngIf="activeFilters.length > 0">
+      <span class="filter-label">Active Filters:</span>
+      <span class="filter-chip" *ngFor="let f of activeFilters">
+        {{ f.value }}
+        <clr-icon shape="times" size="12" (click)="removeFilter(f.key)"></clr-icon>
+      </span>
+      <button class="btn btn-link btn-sm" (click)="clearFilters()">Clear All</button>
+    </div>
+
+    <!-- ─── KPI CARDS ───────────────────────────────────────────────────────── -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-total">
+        <div class="kpi-icon"><clr-icon shape="devices" size="28"></clr-icon></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ totalAssets | number }}</span>
+          <span class="kpi-label">Total Assets</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-assigned">
+        <div class="kpi-icon"><clr-icon shape="assign-user" size="28"></clr-icon></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ assignedCount | number }}</span>
+          <span class="kpi-label">Assigned</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-available">
+        <div class="kpi-icon"><clr-icon shape="check-circle" size="28"></clr-icon></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ availableCount | number }}</span>
+          <span class="kpi-label">Available</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-inservice">
+        <div class="kpi-icon"><clr-icon shape="wrench" size="28"></clr-icon></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ inServiceCount | number }}</span>
+          <span class="kpi-label">In Service</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-employees">
+        <div class="kpi-icon"><clr-icon shape="users" size="28"></clr-icon></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ totalEmployees | number }}</span>
+          <span class="kpi-label">Employees</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-categories">
+        <div class="kpi-icon"><clr-icon shape="folder" size="28"></clr-icon></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ categoryCount }}</span>
+          <span class="kpi-label">Categories</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-brands">
+        <div class="kpi-icon"><clr-icon shape="tag" size="28"></clr-icon></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ brandCount }}</span>
+          <span class="kpi-label">Brands</span>
+        </div>
+      </div>
+      <div class="kpi-card kpi-models">
+        <div class="kpi-icon"><clr-icon shape="layers" size="28"></clr-icon></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ modelCount }}</span>
+          <span class="kpi-label">Models</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── CHARTS ROW 1: Status + Category ─────────────────────────────────── -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <h4 class="chart-title">Asset Status</h4>
+        <p class="chart-hint">Click to filter</p>
+        <div id="statusChart"></div>
+      </div>
+      <div class="chart-card">
+        <h4 class="chart-title">Assets by Category</h4>
+        <p class="chart-hint">Click to filter</p>
+        <div id="categoryChart"></div>
+      </div>
+    </div>
+
+    <!-- ─── CHARTS ROW 2: Brand + Warranty ──────────────────────────────────── -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <h4 class="chart-title">Assets by Brand</h4>
+        <p class="chart-hint">Click to filter</p>
+        <div id="brandChart"></div>
+      </div>
+      <div class="chart-card">
+        <h4 class="chart-title">Warranty Summary</h4>
+        <p class="chart-hint">Click to filter</p>
+        <div class="warranty-layout">
+          <div id="warrantyChart"></div>
+          <div class="warranty-stats">
+            <div class="warranty-stat active">
+              <span class="stat-value">{{ warrantyActive }}</span>
+              <span class="stat-label">Active</span>
+            </div>
+            <div class="warranty-stat expiring">
+              <span class="stat-value">{{ warrantyExpiring }}</span>
+              <span class="stat-label">Expiring</span>
+            </div>
+            <div class="warranty-stat expired">
+              <span class="stat-value">{{ warrantyExpired }}</span>
+              <span class="stat-label">Expired</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── ASSET TABLE ─────────────────────────────────────────────────────── -->
+    <div class="table-section">
+      <div class="table-header">
+        <h4><clr-icon shape="view-list" size="20"></clr-icon> Asset Details
+          <span class="asset-count">({{ searchedAssets.length }})</span>
+        </h4>
+        <input type="text" class="clr-input table-search"
+               placeholder="Search assets..." [(ngModel)]="searchText" />
+      </div>
+
+      <clr-datagrid>
+        <clr-dg-column [clrDgField]="'assetTag'">Asset Tag</clr-dg-column>
+        <clr-dg-column [clrDgField]="'serialNumber'">Serial No</clr-dg-column>
+        <clr-dg-column [clrDgField]="'category'">Category</clr-dg-column>
+        <clr-dg-column [clrDgField]="'brand'">Brand</clr-dg-column>
+        <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
+        <clr-dg-column [clrDgField]="'statusName'">Status</clr-dg-column>
+        
+
+        <clr-dg-row *clrDgItems="let asset of searchedAssets"
+                    (click)="goToAsset(asset.id)" class="clickable-row">
+          <clr-dg-cell><strong>{{ asset.assetTag }}</strong></clr-dg-cell>
+          <clr-dg-cell>{{ asset.serialNumber }}</clr-dg-cell>
+          <clr-dg-cell>{{ asset.category }}</clr-dg-cell>
+          <clr-dg-cell>{{ asset.brand }}</clr-dg-cell>
+          <clr-dg-cell>{{ asset.model }}</clr-dg-cell>
+          <clr-dg-cell>
+            <span class="status-badge" [ngClass]="getStatusClass(asset.statusName)">
+              {{ asset.statusName }}
+            </span>
+          </clr-dg-cell>
+          
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          <clr-dg-pagination #pagination [clrDgPageSize]="10">
+            {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }}
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </div>
+
+    <!-- ─── SERVICE SUMMARY ─────────────────────────────────────────────────── -->
+    <div class="service-section">
+      <h4><clr-icon shape="wrench" size="20"></clr-icon> Service Requests</h4>
+
+      <div class="service-kpis">
+        <div class="svc-kpi svc-open">
+          <span class="svc-value">{{ serviceOpen }}</span>
+          <span class="svc-label">Open</span>
+        </div>
+        <div class="svc-kpi svc-progress">
+          <span class="svc-value">{{ serviceInProgress }}</span>
+          <span class="svc-label">In Progress</span>
+        </div>
+        <div class="svc-kpi svc-resolved">
+          <span class="svc-value">{{ serviceResolved }}</span>
+          <span class="svc-label">Resolved</span>
+        </div>
+        <div class="svc-kpi svc-total">
+          <span class="svc-value">{{ serviceTotal }}</span>
+          <span class="svc-label">Total</span>
+        </div>
+      </div>
+
+      <clr-datagrid *ngIf="allServiceRequests.length > 0">
+        <clr-dg-column>Asset Tag</clr-dg-column>
+        <clr-dg-column>Issue Type</clr-dg-column>
+        <clr-dg-column>Priority</clr-dg-column>
+        <clr-dg-column>Status</clr-dg-column>
+        <clr-dg-column>Vendor</clr-dg-column>
+        <clr-dg-column>Reported Date</clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let sr of allServiceRequests"
+                    (click)="goToService(sr.id)" class="clickable-row">
+          <clr-dg-cell><strong>{{ sr.assetTag }}</strong></clr-dg-cell>
+          <clr-dg-cell>{{ sr.issueType }}</clr-dg-cell>
+          <clr-dg-cell>
+            <span class="priority-badge" [ngClass]="getPriorityClass(sr.priority)">
+              {{ sr.priority }}
+            </span>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <span class="status-badge" [ngClass]="getServiceStatusClass(sr.status)">
+              {{ sr.status }}
+            </span>
+          </clr-dg-cell>
+          <clr-dg-cell>{{ sr.vendorName || '-' }}</clr-dg-cell>
+          <clr-dg-cell>{{ sr.reportedDate | date:'dd MMM yyyy' }}</clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          <clr-dg-pagination #svcPagination [clrDgPageSize]="5">
+            {{ svcPagination.firstItem + 1 }} - {{ svcPagination.lastItem + 1 }} of {{ svcPagination.totalItems }}
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </div>
+
+  </ng-container>
+</div>

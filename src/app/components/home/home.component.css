@@ -1,0 +1,173 @@
+.dashboard-container {
+  padding: 1rem 1.5rem;
+  background: #f0f3f6;
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  h2 {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin: 0; font-size: 1.4rem; font-weight: 700; color: #333;
+  }
+}
+
+.loading-overlay {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 4rem; color: #666;
+  p { margin-top: 1rem; }
+}
+
+
+.filter-bar {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  padding: 1rem 1.25rem; background: #fff;
+  border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 1.25rem;
+
+  .filter-item {
+    display: flex; flex-direction: column; gap: 0.25rem; min-width: 150px;
+    label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: #555; }
+    select {
+      padding: 0.4rem 0.5rem; border: 1px solid #ccc; border-radius: 4px;
+      font-size: 0.82rem; background: #fff;
+      &:focus { border-color: #0072a3; outline: none; }
+    }
+  }
+}
+
+.active-filters {
+  display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+  .filter-label { font-size: 0.82rem; font-weight: 600; color: #555; }
+  .filter-chip {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.2rem 0.6rem; background: #0072a3; color: #fff;
+    border-radius: 12px; font-size: 0.78rem; font-weight: 500;
+    clr-icon { cursor: pointer; &:hover { opacity: 0.7; } }
+  }
+}
+
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1rem; margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.25rem; background: #fff; border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  &:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+  .kpi-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 50px; height: 50px; border-radius: 12px;
+  }
+  .kpi-body {
+    display: flex; flex-direction: column;
+    .kpi-value { font-size: 1.6rem; font-weight: 800; color: #222; }
+    .kpi-label { font-size: 0.78rem; color: #777; font-weight: 500; text-transform: uppercase; }
+  }
+  &.kpi-total .kpi-icon { background: #e3f2fd; color: #1565c0; }
+  &.kpi-assigned .kpi-icon { background: #e8f5e9; color: #2e7d32; }
+  &.kpi-available .kpi-icon { background: #f3e5f5; color: #7b1fa2; }
+  &.kpi-inservice .kpi-icon { background: #fff3e0; color: #e65100; }
+  &.kpi-employees .kpi-icon { background: #fce4ec; color: #c62828; }
+  &.kpi-categories .kpi-icon { background: #e0f7fa; color: #00838f; }
+  &.kpi-brands .kpi-icon { background: #f1f8e9; color: #558b2f; }
+  &.kpi-models .kpi-icon { background: #ede7f6; color: #4527a0; }
+}
+
+
+.charts-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.25rem; margin-bottom: 1.25rem;
+}
+
+.chart-card {
+  padding: 1.25rem; background: #fff;
+  border: 1px solid #e0e0e0; border-radius: 10px;
+  .chart-title { font-size: 0.95rem; font-weight: 700; color: #333; margin-bottom: 0.25rem; }
+  .chart-hint { font-size: 0.72rem; color: #999; margin-bottom: 0.75rem; font-style: italic; }
+  .empty-chart { text-align: center; padding: 3rem; color: #999; }
+}
+
+.warranty-layout { display: flex; align-items: center; gap: 2rem; }
+
+.warranty-stats {
+  display: flex; flex-direction: column; gap: 0.75rem;
+  .warranty-stat {
+    display: flex; flex-direction: column;
+    padding: 0.6rem 1.25rem; border-radius: 8px; min-width: 120px;
+    .stat-value { font-size: 1.3rem; font-weight: 800; }
+    .stat-label { font-size: 0.72rem; font-weight: 500; text-transform: uppercase; }
+    &.active { background: #e8f5e9; .stat-value { color: #2e7d32; } }
+    &.expiring { background: #fff3e0; .stat-value { color: #e65100; } }
+    &.expired { background: #fce4ec; .stat-value { color: #c62828; } }
+  }
+}
+
+
+.table-section {
+  background: #fff; border: 1px solid #e0e0e0;
+  border-radius: 10px; padding: 1.25rem; margin-bottom: 1.25rem;
+
+  .table-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;
+    h4 {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.95rem; font-weight: 700; color: #333; margin: 0;
+      .asset-count { font-weight: 400; color: #999; }
+    }
+    .table-search {
+      padding: 0.4rem 0.75rem; border: 1px solid #ccc;
+      border-radius: 4px; font-size: 0.82rem; width: 220px;
+    }
+  }
+}
+
+.clickable-row { cursor: pointer; &:hover { background: #f5f8ff; } }
+
+.status-badge {
+  padding: 0.15rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;
+  &.status-available { background: #e8f5e9; color: #2e7d32; }
+  &.status-assigned { background: #e3f2fd; color: #1565c0; }
+  &.status-inservice { background: #fff3e0; color: #e65100; }
+  &.status-retired { background: #f5f5f5; color: #616161; }
+  &.status-lost { background: #fce4ec; color: #c62828; }
+}
+
+
+.service-section {
+  background: #fff; border: 1px solid #e0e0e0;
+  border-radius: 10px; padding: 1.25rem;
+  h4 {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.95rem; font-weight: 700; color: #333; margin-bottom: 1rem;
+  }
+}
+
+.service-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1rem; margin-bottom: 1.25rem;
+  .svc-kpi {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 1rem; border-radius: 8px;
+    .svc-value { font-size: 1.4rem; font-weight: 800; }
+    .svc-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
+    &.svc-open { background: #fff3e0; .svc-value { color: #e65100; } }
+    &.svc-progress { background: #e3f2fd; .svc-value { color: #1565c0; } }
+    &.svc-resolved { background: #e8f5e9; .svc-value { color: #2e7d32; } }
+    &.svc-total { background: #f5f5f5; .svc-value { color: #333; } }
+  }
+}
+
+.priority-badge {
+  padding: 0.15rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;
+  &.priority-low { background: #e8f5e9; color: #2e7d32; }
+  &.priority-medium { background: #fff3e0; color: #e65100; }
+  &.priority-high { background: #fce4ec; color: #c62828; }
+  &.priority-critical { background: #f44336; color: #fff; }
+}

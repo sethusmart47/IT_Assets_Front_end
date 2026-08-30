@@ -61,11 +61,3 @@
   </div>
 </clr-modal>
 
-<!-- DELETE CONFIRM -->
-<app-confirm-dialog
-  [isOpen]="isDeleteOpen"
-  [loading]="deleting"
-  [message]="'Are you sure you want to delete brand: ' + deleteItemRef?.brandName + '?'"
-  (onConfirm)="confirmDelete()"
-  (onCancel)="cancelDelete()">
-</app-confirm-dialog>
