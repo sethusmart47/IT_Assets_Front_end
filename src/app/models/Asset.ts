@@ -52,13 +52,17 @@ export interface AssetLifecycleHistory {
   id: string;
   assetId: string;
   action: string;
-  oldStatus: string | null;
-  newStatus: string;
+  oldStatus: number | null;
+  oldStatusName: string | null;
+  newStatus: number;
+  newStatusName: string;
   employeeName: string | null;
   employeeEmail: string | null;
   remarks: string | null;
   performedBy: string;
   performedDate: string;
+  referenceId?: string | null;
+  referenceType?: string | null;
 }
 
 export interface AssetDto {

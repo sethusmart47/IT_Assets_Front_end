@@ -4,7 +4,7 @@ import { ServiceRequestService } from '../../../Services/service-request.service
 import { ToastService } from '../../../Services/toast.service';
 import { ConfirmationService } from '../../../Services/confirmation.service';
 import { Router } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { VendorDto } from '../../../models/purchase';
 import { ClarityModule } from '@clr/angular';
 import { CommonModule } from '@angular/common';
@@ -56,13 +56,13 @@ serviceForm:FormGroup
     private vendorService:VendorService,
     private assetAssignmentService:AssetAssignmentService
   ) {
-     this.serviceForm = this.fb.group({
-    issueType: ['', Validators.required],
-    reportedDate: ['', Validators.required],
-    priority: ['', Validators.required],
-    vendorName: [null],
-    issueDescription: [null]
-  });
+      this.serviceForm = this.fb.group({
+     issueType: ['', Validators.required],
+     reportedDate: ['', [Validators.required, this.notInFutureValidator]],
+     priority: ['', Validators.required],
+     vendorName: [null],
+     issueDescription: [null]
+   });
   }
 
   ngOnInit(): void {
@@ -81,6 +81,12 @@ serviceForm:FormGroup
   }
 
   // ─── Set Today Date ────────────────────────────────────────────────────────────
+
+  private notInFutureValidator = (c: AbstractControl): ValidationErrors | null => {
+    if (!c.value) return null;
+    const v = new Date(c.value); const t = new Date(); t.setHours(0,0,0,0);
+    return v > t ? { futureDate: true } : null;
+  };
 
   private setTodayDate(): void {
     const today = new Date();
@@ -171,19 +177,21 @@ serviceForm:FormGroup
 
     this.submitting = true;
 
-   const formValue = this.serviceForm.getRawValue();
+    const formValue = this.serviceForm.getRawValue();
+    // reportedDate is already yyyy-MM-dd from <input type="date">
+    //const reportedDate = formValue.reportedDate!;
+
 const [month, day, year] = formValue.reportedDate!.split('/');
 
 const reportedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-
-const dto: CreateServiceRequestDto = {
-  assetId: this.assetDetail.id,
-  issueType: formValue.issueType!,
-  reportedDate: reportedDate!,
-  priority: formValue.priority!,
-  vendorName: formValue.vendorName || null,
-  issueDescription: formValue.issueDescription || null
-};
+ const dto: CreateServiceRequestDto = {
+   assetId: this.assetDetail.id,
+   issueType: formValue.issueType!,
+   reportedDate: reportedDate!,
+   priority: formValue.priority!,
+   vendorName: formValue.vendorName || null,
+   issueDescription: formValue.issueDescription || null
+ };
 
 
     this.serviceRequestService.create(dto).subscribe({

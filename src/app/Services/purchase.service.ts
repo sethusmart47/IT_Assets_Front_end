@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { environment } from '../../environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -35,7 +35,7 @@ export class PurchaseService {
   }
 
   update(id: string, dto: UpdatePurchaseDto): Observable<PurchaseDetailDto> {
-    debugger
+    
     return this.http.put<PurchaseDetailDto>(`${this.baseUrl}/${id}`, dto);
   }
 

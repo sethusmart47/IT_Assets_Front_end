@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {  AssetDetail, AssetDto, AssetListDto, AvailablePurchaseDto, AvailablePurchaseItemDto, BulkCreateAssetDto, CreateAssetDto, RegistrationSummaryDto, UpdateAssetDto, ValidateSerialNumbersDto, ValidationResultDto } from '../models/Asset';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -23,7 +23,7 @@ export class AssetService {
   }
 
   getById(id: string): Observable<AssetDetail> {
-    debugger
+    
     return this.http.get<AssetDetail>(`${this.apiUrl}/${id}`);
   }
 

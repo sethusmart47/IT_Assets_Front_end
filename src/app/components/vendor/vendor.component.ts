@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { Vendor } from '../../models/model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VendorService } from '../../Services/vendor.service';
-import { NotificationService } from '../../Services/notification-service.service';
 import { ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
 
 import { CommonModule } from '@angular/common';

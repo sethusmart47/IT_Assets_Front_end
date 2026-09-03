@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { Employee } from '../../../models/Employee';
 import { Router } from '@angular/router';
 import { AssetAssignmentService } from '../../../Services/asset-assignment.service';
@@ -54,7 +54,7 @@ employees: Employee[] = [];
   }
 
   onViewEmployee(employee: Employee): void {
-    debugger
+    
     this.router.navigate(['/employee/detail',employee.id]);
   }
 }

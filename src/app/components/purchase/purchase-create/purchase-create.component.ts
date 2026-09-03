@@ -2,7 +2,7 @@
 // components/purchase/purchase-create/purchase-create.component.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -20,7 +20,6 @@ import { PurchasedItemModalComponent } from '../purchased-item-modal/purchased-i
 import { ConfirmDialogComponentComponent } from '../../Delete confirm-dialog-component/confirm-dialog-component.component';
 
 
-import { ToastContainerComponent } from '../../toast-container/toast-containe.component';
 import { ImagePreviewModalComponent } from '../../image-preview-modal/image-preview-modal.component';
 
 @Component({
@@ -32,8 +31,6 @@ import { ImagePreviewModalComponent } from '../../image-preview-modal/image-prev
     ClarityModule,
     PurchasedItemModalComponent,
     ConfirmDialogComponentComponent,
-    ToastContainerComponent,
-   
     ImagePreviewModalComponent
   ],
   templateUrl: './purchase-create.component.html',
@@ -102,16 +99,34 @@ export class PurchaseCreateComponent implements OnInit {
   }
 
   private initForm(): void {
+    const todayStr = new Date().toISOString().slice(0, 10);
     this.purchaseForm = this.fb.group({
       vendorId: [null, Validators.required],
-      purchaseDate: ['', Validators.required],
+      purchaseDate: ['', [Validators.required, this.notInFutureValidator]],
       invoiceNumber: ['', [Validators.required, Validators.maxLength(100)]],
-      invoiceDate: ['', Validators.required],
+      invoiceDate: ['', [Validators.required, this.notInFutureValidator]],
       expectedDeliveryDate: ['', Validators.required],
       ownershipType: [1, Validators.required],
       remarks: ['']
-    });
+    }, { validators: this.purchaseDateOrderValidator });
   }
+
+  private notInFutureValidator = (c: AbstractControl): ValidationErrors | null => {
+    if (!c.value) return null;
+    const v = new Date(c.value); const t = new Date(); t.setHours(0,0,0,0);
+    return v > t ? { futureDate: true } : null;
+  };
+
+  private purchaseDateOrderValidator = (g: AbstractControl): ValidationErrors | null => {
+    const purchase = g.get('purchaseDate')?.value;
+    const invoice = g.get('invoiceDate')?.value;
+    const delivery = g.get('expectedDeliveryDate')?.value;
+    if (!purchase || !invoice || !delivery) return null;
+    const p = new Date(purchase), i = new Date(invoice), d = new Date(delivery);
+    if (i < p) return { invoiceBeforePurchase: true };
+    if (d < i) return { deliveryBeforeInvoice: true };
+    return null;
+  };
 
   loadVendors(): void {
     this.isLoading = true;

@@ -97,11 +97,14 @@ asset: AssetDetail | null = null;
   }
 
   getTimelineIcon(action: string): string {
-    switch (action.toLowerCase()) {
+    const a = action.toLowerCase().replace(/\s+/g, '');
+    switch (a) {
       case 'registered': return 'plus-circle';
       case 'assigned': return 'user';
       case 'returned': return 'undo';
-      case 'inservice': return 'wrench';
+      case 'senttoservice':
+      case 'inservice':
+      case 'servicecompleted': return 'wrench';
       case 'conditionchanged': return 'sync';
       case 'retired': return 'times-circle';
       case 'disposed': return 'trash';
@@ -110,15 +113,31 @@ asset: AssetDetail | null = null;
   }
 
   getTimelineColor(action: string): string {
-    switch (action.toLowerCase()) {
+    const a = action.toLowerCase().replace(/\s+/g, '');
+    switch (a) {
       case 'registered': return 'timeline-green';
       case 'assigned': return 'timeline-blue';
       case 'returned': return 'timeline-orange';
-      case 'inservice': return 'timeline-yellow';
+      case 'senttoservice': return 'timeline-yellow';
+      case 'servicecompleted': return 'timeline-yellow';
       case 'conditionchanged': return 'timeline-gray';
       case 'retired': return 'timeline-red';
       case 'disposed': return 'timeline-dark';
       default: return 'timeline-gray';
     }
+  }
+
+  lifecycleFilter: 'all' | 'assignment' | 'service' | 'registration' = 'all';
+
+  get filteredHistories() {
+    if (!this.asset?.lifecycleHistories) return [];
+    if (this.lifecycleFilter === 'all') return this.asset.lifecycleHistories;
+    return this.asset.lifecycleHistories.filter(h => {
+      const a = h.action.toLowerCase().replace(/\s+/g, '');
+      if (this.lifecycleFilter === 'assignment') return a === 'assigned' || a === 'returned';
+      if (this.lifecycleFilter === 'service') return a === 'senttoservice' || a === 'servicecompleted';
+      if (this.lifecycleFilter === 'registration') return a === 'registered' || a === 'conditionchanged';
+      return true;
+    });
   }
 }

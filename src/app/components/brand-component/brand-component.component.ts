@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { AssetBrand, AssetCategory, DatagridColumn } from '../../models/model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CategoryService } from '../../Services/category-service.service';
-import { NotificationService } from '../../Services/notification-service.service';
 import { ClarityModule } from '@clr/angular';
 
 import {  ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
@@ -66,14 +65,13 @@ brands: AssetBrand[] = [];
   }
 
   loadData(): void {
-    debugger
+    
     this.loading = true;
     this.brandService.getAll().subscribe({
       next: (data) => {
         this.brands = data;
         this.loading = false;
-        console.log('Brands loaded:', this.brands);
-      },
+              },
       error: (err) => {
         this.notification.error(err.error || 'Failed to load brands.');
         this.loading = false;

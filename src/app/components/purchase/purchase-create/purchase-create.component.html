@@ -1,7 +1,4 @@
-
-<!-- purchase-create.component.html -->
-<app-toast-container></app-toast-container>
-
+﻿
 <div class="purchase-form-container" *ngIf="!isLoading; else loadingTpl">
 
   <!-- HEADER -->
@@ -69,6 +66,9 @@
               *ngIf="purchaseForm.get('purchaseDate')?.touched && purchaseForm.get('purchaseDate')?.hasError('required')">
               PO date is required.
             </span>
+            <span class="error-text" *ngIf="purchaseForm.get('purchaseDate')?.hasError('futureDate') && purchaseForm.get('purchaseDate')?.touched">
+              PO date cannot be in the future.
+            </span>
           </div>
 
           <!-- Invoice Number -->
@@ -93,6 +93,12 @@
               *ngIf="purchaseForm.get('invoiceDate')?.touched && purchaseForm.get('invoiceDate')?.hasError('required')">
               Invoice date is required.
             </span>
+            <span class="error-text" *ngIf="purchaseForm.get('invoiceDate')?.hasError('futureDate') && purchaseForm.get('invoiceDate')?.touched">
+              Invoice date cannot be in the future.
+            </span>
+            <span class="error-text" *ngIf="purchaseForm.hasError('invoiceBeforePurchase') && purchaseForm.get('invoiceDate')?.touched">
+              Invoice date cannot be before PO date.
+            </span>
           </div>
 
           <!-- Expected Delivery -->
@@ -102,6 +108,9 @@
             <span class="error-text"
               *ngIf="purchaseForm.get('expectedDeliveryDate')?.touched && purchaseForm.get('expectedDeliveryDate')?.hasError('required')">
               Delivery date is required.
+            </span>
+            <span class="error-text" *ngIf="purchaseForm.hasError('deliveryBeforeInvoice') && purchaseForm.get('expectedDeliveryDate')?.touched">
+              Delivery date cannot be before invoice date.
             </span>
           </div>
 

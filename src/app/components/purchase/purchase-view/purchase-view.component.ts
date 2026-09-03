@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { PurchaseAttachmentDto, PurchaseDetailDto } from '../../../models/purchase';
 import { ToastService } from '../../../Services/toast.service';
 import { PurchaseAttachmentService } from '../../../Services/purchase-attachment.service';
@@ -9,7 +9,6 @@ import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmDialogComponentComponent } from '../../Delete confirm-dialog-component/confirm-dialog-component.component';
 import { PurchasedItemModalComponent } from '../purchased-item-modal/purchased-item-modal.component';
-import { ToastContainerComponent } from '../../toast-container/toast-containe.component';
 import { ImagePreviewModalComponent } from '../../image-preview-modal/image-preview-modal.component';
 
 @Component({
@@ -20,8 +19,6 @@ import { ImagePreviewModalComponent } from '../../image-preview-modal/image-prev
       ClarityModule,
       PurchasedItemModalComponent,
       ConfirmDialogComponentComponent,
-      ToastContainerComponent,
-     
       ImagePreviewModalComponent],
   templateUrl: './purchase-view.component.html',
   styleUrl: './purchase-view.component.css'

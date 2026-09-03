@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ASSET_CONDITION_OPTIONS, AvailablePurchaseDto, AvailablePurchaseItemDto, BulkCreateAssetDto, OWNERSHIP_TYPE_OPTIONS, SerialEntry } from '../../../models/Asset';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { AssetService } from '../../../Services/asset.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -46,12 +46,11 @@ availablePurchases: AvailablePurchaseDto[] = [];
   ) {
     this.commonForm = this.fb.group({
       condition: [1, Validators.required],
-      //ownershipType: [1, Validators.required],
       warrantyStartDate: ['', Validators.required],
       warrantyEndDate: ['', Validators.required],
       warrantyMonths: [{ value: 0, disabled: true }],
       remarks: ['']
-    });
+    }, { validators: this.warrantyDateOrderValidator });
   }
 
   ngOnInit(): void {
@@ -118,12 +117,22 @@ availablePurchases: AvailablePurchaseDto[] = [];
     this.commonForm.get('warrantyEndDate')?.valueChanges.subscribe(() => this.calculateWarrantyMonths());
   }
 
+  private warrantyDateOrderValidator = (g: AbstractControl): ValidationErrors | null => {
+    const start = g.get('warrantyStartDate')?.value;
+    const end = g.get('warrantyEndDate')?.value;
+    if (!start || !end) return null;
+    const s = new Date(start), e = new Date(end);
+    if (isNaN(s.getTime()) || isNaN(e.getTime())) return null;
+    return e >= s ? null : { warrantyEndBeforeStart: true };
+  };
+
   private calculateWarrantyMonths(): void {
     const start = this.commonForm.get('warrantyStartDate')?.value;
     const end = this.commonForm.get('warrantyEndDate')?.value;
     if (start && end) {
       const startDate = new Date(start);
       const endDate = new Date(end);
+      if (endDate < startDate) return;
       const months = (endDate.getFullYear() - startDate.getFullYear()) * 12 +
         (endDate.getMonth() - startDate.getMonth());
       this.commonForm.patchValue({ warrantyMonths: months }, { emitEvent: false });

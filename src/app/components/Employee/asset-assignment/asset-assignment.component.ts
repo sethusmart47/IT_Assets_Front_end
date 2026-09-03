@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import {  AssignAssetRequest, Employee } from '../../../models/Employee';
 import { ToastService } from '../../../Services/toast.service';
 import { AssetAssignmentService } from '../../../Services/asset-assignment.service';
@@ -116,7 +116,7 @@ this.toaster.error(err.error ||
   // ─── Confirm Assignment ────────────────────────────────────────────────────────
 
   // onConfirmAssignment(): void {
-  //   debugger
+  //   
     
   // console.log('Assignment confirmation clicked');
 
@@ -139,7 +139,7 @@ this.toaster.error(err.error ||
   // }
 
   onConfirmAssignment(): void {
-    debugger
+    
     if (!this.assetDetail ) return;
 
     this.assigning = true;

@@ -163,10 +163,18 @@
     
   <!-- Lifecycle Timeline Section -->
   <div class="detail-section">
-    <h4 class="section-title">Lifecycle Timeline</h4>
+    <div class="timeline-header-row">
+      <h4 class="section-title">Lifecycle Timeline</h4>
+      <div class="timeline-filters" *ngIf="asset.lifecycleHistories && asset.lifecycleHistories.length > 0">
+        <button class="btn btn-sm" [class.btn-primary]="lifecycleFilter==='all'" [class.btn-outline]="! (lifecycleFilter==='all')" (click)="lifecycleFilter='all'">All</button>
+        <button class="btn btn-sm" [class.btn-primary]="lifecycleFilter==='assignment'" [class.btn-outline]="! (lifecycleFilter==='assignment')" (click)="lifecycleFilter='assignment'">Assignments</button>
+        <button class="btn btn-sm" [class.btn-primary]="lifecycleFilter==='service'" [class.btn-outline]="! (lifecycleFilter==='service')" (click)="lifecycleFilter='service'">Service</button>
+        <button class="btn btn-sm" [class.btn-primary]="lifecycleFilter==='registration'" [class.btn-outline]="! (lifecycleFilter==='registration')" (click)="lifecycleFilter='registration'">Registration</button>
+      </div>
+    </div>
 
-    <div class="timeline" *ngIf="asset.lifecycleHistories && asset.lifecycleHistories.length > 0">
-      <div class="timeline-item" *ngFor="let history of asset.lifecycleHistories"
+    <div class="timeline" *ngIf="filteredHistories.length > 0">
+      <div class="timeline-item" *ngFor="let history of filteredHistories"
            [ngClass]="getTimelineColor(history.action)">
         <div class="timeline-marker">
           <cds-icon [attr.shape]="getTimelineIcon(history.action)" solid></cds-icon>
@@ -177,16 +185,16 @@
             <span class="timeline-date">{{ history.performedDate | date:'dd-MMM-yyyy hh:mm a' }}</span>
           </div>
           <div class="timeline-body">
-            <div class="timeline-status" *ngIf="history.oldStatus">
-              <span class="old-status">{{ history.oldStatus }}</span>
+            <div class="timeline-status" *ngIf="history.oldStatusName">
+              <span class="badge badge-info">{{ history.oldStatusName }}</span>
               <cds-icon shape="arrow" direction="right"></cds-icon>
-              <span class="new-status">{{ history.newStatus }}</span>
+              <span class="badge" [ngClass]="getStatusBadgeClass(history.newStatus)">{{ history.newStatusName }}</span>
             </div>
-             <div class="timeline-detail" *ngIf="history.employeeName">
+            <div class="timeline-status" *ngIf="!history.oldStatusName">
+              <span class="badge" [ngClass]="getStatusBadgeClass(history.newStatus)">{{ history.newStatusName }}</span>
+            </div>
+            <div class="timeline-detail" *ngIf="history.employeeName">
               Employee: {{ history.employeeName }} ({{ history.employeeEmail }})
-            </div>
-            <div class="timeline-status" *ngIf="!history.oldStatus">
-              <span class="new-status">{{ history.newStatus }}</span>
             </div>
             <p class="timeline-remark" *ngIf="history.remarks">{{ history.remarks }}</p>
             <span class="timeline-performer">By: {{ history.performedBy }}</span>
@@ -198,6 +206,9 @@
     <div class="empty-timeline" *ngIf="!asset.lifecycleHistories || asset.lifecycleHistories.length === 0">
       <cds-icon shape="history" size="48"></cds-icon>
       <p>No lifecycle events recorded yet.</p>
+    </div>
+    <div class="empty-timeline" *ngIf="asset.lifecycleHistories && asset.lifecycleHistories.length > 0 && filteredHistories.length === 0">
+      <p>No events for this filter.</p>
     </div>
   </div>
 

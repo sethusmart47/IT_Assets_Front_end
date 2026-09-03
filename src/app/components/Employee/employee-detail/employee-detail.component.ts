@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { Employee, EmployeeAssignment, ReturnAssetRequest, SurrenderAssetsRequest } from '../../../models/Employee';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AssetAssignmentService } from '../../../Services/asset-assignment.service';
@@ -55,7 +55,7 @@ employeeId = '';
   ) {}
 
   ngOnInit(): void {
-    debugger
+    
     this.employeeId = this.route.snapshot.paramMap.get('id') || '';
     this.loadEmployeeData();
   }

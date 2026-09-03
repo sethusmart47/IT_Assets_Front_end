@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { ResolveServiceRequestDto, ServiceRequestDto } from '../../../models/AssetService';
 import { ConfirmationService } from '../../../Services/confirmation.service';
 import { ToastService } from '../../../Services/toast.service';
@@ -37,7 +37,7 @@ serviceRequest: ServiceRequestDto | null = null;
   ) {}
 
   ngOnInit(): void {
-    debugger
+    
     this.requestId = this.route.snapshot.paramMap.get('id') || '';
     this.loadDetail();
   }

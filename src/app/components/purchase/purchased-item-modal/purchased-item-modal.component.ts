@@ -1,4 +1,4 @@
-
+﻿
 // components/purchase/purchased-item-modal/purchased-item-modal.component.ts
 import {
   Component, EventEmitter, Input, OnInit,
@@ -283,7 +283,7 @@ export class PurchasedItemModalComponent implements OnInit, OnChanges {
     if (this.isEditMode && this.editItem) {
       // UPDATE
       const dto: UpdatePurchasedItemDto = { ...payload };
-   debugger
+   
       this.itemService.update(this.purchaseId, this.editItem.id, dto).subscribe({
         next: (result) => {
           this.saving = false;

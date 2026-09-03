@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CreatePurchasedItemDto, PurchasedItemDto, UpdatePurchasedItemDto } from '../models/purchase';
 import { HttpClient } from '@angular/common/http';
@@ -22,7 +22,7 @@ export class PurchasedItemService {
   }
 
   create(purchaseId: string, dto: CreatePurchasedItemDto): Observable<PurchasedItemDto> {
-   debugger
+   
     return this.http.post<PurchasedItemDto>(`${this.baseUrl}/${purchaseId}`, dto);
   }
 
