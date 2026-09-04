@@ -1,7 +1,6 @@
 ﻿import { Component } from '@angular/core';
 import { Employee } from '../../../models/Employee';
 import { Router } from '@angular/router';
-import { AssetAssignmentService } from '../../../Services/asset-assignment.service';
 import { ClarityModule } from '@clr/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -20,7 +19,6 @@ employees: Employee[] = [];
   searchText = '';
 
   constructor(
-    private assetAssignmentService: AssetAssignmentService,
     private router: Router,
     private employeeService:EmployeeService
   ) {}

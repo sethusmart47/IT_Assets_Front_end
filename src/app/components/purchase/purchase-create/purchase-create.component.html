@@ -14,9 +14,9 @@
       <button class="btn btn-outline" (click)="goBack()">Cancel</button>
       <button class="btn btn-success-outline"
         *ngIf="isEditMode && items.length > 0"
-        (click)="completePurchase()"
+        (click)="goToView()"
         [disabled]="saving">
-        <cds-icon shape="check-circle"></cds-icon> Save &amp; Receive Assets
+        <cds-icon shape="share"></cds-icon> Go to Purchase View
       </button>
     </div>
   </div>
@@ -189,8 +189,8 @@
       <!-- Empty State -->
       <div class="empty-state" *ngIf="items.length === 0">
         <cds-icon shape="shopping-bag" size="48"></cds-icon>
-        <p>No asset items added yet.</p>
-        <p class="muted">Click "Add Asset Item" to get started.</p>
+        <h4>No asset items added yet</h4>
+        <p>Click <strong>Add Asset Item</strong> below to start adding line items to this purchase order.</p>
       </div>
 
       <!-- Footer -->
@@ -311,16 +311,6 @@
   (closed)="onItemModalClosed()"
   (saved)="onItemSaved($event)">
 </app-purchased-item-modal>
-
-<!-- Delete Confirm -->
-<app-confirm-dialog
-  [isOpen]="isDeleteOpen"
-  [loading]="deleting"
-  [title]="'Delete Asset Item'"
-  [message]="deleteConfirmMessage"
-  (onConfirm)="confirmDelete()"
-  (onCancel)="cancelDelete()">
-</app-confirm-dialog>
 
 <!-- Image Preview -->
 <app-image-preview-modal

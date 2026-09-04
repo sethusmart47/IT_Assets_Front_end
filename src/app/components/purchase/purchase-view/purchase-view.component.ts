@@ -2,12 +2,13 @@
 import { PurchaseAttachmentDto, PurchaseDetailDto } from '../../../models/purchase';
 import { ToastService } from '../../../Services/toast.service';
 import { PurchaseAttachmentService } from '../../../Services/purchase-attachment.service';
+import { AttachmentHelperService } from '../../../Services/attachment-helper.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PurchaseService } from '../../../Services/purchase.service';
+import { ConfirmationService } from '../../../Services/confirmation.service';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ConfirmDialogComponentComponent } from '../../Delete confirm-dialog-component/confirm-dialog-component.component';
 import { PurchasedItemModalComponent } from '../purchased-item-modal/purchased-item-modal.component';
 import { ImagePreviewModalComponent } from '../../image-preview-modal/image-preview-modal.component';
 
@@ -18,7 +19,6 @@ import { ImagePreviewModalComponent } from '../../image-preview-modal/image-prev
       ReactiveFormsModule,
       ClarityModule,
       PurchasedItemModalComponent,
-      ConfirmDialogComponentComponent,
       ImagePreviewModalComponent],
   templateUrl: './purchase-view.component.html',
   styleUrl: './purchase-view.component.css'
@@ -34,9 +34,6 @@ export class PurchaseViewComponent {
   totalAmount = 0;
   totalUnits = 0;
 
-  isReceiveOpen = false;
-  receiving = false;
-
   isPreviewOpen = false;
   previewImageUrl: string | null = null;
 
@@ -45,7 +42,9 @@ export class PurchaseViewComponent {
     private router: Router,
     private purchaseService: PurchaseService,
     public attachmentService: PurchaseAttachmentService,
-    private toast: ToastService
+    private toast: ToastService,
+    private confirmService: ConfirmationService,
+    public attachmentHelper: AttachmentHelperService
   ) {}
 
   ngOnInit(): void {
@@ -87,64 +86,83 @@ export class PurchaseViewComponent {
   get statusLabel(): string {
     if (!this.purchase) return '';
     switch (this.purchase.status) {
-      case 0: return 'Draft';
-      case 1: return 'Pending';
-      case 2: return 'Completed';
+      case 1: return 'Ordered';
+      case 2: return 'Confirmed';
       case 3: return 'Cancelled';
-      default: return  'Unknown';
+      default: return 'Unknown';
     }
   }
 
   get statusClass(): string {
     if (!this.purchase) return '';
     switch (this.purchase.status) {
-      case 0: return 'status-draft';
-      case 1: return 'status-pending';
-      case 2: return 'status-completed';
+      case 1: return 'status-ordered';
+      case 2: return 'status-confirmed';
       case 3: return 'status-cancelled';
-      default: return 'status-draft';
+      default: return 'status-ordered';
     }
   }
 
-  get isCompleted(): boolean {
+  get isConfirmed(): boolean {
     return this.purchase?.status === 2;
   }
 
-  get canReceive(): boolean {
+  get isCancelled(): boolean {
+    return this.purchase?.status === 3;
+  }
+
+  get canConfirm(): boolean {
     return !!this.purchase
-      && this.purchase.status !== 2
-      && this.purchase.status !== 3
+      && this.purchase.status === 1
       && (this.purchase.items?.length || 0) > 0;
   }
 
-  openReceiveConfirm(): void {
-    this.isReceiveOpen = true;
-  }
-
-  cancelReceive(): void {
-    this.isReceiveOpen = false;
+  get canCancel(): boolean {
+    return !!this.purchase && this.purchase.status === 1;
   }
 
   confirmReceive(): void {
-    this.receiving = true;
-    this.purchaseService.complete(this.purchaseId).subscribe({
-      next: () => {
-        this.receiving = false;
-        this.isReceiveOpen = false;
-        this.toast.success('Assets received successfully! Asset tags have been generated.');
-        this.loadPurchase();
-      },
-      error: (err) => {
-        this.receiving = false;
-        this.toast.error(err.error?.message || 'Failed to receive assets.');
+    this.confirmService.confirm(
+      'Confirm Purchase',
+      'Are you sure you want to confirm this purchase? Items will become available for asset registration.',
+      () => {
+        this.purchaseService.confirm(this.purchaseId).subscribe({
+          next: () => {
+            this.toast.success('Purchase confirmed successfully! Items are now available for asset creation.');
+            this.loadPurchase();
+          },
+          error: (err) => {
+            this.toast.error(err.error?.message || 'Failed to confirm purchase.');
+          }
+        });
+      }
+    );
+  }
+
+  confirmCancelPurchase(): void {
+    this.confirmService.open({
+      title: 'Cancel Purchase',
+      message: 'Are you sure you want to cancel this purchase? This action cannot be undone.',
+      type: 'warning',
+      confirmText: 'Cancel Purchase'
+    }).then((confirmed) => {
+      if (confirmed) {
+        this.purchaseService.cancel(this.purchaseId).subscribe({
+          next: () => {
+            this.toast.success('Purchase cancelled successfully.');
+            this.loadPurchase();
+          },
+          error: (err) => {
+            this.toast.error(err.error?.message || 'Failed to cancel purchase.');
+          }
+        });
       }
     });
   }
 
    // Check if attachment is an image
   isImageAttachment(att: PurchaseAttachmentDto): boolean {
-    if (!att.contentType) return false;
-    return att.contentType.startsWith('image/');
+    return this.attachmentHelper.isImage(att.contentType);
   }
 
   // ─── THIS IS THE KEY METHOD ───
@@ -180,9 +198,7 @@ export class PurchaseViewComponent {
 
   // Fallback when image fails to load
   onImageError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    img.src = 'assets/images/no-preview.png';
-    img.alt = 'Image not available';
+    this.attachmentHelper.onImageError(event);
   }
 
   // Close preview modal
@@ -193,18 +209,12 @@ export class PurchaseViewComponent {
 
   // File type icon
   getFileIcon(contentType: string): string {
-    if (!contentType) return 'document';
-    if (contentType.includes('pdf')) return 'file';
-    if (contentType.startsWith('image/')) return 'image';
-    return 'document';
+    return this.attachmentHelper.getFileIcon(contentType);
   }
 
   // Human-readable file size
   formatFileSize(bytes: number): string {
-    if (!bytes || bytes === 0) return '0 B';
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / 1048576).toFixed(1) + ' MB';
+    return this.attachmentHelper.formatFileSize(bytes);
   }
 
   goBack(): void {

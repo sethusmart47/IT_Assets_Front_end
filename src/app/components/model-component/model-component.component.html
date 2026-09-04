@@ -1,22 +1,24 @@
-<div class="clr-row">
-  <div class="clr-col-12">
-    <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Asset Models</span>
-        <button class="btn btn-primary btn-sm" (click)="openAdd()">
-          <cds-icon shape="plus"></cds-icon> Add Model
-        </button>
-      </div>
-      <div class="card-block">
-        <app-reusable-datagrid
-          [columns]="columns"
-          [data]="models"
-          [loading]="loading"
-          (onEdit)="openEdit($event)"
-          (onDelete)="openDelete($event)">
-        </app-reusable-datagrid>
-      </div>
+<div class="master-page">
+  <div class="page-header">
+    <h2>
+      <cds-icon shape="layers" size="24"></cds-icon>
+      Asset Models
+    </h2>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="openAdd()">
+        <cds-icon shape="plus"></cds-icon> Add Model
+      </button>
     </div>
+  </div>
+
+  <div class="detail-section">
+    <app-reusable-datagrid
+      [columns]="columns"
+      [data]="models"
+      [loading]="loading"
+      (onEdit)="openEdit($event)"
+      (onDelete)="openDelete($event)">
+    </app-reusable-datagrid>
   </div>
 </div>
 
@@ -72,12 +74,3 @@
     </button>
   </div>
 </clr-modal>
-
-<!-- DELETE CONFIRM -->
-<!-- <app-confirm-dialog
-  [isOpen]="isDeleteOpen"
-  [loading]="deleting"
-  [message]="'Are you sure you want to delete model: ' + deleteItemRef?.modelName + '?'"
-  (onConfirm)="confirmDelete()"
-  (onCancel)="cancelDelete()">
-</app-confirm-dialog> -->

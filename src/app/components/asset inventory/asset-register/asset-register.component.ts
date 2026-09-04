@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { ASSET_CONDITION_OPTIONS, AvailablePurchaseDto, AvailablePurchaseItemDto, BulkCreateAssetDto, OWNERSHIP_TYPE_OPTIONS, SerialEntry } from '../../../models/Asset';
-import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AssetService } from '../../../Services/asset.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
 import { ToastService } from '../../../Services/toast.service';
+import { warrantyDateOrderValidator } from '../../../utils/validators';
 
 @Component({
   selector: 'app-asset-register',
@@ -50,7 +51,7 @@ availablePurchases: AvailablePurchaseDto[] = [];
       warrantyEndDate: ['', Validators.required],
       warrantyMonths: [{ value: 0, disabled: true }],
       remarks: ['']
-    }, { validators: this.warrantyDateOrderValidator });
+    }, { validators: warrantyDateOrderValidator() });
   }
 
   ngOnInit(): void {
@@ -116,15 +117,6 @@ availablePurchases: AvailablePurchaseDto[] = [];
     this.commonForm.get('warrantyStartDate')?.valueChanges.subscribe(() => this.calculateWarrantyMonths());
     this.commonForm.get('warrantyEndDate')?.valueChanges.subscribe(() => this.calculateWarrantyMonths());
   }
-
-  private warrantyDateOrderValidator = (g: AbstractControl): ValidationErrors | null => {
-    const start = g.get('warrantyStartDate')?.value;
-    const end = g.get('warrantyEndDate')?.value;
-    if (!start || !end) return null;
-    const s = new Date(start), e = new Date(end);
-    if (isNaN(s.getTime()) || isNaN(e.getTime())) return null;
-    return e >= s ? null : { warrantyEndBeforeStart: true };
-  };
 
   private calculateWarrantyMonths(): void {
     const start = this.commonForm.get('warrantyStartDate')?.value;

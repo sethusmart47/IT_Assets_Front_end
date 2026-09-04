@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CategoryService } from '../../Services/category-service.service';
 import { ClarityModule } from '@clr/angular';
 
-import {  ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
 import { ReusableDatagridComponentComponent } from '../reusable-datagrid-component/reusable-datagrid-component.component';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../Services/toast.service';
@@ -14,7 +13,7 @@ import { ConfirmationService } from '../../Services/confirmation.service';
   selector: 'app-category',
   standalone: true,
   imports: [ClarityModule,CommonModule,
-    ConfirmDialogComponentComponent,ReusableDatagridComponentComponent,
+    ReusableDatagridComponentComponent,
   ReactiveFormsModule],
   templateUrl: './category-component.component.html',
   styleUrl: './category-component.component.css'
@@ -34,11 +33,6 @@ export class CategoryComponent implements OnInit  {
   saving: boolean = false;
   form!: FormGroup;
   selectedId: string | null = null;
-
-  // Delete
-  isDeleteOpen: boolean = false;
-  deleting: boolean = false;
-  deleteItem: AssetCategory | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -145,25 +139,15 @@ export class CategoryComponent implements OnInit  {
   }
 
   confirmDelete(item:AssetCategory): void {
-   
     this.categoryService.delete(item.id).subscribe({
       next: () => {
         this.notification.success('Category deleted successfully.');
-        this.isDeleteOpen = false;
-        this.deleting = false;
-      
         this.loadData();
       },
       error: (err) => {
         this.notification.error(err.error || 'Failed to delete category.');
-        
       }
     });
-  }
-
-  cancelDelete(): void {
-    this.isDeleteOpen = false;
-    this.deleteItem = null;
   }
 
   closeModal(): void {

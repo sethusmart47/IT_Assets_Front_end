@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { StatusHelpers } from '../../../utils/status-helpers';
 import { AssetEditModalComponent } from '../asset-edit-modal/asset-edit-modal.component';
 import { AssetDetail } from '../../../models/Asset';
 
@@ -85,15 +86,7 @@ asset: AssetDetail | null = null;
   }
 
   getStatusBadgeClass(status: number): string {
-    switch (status) {
-      case 1: return 'badge-success';
-      case 2: return 'badge-info';
-      case 3: return 'badge-warning';
-      case 4: return 'badge-neutral';
-      case 5: return 'badge-danger';
-      case 6: return 'badge-neutral';
-      default: return '';
-    }
+    return StatusHelpers.getAssetBadgeClass(status);
   }
 
   getTimelineIcon(action: string): string {

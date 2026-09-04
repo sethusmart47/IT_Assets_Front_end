@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CategoryService } from '../../Services/category-service.service';
 import { ClarityModule } from '@clr/angular';
 
-import {  ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
 import { ReusableDatagridComponentComponent } from '../reusable-datagrid-component/reusable-datagrid-component.component';
 import { CommonModule } from '@angular/common';     
 import { BrandService } from '../../Services/brand-service.service';
@@ -13,7 +12,7 @@ import { ConfirmationService } from '../../Services/confirmation.service';
 @Component({
   selector: 'app-brand-component',
   standalone: true,
-  imports: [ConfirmDialogComponentComponent, ReusableDatagridComponentComponent, ReactiveFormsModule, ClarityModule, CommonModule],
+  imports: [ReusableDatagridComponentComponent, ReactiveFormsModule, ClarityModule, CommonModule],
   templateUrl: './brand-component.component.html',
   styleUrl: './brand-component.component.css'
 })
@@ -36,11 +35,6 @@ brands: AssetBrand[] = [];
   saving: boolean = false;
   form!: FormGroup;
   selectedId: string | null = null;
-
-  // Delete
-  isDeleteOpen: boolean = false;
-  deleting: boolean = false;
-  deleteItemRef: AssetBrand | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -173,20 +167,12 @@ brands: AssetBrand[] = [];
     this.brandService.delete(item.id).subscribe({
       next: () => {
         this.notification.success('Brand deleted successfully.');
-        this.isDeleteOpen = false;
-      
         this.loadData();
       },
       error: (err) => {
         this.notification.error(err.error || 'Failed to delete brand.');
-        
       }
     });
-  }
-
-  cancelDelete(): void {
-    this.isDeleteOpen = false;
-    
   }
 
   closeModal(): void {

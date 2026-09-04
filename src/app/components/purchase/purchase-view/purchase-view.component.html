@@ -34,12 +34,16 @@
         <cds-icon shape="printer"></cds-icon> Print
       </button> -->
 
-      <button class="btn btn-outline btn-sm" (click)="goToEdit()" *ngIf="!isCompleted">
+      <button class="btn btn-outline btn-sm" (click)="goToEdit()" *ngIf="!isConfirmed && !isCancelled">
         <cds-icon shape="pencil"></cds-icon> Edit
       </button>
 
-      <button class="btn btn-success" (click)="openReceiveConfirm()" *ngIf="canReceive">
-        <cds-icon shape="check-circle"></cds-icon> Receive Assets
+      <button class="btn btn-danger-outline btn-sm" (click)="confirmCancelPurchase()" *ngIf="canCancel">
+        <cds-icon shape="times-circle"></cds-icon> Cancel Purchase
+      </button>
+
+      <button class="btn btn-success" (click)="confirmReceive()" *ngIf="canConfirm">
+        <cds-icon shape="check-circle"></cds-icon> Confirm Purchase
       </button>
     </div>
   </div>
@@ -274,34 +278,10 @@
   </div> -->
 
   <!-- ─── BOTTOM ACTIONS ─── -->
-  <div class="bottom-actions">
-    <button class="btn btn-outline" (click)="goBack()">
-      <cds-icon shape="arrow" dir="left"></cds-icon> Back to Purchase Orders
-    </button>
-
-    <div class="bottom-right">
-      <button class="btn btn-outline" (click)="goToEdit()" *ngIf="!isCompleted">
-        <cds-icon shape="pencil"></cds-icon> Edit Purchase
-      </button>
-
-      <button class="btn btn-success" (click)="openReceiveConfirm()" *ngIf="canReceive">
-        <cds-icon shape="check-circle"></cds-icon> Receive Assets
-      </button>
-    </div>
-  </div>
+ 
 
 </div>
 
-
-<!-- <app-confirm-dialog
-  [isOpen]="isReceiveOpen"
-  [loading]="receiving"
-  [title]="'Receive Assets'"
-  [message]="'Are you sure you want to mark this purchase as received? This will generate asset tags for all ' + totalUnits + ' unit(s). This action cannot be undone.'"
-  [confirmText]="'Yes, Receive Assets'"
-  (onConfirm)="confirmReceive()"
-  (onCancel)="cancelReceive()">
-</app-confirm-dialog> -->
 
 <!-- ─── IMAGE PREVIEW ─── -->
 <app-image-preview-modal

@@ -1,22 +1,24 @@
-<div class="clr-row">
-  <div class="clr-col-12">
-    <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Asset Categories</span>
-        <button class="btn btn-primary btn-sm ms-8 " (click)="openAdd()">
-          <cds-icon shape="plus"></cds-icon> Add Category
-        </button>
-      </div>
-      <div class="card-block">
-        <app-reusable-datagrid
-          [columns]="columns"
-          [data]="categories"
-          [loading]="loading"
-          (onEdit)="openEdit($event)"
-          (onDelete)="openDelete($event)">
-        </app-reusable-datagrid>
-      </div>
+<div class="master-page">
+  <div class="page-header">
+    <h2>
+      <cds-icon shape="folder" size="24"></cds-icon>
+      Asset Categories
+    </h2>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="openAdd()">
+        <cds-icon shape="plus"></cds-icon> Add Category
+      </button>
     </div>
+  </div>
+
+  <div class="detail-section">
+    <app-reusable-datagrid
+      [columns]="columns"
+      [data]="categories"
+      [loading]="loading"
+      (onEdit)="openEdit($event)"
+      (onDelete)="openDelete($event)">
+    </app-reusable-datagrid>
   </div>
 </div>
 

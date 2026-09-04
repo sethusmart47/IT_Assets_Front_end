@@ -31,6 +31,14 @@
         </select>
       </clr-select-container>
 
+      <!-- Onboarding hint when nothing selected yet -->
+      <div class="empty-guide" *ngIf="!selectedPurchase">
+        <cds-icon shape="shopping-cart" size="40"></cds-icon>
+        <h4>Start by choosing a purchase order</h4>
+        <p>Select a confirmed purchase order above. You will then see the purchased items, choose one, and enter
+        the serial numbers to register your assets.</p>
+      </div>
+
       
 
       <!-- Purchase Info Card -->
@@ -112,6 +120,14 @@
 
   </clr-datagrid>
 </div>
+
+      <!-- Guide once a PO chosen but no item selected yet -->
+      <div class="empty-guide" *ngIf="selectedPurchase && !selectedItem">
+        <cds-icon shape="list" size="40"></cds-icon>
+        <h4>Select an asset item to continue</h4>
+        <p>Click <strong>Select</strong> on one of the rows above to register assets of that type. Steps 2 and 3
+        (common information and serial numbers) will appear below.</p>
+      </div>
     </div>
   </div>
 

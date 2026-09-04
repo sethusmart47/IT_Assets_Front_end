@@ -46,7 +46,12 @@ this.loading=false
   )
 }
   getStatusClass(status: number): string {
-    return status === 1 ? 'label-warning' : 'label-success';
+    switch (status) {
+      case 1: return 'label-info';
+      case 2: return 'label-success';
+      case 3: return 'label-danger';
+      default: return 'label';
+    }
   }
 
  onStatusFilterChange(): void {

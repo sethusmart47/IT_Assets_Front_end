@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ConfirmationConfig } from '../components/Delete confirm-dialog-component/confirm-dialog-component.component';
+import { ConfirmationConfig } from '../models/confirmation-config';
 import { Subject } from 'rxjs';
 
 

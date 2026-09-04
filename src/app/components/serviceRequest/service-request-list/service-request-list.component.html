@@ -59,7 +59,13 @@
       </clr-dg-cell>
     </clr-dg-row>
 
-    <clr-dg-placeholder>No service requests found.</clr-dg-placeholder>
+    <clr-dg-placeholder>
+      <div class="empty-state">
+        <cds-icon shape="wrench" size="40"></cds-icon>
+        <h4>No service requests found</h4>
+        <p>Try a different search term, or create a new service request.</p>
+      </div>
+    </clr-dg-placeholder>
 
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageSize]="10">

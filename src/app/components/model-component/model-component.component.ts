@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ModelService } from '../../Services/model-service.service';
 import { BrandService } from '../../Services/brand-service.service';
 import { CategoryService } from '../../Services/category-service.service';
-import { ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
 import { ReusableDatagridComponentComponent } from '../reusable-datagrid-component/reusable-datagrid-component.component';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
@@ -14,7 +13,7 @@ import { ConfirmationService } from '../../Services/confirmation.service';
 @Component({
   selector: 'app-model-component',
   standalone: true,
-  imports: [ClarityModule, ReactiveFormsModule, CommonModule, ReusableDatagridComponentComponent, ConfirmDialogComponentComponent],
+  imports: [ClarityModule, ReactiveFormsModule, CommonModule, ReusableDatagridComponentComponent],
   templateUrl: './model-component.component.html',
   styleUrl: './model-component.component.css'
 })
@@ -41,10 +40,6 @@ export class ModelComponentComponent {
   saving: boolean = false;
   form!: FormGroup;
   selectedId: string | null = null;
-
-  // Delete
-  isDeleteOpen: boolean = false;
-  deleting: boolean = false;
   
 
   constructor(
@@ -204,26 +199,15 @@ export class ModelComponentComponent {
   }
 
   confirmDelete(item:AssetModel): void {
-    
-    this.deleting = true;
     this.modelService.delete(item.id).subscribe({
       next: () => {
         this.notification.success('Model deleted successfully.');
-        this.isDeleteOpen = false;
-        this.deleting = false;
-       
         this.loadData();
       },
       error: (err) => {
         this.notification.error(err.error || 'Failed to delete model.');
-        this.deleting = false;
       }
     });
-  }
-
-  cancelDelete(): void {
-    this.isDeleteOpen = false;
-   
   }
 
   closeModal(): void {

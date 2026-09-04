@@ -2,19 +2,19 @@
 import {  AssignAssetRequest, Employee } from '../../../models/Employee';
 import { ToastService } from '../../../Services/toast.service';
 import { AssetAssignmentService } from '../../../Services/asset-assignment.service';
+import { AssetService } from '../../../Services/asset.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 import { CommonModule } from '@angular/common';
 import { ConfirmationService } from '../../../Services/confirmation.service';
-import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { EmployeeService } from '../../../Services/employee.service';
 import { AssetDetail } from '../../../models/Asset';
 
 @Component({
   selector: 'app-asset-assignment',
   standalone: true,
-  imports: [ClarityModule,CommonModule,ReactiveFormsModule,ConfirmationDialogComponent],
+  imports: [ClarityModule,CommonModule,ReactiveFormsModule],
   templateUrl: './asset-assignment.component.html',
   styleUrl: './asset-assignment.component.css'
 })
@@ -35,6 +35,7 @@ employeeId = '';
     private route: ActivatedRoute,
     private router: Router,
     private assetAssignmentService: AssetAssignmentService,
+    private assetService: AssetService,
     private toaster: ToastService,
     private confirmation: ConfirmationService,
     private employeeservice:EmployeeService
@@ -56,22 +57,6 @@ this.toaster.error(err.error ||
   
   })
 }
-  // loadEmployee(): void {
-  //   this.assetAssignmentService.getAllEmployees().subscribe({
-  //     next: (employees) => {
-  //       this.employee = employees.find(e => e.id === this.employeeId) || null;
-  //       if (!this.employee) {
-  //         this.toaster.error('Employee not found.');
-  //         //this.router.navigate(['/asset-assignment']);
-  //         console.log("cje",this.employee);
-  //       }
-  //     },
-  //     error: () => {
-  //       this.toaster.error('Failed to load employee.');
-  //     }
-  //   });
-  // }
-
   // ─── Search Asset ──────────────────────────────────────────────────────────────
 
   onSearchAsset(): void {
@@ -90,7 +75,7 @@ this.toaster.error(err.error ||
     const serialNumber = searchType === 'serialNumber' ? searchValue.trim() : undefined;
     const assetTag = searchType === 'assetTag' ? searchValue.trim() : undefined;
 
-    this.assetAssignmentService.searchAvailableAsset(serialNumber, assetTag).subscribe({
+    this.assetService.searchAvailableAsset(serialNumber, assetTag).subscribe({
       next: (data) => {
         this.assetDetail = data;
         this.searching = false;
@@ -115,53 +100,36 @@ this.toaster.error(err.error ||
 
   // ─── Confirm Assignment ────────────────────────────────────────────────────────
 
-  // onConfirmAssignment(): void {
-  //   
-    
-  // console.log('Assignment confirmation clicked');
-
-  // if (!this.assetDetail) {
-  //   console.log('assetDetail is missing');
-  //   return;
-  // }
-
-  // if (!this.employee) {
-  //   console.log('employee is missing');
-  //   return;
-  // }
-  //   this.confirmation.confirm(
-  //     'Confirm Assignment',
-  //     `Assign "${this.assetDetail.assetTag}" (${this.assetDetail.serialNumber}) to "?`,
-  //     () => {
-  //       this.processAssignment();
-  //     }
-  //   );
-  // }
-
   onConfirmAssignment(): void {
     
     if (!this.assetDetail ) return;
 
-    this.assigning = true;
+    this.confirmation.confirm(
+      'Confirm Assignment',
+      `Are you sure you want to assign asset "${this.assetDetail.assetTag}" to ${this.employee?.employeeName || 'this employee'}?`,
+      () => {
+        this.assigning = true;
 
-    const request: AssignAssetRequest = {
-      assetId: this.assetDetail.id,
-      employeeId: this.employeeId
-    };
+        const request: AssignAssetRequest = {
+          assetId: this.assetDetail!.id,
+          employeeId: this.employeeId
+        };
 
-    this.assetAssignmentService.assignAsset(request).subscribe({
-      next: (result) => {
-        this.assigning = false;
-        this.toaster.success(
-          `Asset "${result.assetTag}" assigned to "${result.employeeName}" successfully.`
-        );
-        this.router.navigate(['/asset/assignment', this.employeeId]);
-      },
-      error: (err) => {
-        this.assigning = false;
-        this.toaster.error(err.error || 'Failed to assign asset.');
+        this.assetAssignmentService.assignAsset(request).subscribe({
+          next: (result) => {
+            this.assigning = false;
+            this.toaster.success(
+              `Asset "${result.assetTag}" assigned to "${result.employeeName}" successfully.`
+            );
+            this.router.navigate(['/asset/assignment', this.employeeId]);
+          },
+          error: (err) => {
+            this.assigning = false;
+            this.toaster.error(err.error || 'Failed to assign asset.');
+          }
+        });
       }
-    });
+    );
   }
 
   // ─── Navigation ────────────────────────────────────────────────────────────────

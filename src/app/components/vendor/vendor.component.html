@@ -1,67 +1,72 @@
-<div class="clr-row">
-  <div class="clr-col-12">
-    <div class="card">
-
-      <!-- CARD HEADER — Title + Add Button -->
-      <div class="card-header">
-        <span>Vendors</span>
-        <button style="float: right;" class="btn btn-primary btn-sm" (click)="openAdd()">
-          <cds-icon shape="plus"></cds-icon> Add Vendor
-        </button>
-      </div>
-
-      <!-- CARD BODY — Clarity Datagrid -->
-      <div class="card-block">
-        <clr-datagrid [clrDgLoading]="loading">
-
-          <!-- COLUMNS -->
-          <clr-dg-column [style.width.px]="50">#</clr-dg-column>
-          <clr-dg-column [clrDgField]="'vendorName'">Vendor Name</clr-dg-column>
-          <clr-dg-column [clrDgField]="'contactPerson'">Contact Person</clr-dg-column>
-          <clr-dg-column [clrDgField]="'email'">Email</clr-dg-column>
-          <clr-dg-column [clrDgField]="'phone'">Phone</clr-dg-column>
-          <clr-dg-column [clrDgField]="'gstNumber'">GST Number</clr-dg-column>
-            <clr-dg-column >Address</clr-dg-column>
-          <clr-dg-column>Status</clr-dg-column>
-          <clr-dg-column [style.width.px]="120">Actions</clr-dg-column>
-
-          <!-- ROWS -->
-          <clr-dg-row *clrDgItems="let vendor of vendors; let i = index" [clrDgItem]="vendor">
-            <clr-dg-cell>{{ i + 1 }}</clr-dg-cell>
-            <clr-dg-cell>{{ vendor.vendorName }}</clr-dg-cell>
-            <clr-dg-cell>{{ vendor.contactPerson }}</clr-dg-cell>
-            <clr-dg-cell>{{ vendor.email }}</clr-dg-cell>
-            <clr-dg-cell>{{ vendor.phone }}</clr-dg-cell>
-            <clr-dg-cell>{{ vendor.gstNumber || '—' }}</clr-dg-cell>
-            <clr-dg-cell>
-              {{vendor.address ? (vendor.address.length > 30 ? (vendor.address | slice:0:30) + '...' : vendor.address) : '—'}}
-            </clr-dg-cell>
-            <clr-dg-cell>
-              <span class="badge" [ngClass]="vendor.isActive ? 'badge-success' : 'badge-danger'">
-                {{ vendor.isActive ? 'Active' : 'Inactive' }}
-              </span>
-            </clr-dg-cell>
-            <clr-dg-cell>
-              <button class="btn btn-sm btn-icon btn-primary" title="Edit" (click)="openEdit(vendor)">
-                <cds-icon shape="pencil"></cds-icon>
-              </button>
-              <button class="btn btn-sm btn-icon btn-danger-outline" title="Delete" (click)="openDelete(vendor)">
-                <cds-icon shape="trash"></cds-icon>
-              </button>
-            </clr-dg-cell>
-          </clr-dg-row>
-
-          <!-- FOOTER — Pagination -->
-          <clr-dg-footer>
-            <clr-dg-pagination #pagination [clrDgPageSize]="10">
-              {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }} vendors
-            </clr-dg-pagination>
-          </clr-dg-footer>
-
-        </clr-datagrid>
-      </div>
-
+<div class="master-page">
+  <div class="page-header">
+    <h2>
+      <cds-icon shape="store" size="24"></cds-icon>
+      Vendors
+    </h2>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="openAdd()">
+        <cds-icon shape="plus"></cds-icon> Add Vendor
+      </button>
     </div>
+  </div>
+
+  <div class="detail-section">
+    <clr-datagrid [clrDgLoading]="loading">
+
+      <!-- COLUMNS -->
+      <clr-dg-column [style.width.px]="50">#</clr-dg-column>
+      <clr-dg-column [clrDgField]="'vendorName'">Vendor Name</clr-dg-column>
+      <clr-dg-column [clrDgField]="'contactPerson'">Contact Person</clr-dg-column>
+      <clr-dg-column [clrDgField]="'email'">Email</clr-dg-column>
+      <clr-dg-column [clrDgField]="'phone'">Phone</clr-dg-column>
+      <clr-dg-column [clrDgField]="'gstNumber'">GST Number</clr-dg-column>
+      <clr-dg-column>Address</clr-dg-column>
+      <clr-dg-column>Status</clr-dg-column>
+      <clr-dg-column [style.width.px]="120">Actions</clr-dg-column>
+
+      <!-- ROWS -->
+      <clr-dg-row *clrDgItems="let vendor of vendors; let i = index" [clrDgItem]="vendor">
+        <clr-dg-cell>{{ i + 1 }}</clr-dg-cell>
+        <clr-dg-cell>{{ vendor.vendorName }}</clr-dg-cell>
+        <clr-dg-cell>{{ vendor.contactPerson }}</clr-dg-cell>
+        <clr-dg-cell>{{ vendor.email }}</clr-dg-cell>
+        <clr-dg-cell>{{ vendor.phone }}</clr-dg-cell>
+        <clr-dg-cell>{{ vendor.gstNumber || '—' }}</clr-dg-cell>
+        <clr-dg-cell>
+          {{vendor.address ? (vendor.address.length > 30 ? (vendor.address | slice:0:30) + '...' : vendor.address) : '—'}}
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <span class="badge" [ngClass]="vendor.isActive ? 'badge-success' : 'badge-danger'">
+            {{ vendor.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </clr-dg-cell>
+        <clr-dg-cell class="action-cell">
+          <button class="btn btn-sm btn-icon btn-primary" title="Edit" (click)="openEdit(vendor)">
+            <cds-icon shape="pencil"></cds-icon>
+          </button>
+          <button class="btn btn-sm btn-icon btn-danger-outline" title="Delete" (click)="openDelete(vendor)">
+            <cds-icon shape="trash"></cds-icon>
+          </button>
+        </clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-placeholder>
+        <div class="empty-state">
+          <cds-icon shape="store" size="40"></cds-icon>
+          <h4>No vendors found</h4>
+          <p>Add your first vendor to get started.</p>
+        </div>
+      </clr-dg-placeholder>
+
+      <!-- FOOTER — Pagination -->
+      <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+          {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }} vendors
+        </clr-dg-pagination>
+      </clr-dg-footer>
+
+    </clr-datagrid>
   </div>
 </div>
 
@@ -162,11 +167,3 @@
     </button>
   </div>
 </clr-modal>
-<!--  -->
-<!-- <app-confirm-dialog
-  [isOpen]="isDeleteOpen"
-  [loading]="deleting"
-  [message]="'Are you sure you want to delete vendor: ' + deleteItemRef?.vendorName + '?'"
-  (onConfirm)="confirmDelete()"
-  (onCancel)="cancelDelete()">
-</app-confirm-dialog> -->

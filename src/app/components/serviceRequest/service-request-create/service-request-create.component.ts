@@ -3,13 +3,13 @@ import {  CreateServiceRequestDto, ISSUE_TYPES, PRIORITIES } from '../../../mode
 import { ServiceRequestService } from '../../../Services/service-request.service';
 import { ToastService } from '../../../Services/toast.service';
 import { ConfirmationService } from '../../../Services/confirmation.service';
+import { AssetService } from '../../../Services/asset.service';
+import { notInFutureValidator } from '../../../utils/validators';
 import { Router } from '@angular/router';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VendorDto } from '../../../models/purchase';
 import { ClarityModule } from '@clr/angular';
 import { CommonModule } from '@angular/common';
-import { AssetAssignmentService } from '../../../Services/asset-assignment.service';
-
 import { VendorService } from '../../../Services/vendor.service';
 import { Vendor } from '../../../models/model';
 import { AssetDetail } from '../../../models/Asset';
@@ -54,11 +54,11 @@ serviceForm:FormGroup
     private router: Router,
     private fb:FormBuilder,
     private vendorService:VendorService,
-    private assetAssignmentService:AssetAssignmentService
+    private assetService:AssetService
   ) {
       this.serviceForm = this.fb.group({
      issueType: ['', Validators.required],
-     reportedDate: ['', [Validators.required, this.notInFutureValidator]],
+     reportedDate: ['', [Validators.required, notInFutureValidator()]],
      priority: ['', Validators.required],
      vendorName: [null],
      issueDescription: [null]
@@ -81,12 +81,6 @@ serviceForm:FormGroup
   }
 
   // ─── Set Today Date ────────────────────────────────────────────────────────────
-
-  private notInFutureValidator = (c: AbstractControl): ValidationErrors | null => {
-    if (!c.value) return null;
-    const v = new Date(c.value); const t = new Date(); t.setHours(0,0,0,0);
-    return v > t ? { futureDate: true } : null;
-  };
 
   private setTodayDate(): void {
     const today = new Date();
@@ -112,7 +106,7 @@ serviceForm:FormGroup
     const serialNumber = searchType === 'serialNumber' ? searchValue.trim() : undefined;
     const assetTag = searchType === 'assetTag' ? searchValue.trim() : undefined;
 
-    this.assetAssignmentService.searchAvailableAsset(serialNumber, assetTag).subscribe({
+    this.assetService.searchAvailableAsset(serialNumber, assetTag).subscribe({
       next: (data) => {
         this.assetDetail = data;
         this.searching = false;

@@ -112,9 +112,11 @@
         <clr-dg-cell>{{ item.returnedDate | date:'dd-MMM-yyyy' }}</clr-dg-cell>
         <clr-dg-cell>
           <span class="condition-badge"
-                [class.good]="item.conditionAtReturn === 1"
-                [class.damaged]="item.conditionAtReturn === 2"
-                [class.lost]="item.conditionAtReturn === 3">
+                [class.new]="item.conditionAtReturn === 1"
+                [class.good]="item.conditionAtReturn === 2"
+                [class.fair]="item.conditionAtReturn === 3"
+                [class.poor]="item.conditionAtReturn === 4"
+                [class.damaged]="item.conditionAtReturn === 5">
             {{ item.conditionAtReturnName || '-' }}
           </span>
         </clr-dg-cell>
@@ -174,11 +176,9 @@
           <textarea clrTextarea formControlName="remarks" placeholder="Enter remarks..."></textarea>
         </clr-textarea-container>
 
-        <div class="status-info" *ngIf="returnForm.value.conditionAtReturn">
+        <div class="status-info" *ngIf="getResultStatusForCondition(returnForm.value.conditionAtReturn)">
           <cds-icon shape="info-circle" size="16"></cds-icon>
-          <span *ngIf="returnForm.value.conditionAtReturn === 1">Asset will become <strong>Available</strong></span>
-          <span *ngIf="returnForm.value.conditionAtReturn === 2">Asset will go to <strong>In Service</strong></span>
-          <span *ngIf="returnForm.value.conditionAtReturn === 3">Asset will be marked as <strong>Lost</strong></span>
+          <span>Asset will become <strong>{{ getResultStatusForCondition(returnForm.value.conditionAtReturn) }}</strong></span>
         </div>
       </form>
     </div>

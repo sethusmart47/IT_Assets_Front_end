@@ -1,10 +1,10 @@
 <div class="dashboard-container">
 
   <!-- ─── HEADER ──────────────────────────────────────────────────────────────── -->
-  <div class="dashboard-header">
+  <div class="page-header">
     <h2><clr-icon shape="dashboard" size="28"></clr-icon> IT Asset Dashboard</h2>
-    <button class="btn btn-sm btn-outline" (click)="loadDashboard()">
-      <clr-icon shape="refresh" size="16" color:black></clr-icon> Refresh
+    <button class="btn btn-primary" (click)="loadDashboard()" [disabled]="loading">
+      <clr-icon shape="refresh" size="16"></clr-icon> Refresh
     </button>
   </div>
 

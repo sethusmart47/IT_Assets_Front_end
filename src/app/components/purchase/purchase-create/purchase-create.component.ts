@@ -2,7 +2,7 @@
 // components/purchase/purchase-create/purchase-create.component.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -15,9 +15,11 @@ import { PurchasedItemService } from '../../../Services/purchased-item.service';
 import { PurchaseAttachmentService } from '../../../Services/purchase-attachment.service';
 import { VendorService } from '../../../Services/vendor.service';
 import { ToastService } from '../../../Services/toast.service';
+import { ConfirmationService } from '../../../Services/confirmation.service';
+import { AttachmentHelperService } from '../../../Services/attachment-helper.service';
+import { notInFutureValidator, purchaseDateOrderValidator } from '../../../utils/validators';
 
 import { PurchasedItemModalComponent } from '../purchased-item-modal/purchased-item-modal.component';
-import { ConfirmDialogComponentComponent } from '../../Delete confirm-dialog-component/confirm-dialog-component.component';
 
 
 import { ImagePreviewModalComponent } from '../../image-preview-modal/image-preview-modal.component';
@@ -30,7 +32,6 @@ import { ImagePreviewModalComponent } from '../../image-preview-modal/image-prev
     ReactiveFormsModule,
     ClarityModule,
     PurchasedItemModalComponent,
-    ConfirmDialogComponentComponent,
     ImagePreviewModalComponent
   ],
   templateUrl: './purchase-create.component.html',
@@ -48,11 +49,6 @@ export class PurchaseCreateComponent implements OnInit {
   // Dropdowns
   vendors: Vendor[] = [];
   ownershipTypes = OWNERSHIP_TYPES;
-
-  // Delete confirmation
-  isDeleteOpen = false;
-  deleteItemRef: PurchasedItemDto | null = null;
-  deleting = false;
 
   // Items
   items: PurchasedItemDto[] = [];
@@ -81,7 +77,9 @@ export class PurchaseCreateComponent implements OnInit {
     private itemService: PurchasedItemService,
     public attachmentService: PurchaseAttachmentService,
     private vendorService: VendorService,
-    private toast: ToastService
+    private toast: ToastService,
+    private confirmService: ConfirmationService,
+    public attachmentHelper: AttachmentHelperService
   ) {}
 
   ngOnInit(): void {
@@ -99,34 +97,16 @@ export class PurchaseCreateComponent implements OnInit {
   }
 
   private initForm(): void {
-    const todayStr = new Date().toISOString().slice(0, 10);
     this.purchaseForm = this.fb.group({
       vendorId: [null, Validators.required],
-      purchaseDate: ['', [Validators.required, this.notInFutureValidator]],
+      purchaseDate: ['', [Validators.required, notInFutureValidator()]],
       invoiceNumber: ['', [Validators.required, Validators.maxLength(100)]],
-      invoiceDate: ['', [Validators.required, this.notInFutureValidator]],
+      invoiceDate: ['', [Validators.required, notInFutureValidator()]],
       expectedDeliveryDate: ['', Validators.required],
       ownershipType: [1, Validators.required],
       remarks: ['']
-    }, { validators: this.purchaseDateOrderValidator });
+    }, { validators: purchaseDateOrderValidator() });
   }
-
-  private notInFutureValidator = (c: AbstractControl): ValidationErrors | null => {
-    if (!c.value) return null;
-    const v = new Date(c.value); const t = new Date(); t.setHours(0,0,0,0);
-    return v > t ? { futureDate: true } : null;
-  };
-
-  private purchaseDateOrderValidator = (g: AbstractControl): ValidationErrors | null => {
-    const purchase = g.get('purchaseDate')?.value;
-    const invoice = g.get('invoiceDate')?.value;
-    const delivery = g.get('expectedDeliveryDate')?.value;
-    if (!purchase || !invoice || !delivery) return null;
-    const p = new Date(purchase), i = new Date(invoice), d = new Date(delivery);
-    if (i < p) return { invoiceBeforePurchase: true };
-    if (d < i) return { deliveryBeforeInvoice: true };
-    return null;
-  };
 
   loadVendors(): void {
     this.isLoading = true;
@@ -257,37 +237,18 @@ export class PurchaseCreateComponent implements OnInit {
   }
 
   deleteItem(item: PurchasedItemDto): void {
-    this.deleteItemRef = item;
-    this.isDeleteOpen = true;
-  }
-
-  get deleteConfirmMessage(): string {
-    if (!this.deleteItemRef) return '';
-    return `Are you sure you want to delete "${this.deleteItemRef.category} - ${this.deleteItemRef.brand} ${this.deleteItemRef.model}"?`;
-  }
-
-  confirmDelete(): void {
-    if (!this.deleteItemRef) return;
-    this.deleting = true;
-
-    this.itemService.delete(this.purchaseId!, this.deleteItemRef.id).subscribe({
-      next: () => {
-        this.toast.success('Item deleted successfully.');
-        this.isDeleteOpen = false;
-        this.deleting = false;
-        this.deleteItemRef = null;
-        this.loadItems();
-      },
-      error: (err) => {
-        this.toast.error(err.error?.message || 'Failed to delete item.');
-        this.deleting = false;
-      }
+    const msg = `Are you sure you want to delete "${item.category} - ${item.brand} ${item.model}"?`;
+    this.confirmService.confirmDanger('Delete Asset Item', msg, () => {
+      this.itemService.delete(this.purchaseId!, item.id).subscribe({
+        next: () => {
+          this.toast.success('Item deleted successfully.');
+          this.loadItems();
+        },
+        error: (err) => {
+          this.toast.error(err.error?.message || 'Failed to delete item.');
+        }
+      });
     });
-  }
-
-  cancelDelete(): void {
-    this.isDeleteOpen = false;
-    this.deleteItemRef = null;
   }
 
   private loadItems(): void {
@@ -373,8 +334,7 @@ export class PurchaseCreateComponent implements OnInit {
   // ──────────────────────────────────────────────
 
   isImageAttachment(att: PurchaseAttachmentDto): boolean {
-    if (!att.contentType) return false;
-    return att.contentType.startsWith('image/');
+    return this.attachmentHelper.isImage(att.contentType);
   }
 
   // ✅ FIXED — was getDownloadUrl, now getPreviewUrl
@@ -397,9 +357,7 @@ export class PurchaseCreateComponent implements OnInit {
 
   // ✅ NEW — fallback when image fails to load
   onImageError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    img.src = 'assets/images/no-preview.png';
-    img.alt = 'Image not available';
+    this.attachmentHelper.onImageError(event);
   }
 
   closePreview(): void {
@@ -422,38 +380,19 @@ export class PurchaseCreateComponent implements OnInit {
   }
 
   getFileIcon(contentType: string): string {
-    if (!contentType) return 'document';
-    if (contentType.includes('pdf')) return 'file';
-    if (contentType.startsWith('image/')) return 'image';
-    return 'document';
+    return this.attachmentHelper.getFileIcon(contentType);
   }
 
   formatFileSize(bytes: number): string {
-    if (!bytes) return '';
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / 1048576).toFixed(1) + ' MB';
+    return this.attachmentHelper.formatFileSize(bytes);
   }
 
 
   // ─── COMPLETE ───
 
-  completePurchase(): void {
+  goToView(): void {
     if (!this.purchaseId) return;
-    if (this.items.length === 0) {
-      this.toast.warning('Add at least one item before completing.');
-      return;
-    }
-
-    this.purchaseService.complete(this.purchaseId).subscribe({
-      next: () => {
-        this.toast.success('Purchase completed & assets received!');
-        this.router.navigate(['/purchases', this.purchaseId, 'view']);
-      },
-      error: (err) => {
-        this.toast.error(err.error?.message || 'Failed to complete purchase.');
-      }
-    });
+    this.router.navigate(['/purchases', this.purchaseId, 'view']);
   }
 
   goBack(): void {

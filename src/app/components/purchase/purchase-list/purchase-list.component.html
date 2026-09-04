@@ -85,6 +85,14 @@
       </clr-dg-cell>
     </clr-dg-row>
 
+    <clr-dg-placeholder>
+      <div class="empty-state">
+        <cds-icon shape="shopping-cart" size="40"></cds-icon>
+        <h4>No purchase orders found</h4>
+        <p>Try a different status filter, or create your first purchase order.</p>
+      </div>
+    </clr-dg-placeholder>
+
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageSize]="10">
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50]">Items per page</clr-dg-page-size>

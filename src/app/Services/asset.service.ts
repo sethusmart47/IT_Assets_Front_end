@@ -58,4 +58,11 @@ export class AssetService {
   getRegistrationSummary(purchaseId: string): Observable<RegistrationSummaryDto> {
     return this.http.get<RegistrationSummaryDto>(`${this.apiUrl}/registration-summary/${purchaseId}`);
   }
+
+  searchAvailableAsset(serialNumber?: string, assetTag?: string): Observable<AssetDetail> {
+    let params = new HttpParams();
+    if (serialNumber) params = params.set('serialNumber', serialNumber);
+    if (assetTag) params = params.set('assetTag', assetTag);
+    return this.http.get<AssetDetail>(`${this.apiUrl}/available/search`, { params });
+  }
 }

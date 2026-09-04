@@ -1,0 +1,31 @@
+.action-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: visible !important;
+  white-space: nowrap;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 32px;
+  color: #8597b8;
+  text-align: center;
+}
+
+.empty-state h4 {
+  margin: 8px 0 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #556b8d;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #8597b8;
+}

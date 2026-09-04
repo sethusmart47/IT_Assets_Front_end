@@ -39,7 +39,7 @@
     </clr-dg-cell>
 
     <!-- Action Buttons -->
-    <clr-dg-cell *ngIf="showActions">
+    <clr-dg-cell *ngIf="showActions" class="action-cell">
       <button class="btn btn-sm btn-icon btn-primary" title="Edit" (click)="editItem(item)">
         <cds-icon shape="pencil"></cds-icon>
       </button>
@@ -49,6 +49,14 @@
     </clr-dg-cell>
 
   </clr-dg-row>
+
+  <clr-dg-placeholder>
+    <div class="empty-state">
+      <cds-icon shape="clipboard" size="40"></cds-icon>
+      <h4>No records found</h4>
+      <p>There is nothing to display yet.</p>
+    </div>
+  </clr-dg-placeholder>
 
   <!-- Footer with Pagination -->
   <clr-dg-footer>

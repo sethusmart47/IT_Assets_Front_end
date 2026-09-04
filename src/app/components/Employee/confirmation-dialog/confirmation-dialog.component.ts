@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ConfirmationService } from '../../../Services/confirmation.service';
-import { ConfirmationConfig } from '../../Delete confirm-dialog-component/confirm-dialog-component.component';
+import { ConfirmationConfig } from '../../../models/confirmation-config';
 import { ClarityModule } from '@clr/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';

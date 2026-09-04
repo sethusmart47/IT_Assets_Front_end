@@ -6,8 +6,9 @@ export enum OwnershipType {
 }
 
 export enum PurchaseStatus {
-  Draft = 1,
-  Completed = 2
+  Ordered = 1,
+  Confirmed = 2,
+  Cancelled = 3
 }
 
 export enum WarrantyPeriod {
@@ -40,6 +41,7 @@ export const WARRANTY_PERIODS = [
 ];
 
 export const PURCHASE_STATUSES = [
-  { value: PurchaseStatus.Draft, label: 'Draft' },
-  { value: PurchaseStatus.Completed, label: 'Completed' }
+  { value: PurchaseStatus.Ordered, label: 'Ordered' },
+  { value: PurchaseStatus.Confirmed, label: 'Confirmed' },
+  { value: PurchaseStatus.Cancelled, label: 'Cancelled' }
 ];

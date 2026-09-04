@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AssignAssetRequest, AssignmentResponse, Employee, EmployeeAssignment, ReturnAssetRequest, ReturnResponse, SurrenderAssetsRequest } from '../models/Employee';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
-import { AssetDetail } from '../models/Asset';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,6 @@ import { AssetDetail } from '../models/Asset';
 export class AssetAssignmentService {
 
   private readonly baseUrl = `${environment.apiUrl}/AssetAssignment`;
-  private readonly assetUrl = `${environment.apiUrl}/asset`;
 
   constructor(private http: HttpClient) {}
 
@@ -27,15 +25,6 @@ export class AssetAssignmentService {
     return this.http.get<EmployeeAssignment[]>(
       `${this.baseUrl}/employees/${employeeId}/assignments`
     );
-  }
-
-  // ─── Asset Search ──────────────────────────────────────────────────────────────
-
-  searchAvailableAsset(serialNumber?: string, assetTag?: string): Observable<AssetDetail> {
-    let params = new HttpParams();
-    if (serialNumber) params = params.set('serialNumber', serialNumber);
-    if (assetTag) params = params.set('assetTag', assetTag);
-    return this.http.get<AssetDetail>(`${this.assetUrl}/available/search`, { params });
   }
 
   // ─── Assign ────────────────────────────────────────────────────────────────────

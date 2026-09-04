@@ -42,6 +42,14 @@
       </clr-dg-cell>
     </clr-dg-row>
 
+    <clr-dg-placeholder>
+      <div class="empty-state">
+        <cds-icon shape="users" size="40"></cds-icon>
+        <h4>No employees found</h4>
+        <p>Try a different search term.</p>
+      </div>
+    </clr-dg-placeholder>
+
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageSize]="10">
         {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ pagination.totalItems }} employees

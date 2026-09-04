@@ -39,8 +39,12 @@ export class PurchaseService {
     return this.http.put<PurchaseDetailDto>(`${this.baseUrl}/${id}`, dto);
   }
 
-  complete(id: string): Observable<string> {
-    return this.http.put(`${this.baseUrl}/${id}/complete`, null, { responseType: 'text' });
+  confirm(id: string): Observable<string> {
+    return this.http.put(`${this.baseUrl}/${id}/confirm`, null, { responseType: 'text' });
+  }
+
+  cancel(id: string): Observable<string> {
+    return this.http.put(`${this.baseUrl}/${id}/cancel`, null, { responseType: 'text' });
   }
 
   delete(id: string): Observable<string> {

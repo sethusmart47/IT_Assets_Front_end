@@ -79,17 +79,12 @@
   font-size: 11px;
 }
 
-.status-draft {
-  background: #f0f0f0;
-  color: #666;
+.status-ordered {
+  background: #e0ecff;
+  color: #0052cc;
 }
 
-.status-pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.status-completed {
+.status-confirmed {
   background: #d4edda;
   color: #155724;
 }

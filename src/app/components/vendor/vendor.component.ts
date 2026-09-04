@@ -2,7 +2,6 @@
 import { Vendor } from '../../models/model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { VendorService } from '../../Services/vendor.service';
-import { ConfirmDialogComponentComponent } from '../Delete confirm-dialog-component/confirm-dialog-component.component';
 
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
@@ -12,7 +11,7 @@ import { ToastService } from '../../Services/toast.service';
 @Component({
   selector: 'app-vendor',
   standalone: true,
-  imports: [ClarityModule, ReactiveFormsModule, CommonModule,ConfirmDialogComponentComponent],
+  imports: [ClarityModule, ReactiveFormsModule, CommonModule],
   templateUrl: './vendor.component.html',
   styleUrl: './vendor.component.css'
 })
@@ -28,11 +27,6 @@ export class VendorComponent {
   saving: boolean = false;
   form!: FormGroup;
   selectedId: string | null = null;
-
-  // ─── DELETE ───
-  isDeleteOpen: boolean = false;
-  deleting: boolean = false;
-  deleteItemRef: Vendor | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -176,27 +170,15 @@ export class VendorComponent {
 }
 
   confirmDelete(item:Vendor): void {
-   
-    this.deleting = true;
-
     this.vendorService.delete(item.id).subscribe({
       next: () => {
         this.notification.success('Vendor deleted successfully.');
-        this.isDeleteOpen = false;
-        this.deleting = false;
-        this.deleteItemRef = null;
         this.loadData();
       },
       error: (err) => {
         this.notification.error(err.error || 'Failed to delete vendor.');
-        this.deleting = false;
       }
     });
-  }
-
-  cancelDelete(): void {
-    this.isDeleteOpen = false;
-    this.deleteItemRef = null;
   }
 
   // ─── CLOSE MODAL ───

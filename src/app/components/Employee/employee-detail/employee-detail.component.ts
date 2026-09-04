@@ -18,7 +18,6 @@ import { EmployeeService } from '../../../Services/employee.service';
 })
 export class EmployeeDetailComponent {
 employeeId = '';
-  employees: Employee[] = [];
   selectedEmployee: Employee | null = null;
   assignments: EmployeeAssignment[] = [];
   loading = false;
@@ -44,6 +43,22 @@ employeeId = '';
     { value: 4, label: 'poor' },
     { value: 5, label: 'Damaged' },
   ];
+
+  // Result status preview per condition (must match backend logic)
+  getResultStatusForCondition(condition: number | null | undefined): string {
+    switch (condition) {
+      case 1:
+      case 2:
+        return 'Available';
+      case 3:
+      case 4:
+        return 'In Service';
+      case 5:
+        return 'Need to Service';
+      default:
+        return '';
+    }
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -76,24 +91,6 @@ loadEmployeeData(){
   
   })
 }
-  // loadEmployeeData(): void {
-  //   this.loading = true;
-  //   this.assetAssignmentService.getAllEmployees().subscribe({
-  //     next: (data) => {
-  //       this.employees = data;
-  //       this.selectedEmployee = data.find(e => e.id === this.employeeId) || null;
-  //       this.loading = false;
-  //       if (this.selectedEmployee) {
-  //         this.loadAssignments();
-  //       }
-  //     },
-  //     error: () => {
-  //       this.loading = false;
-  //       this.toaster.error('Failed to load employee data.');
-  //     }
-  //   });
-  // }
-
   loadAssignments(): void {
     this.assignmentsLoading = true;
     this.assetAssignmentService.getAssignmentsByEmployee(this.employeeId).subscribe({
